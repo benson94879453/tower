@@ -1,0 +1,28 @@
+[
+	{
+		"id": "armor_apprentice_robe",
+		"name": "見習法袍",
+		"type": "armor",
+		"subtype": "robe",
+		"rarity": "N",
+		"stats": {"pdef": 4, "mdef": 6, "hp": 20},
+		"buy_price": 120,
+		"sell_price": 60,
+		"description": "見習法師的基礎法袍",
+		"available_from_floor": 1
+	},
+	{
+		"id": "armor_flame_robe",
+		"name": "烈焰法袍",
+		"type": "armor",
+		"subtype": "robe",
+		"rarity": "R",
+		"element": "fire",
+		"stats": {"pdef": 8, "mdef": 15, "hp": 50},
+		"enhance_bonus_per_level": {"mdef": 2, "hp": 5},
+		"buy_price": 800,
+		"sell_price": 400,
+		"description": "以火焰精華編織的法袍，大幅提升魔防",
+		"available_from_floor": 10
+	}
+]

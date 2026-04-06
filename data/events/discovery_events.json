@@ -1,0 +1,82 @@
+[
+	{
+		"id": "event_magic_circle",
+		"name": "神秘的魔法陣",
+		"type": "discovery",
+		"floor_range": [11, 49],
+		"weight": 10,
+		"description": "地面上有一個殘破的魔法陣...",
+		"options": [
+			{
+				"text": "嘗試修復魔法陣",
+				"condition": {"has_skill": "skill_repair"},
+				"results": [
+					{"type": "item_reward", "item_id": "core_random", "chance": 0.7},
+					{"type": "battle", "enemy_id": "enemy_golem", "chance": 0.3}
+				]
+			},
+			{
+				"text": "注入魔力啟動",
+				"condition": {"min_mp": 30},
+				"cost": {"mp": 30},
+				"results": [
+					{"type": "item_reward", "item_id": "random_rare_item", "chance": 0.5},
+					{"type": "battle", "enemy_id": "enemy_random_elite", "chance": 0.5}
+				]
+			},
+			{
+				"text": "研究魔法陣紋路",
+				"condition": null,
+				"results": [
+					{"type": "research_points", "value": 10}
+				]
+			},
+			{
+				"text": "不理會，繼續前進",
+				"condition": null,
+				"results": []
+			}
+		],
+		"conditional_options": [
+			{
+				"text": "使用鑑定術分析",
+				"condition": {"has_skill": "skill_identify"},
+				"results": [
+					{"type": "reveal_all_options", "description": "看穿魔法陣類型"}
+				]
+			}
+		]
+	},
+	{
+		"id": "event_abandoned_camp",
+		"name": "廢棄的營地",
+		"type": "discovery",
+		"floor_range": [1, 30],
+		"weight": 15,
+		"description": "一個被遺棄的營地，地上散落著一些物品...",
+		"options": [
+			{
+				"text": "仔細搜尋",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4},
+					{"type": "item_reward", "item_id": "mat_random", "chance": 0.3},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.6}
+				]
+			},
+			{
+				"text": "快速搜尋",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "random_common_item", "chance": 0.3}
+				]
+			},
+			{
+				"text": "離開",
+				"condition": null,
+				"results": []
+			}
+		],
+		"conditional_options": []
+	}
+]

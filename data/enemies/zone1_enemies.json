@@ -1,0 +1,65 @@
+[
+	{
+		"id": "enemy_fire_sprite",
+		"name": "火焰精靈",
+		"element": "fire",
+		"level": 12,
+		"stats": {
+			"hp": 120,
+			"mp": 50,
+			"matk": 30,
+			"mdef": 15,
+			"patk": 10,
+			"pdef": 10,
+			"speed": 22
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_spark", "skill_flame_shot"],
+		"drops": [
+			{"id": "mat_fire_crystal", "rate": 0.30},
+			{"id": "item_hp_potion_s", "rate": 0.20},
+			{"id": "scroll_spark", "rate": 0.05},
+			{"id": "core_fire_imp", "rate": 0.01}
+		],
+		"exp": 25,
+		"gold": 15,
+		"visual": {
+			"shape": "triangle",
+			"color": "#FF4444",
+			"size": "medium",
+			"effects": ["flame_top"]
+		},
+		"floor_range": [11, 19]
+	},
+	{
+		"id": "enemy_ice_sprite",
+		"name": "冰霜精靈",
+		"element": "ice",
+		"level": 10,
+		"stats": {
+			"hp": 100,
+			"mp": 60,
+			"matk": 25,
+			"mdef": 20,
+			"patk": 8,
+			"pdef": 12,
+			"speed": 18
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_ice_shard", "skill_frost_armor"],
+		"drops": [
+			{"id": "mat_ice_crystal", "rate": 0.35},
+			{"id": "item_mp_potion_s", "rate": 0.15},
+			{"id": "core_ice_imp", "rate": 0.01}
+		],
+		"exp": 20,
+		"gold": 12,
+		"visual": {
+			"shape": "hexagon",
+			"color": "#44AAFF",
+			"size": "medium",
+			"effects": ["frost_aura"]
+		},
+		"floor_range": [1, 9]
+	}
+]

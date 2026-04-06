@@ -1,0 +1,78 @@
+[
+	{
+		"id": "familiar_fire_imp",
+		"name": "火焰小鬼",
+		"element": "fire",
+		"type": "attack",
+		"base_stats": {
+			"hp": 80,
+			"mp": 30,
+			"matk": 35,
+			"mdef": 12,
+			"patk": 20,
+			"pdef": 10,
+			"speed": 28
+		},
+		"growth_per_level": {
+			"hp": 8,
+			"mp": 3,
+			"matk": 3,
+			"mdef": 1,
+			"patk": 2,
+			"pdef": 1,
+			"speed": 2
+		},
+		"max_level": 50,
+		"skill_slots": 2,
+		"default_skills": ["skill_flame_claw"],
+		"evolution": {
+			"target_id": "familiar_inferno_demon",
+			"required_level": 25,
+			"required_items": [{"id": "mat_fire_crystal", "count": 10}]
+		},
+		"visual": {
+			"shape": "sharp_triangle",
+			"color": "#FF6644",
+			"size": "small"
+		},
+		"obtain_source": "熔岩鍛爐區域掉落"
+	},
+	{
+		"id": "familiar_ice_guard",
+		"name": "冰霜守衛",
+		"element": "ice",
+		"type": "defense",
+		"base_stats": {
+			"hp": 120,
+			"mp": 25,
+			"matk": 15,
+			"mdef": 25,
+			"patk": 12,
+			"pdef": 20,
+			"speed": 15
+		},
+		"growth_per_level": {
+			"hp": 10,
+			"mp": 2,
+			"matk": 2,
+			"mdef": 3,
+			"patk": 1,
+			"pdef": 2,
+			"speed": 1
+		},
+		"max_level": 50,
+		"skill_slots": 2,
+		"default_skills": ["skill_frost_armor"],
+		"evolution": {
+			"target_id": "familiar_ice_golem",
+			"required_level": 25,
+			"required_items": [{"id": "mat_ice_crystal", "count": 10}]
+		},
+		"visual": {
+			"shape": "hexagon",
+			"color": "#66AAFF",
+			"size": "medium"
+		},
+		"obtain_source": "冰晶洞窟區域掉落"
+	}
+]

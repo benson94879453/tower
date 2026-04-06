@@ -1,0 +1,36 @@
+[
+	{
+		"id": "acc_burn_ring",
+		"name": "燃燒之戒",
+		"type": "accessory",
+		"rarity": "R",
+		"stats": {"matk": 3},
+		"passive_effects": [
+			{
+				"trigger": "on_fire_skill_hit",
+				"effect": "apply_status",
+				"status": "burn",
+				"duration": 2,
+				"chance": 100
+			}
+		],
+		"description": "火系技能附帶「燃燒」2回合",
+		"obtain_info": "熔岩區掉落"
+	},
+	{
+		"id": "acc_regen_ring",
+		"name": "再生指環",
+		"type": "accessory",
+		"rarity": "R",
+		"stats": {"hp": 15},
+		"passive_effects": [
+			{
+				"trigger": "on_turn_end",
+				"effect": "heal_hp",
+				"value": 5
+			}
+		],
+		"description": "每回合回復 5 HP",
+		"obtain_info": "商店購買"
+	}
+]

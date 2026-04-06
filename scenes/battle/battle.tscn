@@ -1,0 +1,304 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/battle/battle_manager.gd" id="1_3tso5"]
+[ext_resource type="Script" path="res://scripts/battle/battle_ui.gd" id="2_q6u4w"]
+
+[node name="Battle" type="Node"]
+script = ExtResource("1_3tso5")
+
+[node name="BattleBackground" type="ColorRect" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2
+color = Color(0.101960786, 0.101960786, 0.18039216, 1)
+
+[node name="BattleUI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+script = ExtResource("2_q6u4w")
+
+[node name="EnemyArea" type="VBoxContainer" parent="BattleUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 0.35
+offset_left = 24.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = -8.0
+
+[node name="EnemyContainer" type="HBoxContainer" parent="BattleUI/EnemyArea"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 16
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Separator" type="HSeparator" parent="BattleUI"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 24.0
+offset_top = 230.0
+offset_right = -24.0
+offset_bottom = 234.0
+
+[node name="AllyArea" type="HBoxContainer" parent="BattleUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_top = 0.4
+anchor_right = 1.0
+anchor_bottom = 0.6
+offset_left = 24.0
+offset_top = 0.0
+offset_right = -24.0
+offset_bottom = 0.0
+theme_override_constants/separation = 16
+
+[node name="PlayerPanel" type="PanelContainer" parent="BattleUI/AllyArea"]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/PlayerPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="PlayerName" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+layout_mode = 2
+text = "玩家"
+
+[node name="PlayerLevel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+layout_mode = 2
+text = "Lv.1"
+
+[node name="PlayerHPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+show_percentage = false
+max_value = 100.0
+value = 100.0
+
+[node name="PlayerHPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+layout_mode = 2
+text = "100/100"
+
+[node name="PlayerMPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+show_percentage = false
+max_value = 60.0
+value = 60.0
+
+[node name="PlayerMPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+layout_mode = 2
+text = "60/60"
+
+[node name="FamiliarPanel" type="PanelContainer" parent="BattleUI/AllyArea"]
+custom_minimum_size = Vector2(280, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/FamiliarPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="FamiliarName" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Content"]
+layout_mode = 2
+text = "使魔"
+
+[node name="FamiliarHPBar" type="ProgressBar" parent="BattleUI/AllyArea/FamiliarPanel/Content"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
+show_percentage = false
+max_value = 100.0
+value = 100.0
+
+[node name="FamiliarHPLabel" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Content"]
+layout_mode = 2
+text = "100/100"
+
+[node name="FamiliarMode" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Content"]
+layout_mode = 2
+text = "攻擊模式"
+
+[node name="ActionMenu" type="HBoxContainer" parent="BattleUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.1
+anchor_top = 0.75
+anchor_right = 0.9
+anchor_bottom = 0.85
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="SkillButton" type="Button" parent="BattleUI/ActionMenu"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "技能"
+
+[node name="ItemButton" type="Button" parent="BattleUI/ActionMenu"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "道具"
+
+[node name="FamiliarButton" type="Button" parent="BattleUI/ActionMenu"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "使魔"
+
+[node name="FleeButton" type="Button" parent="BattleUI/ActionMenu"]
+custom_minimum_size = Vector2(120, 40)
+layout_mode = 2
+text = "逃跑"
+
+[node name="SkillPanel" type="PanelContainer" parent="BattleUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.1
+anchor_top = 0.3
+anchor_right = 0.9
+anchor_bottom = 0.7
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/SkillPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SkillList" type="VBoxContainer" parent="BattleUI/SkillPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="BattleUI/SkillPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "返回"
+
+[node name="ItemPanel" type="PanelContainer" parent="BattleUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.1
+anchor_top = 0.3
+anchor_right = 0.9
+anchor_bottom = 0.7
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/ItemPanel"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ItemList" type="VBoxContainer" parent="BattleUI/ItemPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="BattleUI/ItemPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "返回"
+
+[node name="FamiliarCmdPanel" type="PanelContainer" parent="BattleUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.2
+anchor_top = 0.35
+anchor_right = 0.8
+anchor_bottom = 0.65
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/FamiliarCmdPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AttackModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "攻擊"
+
+[node name="DefendModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "防禦"
+
+[node name="SupportModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "輔助"
+
+[node name="StandbyModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "待命"
+
+[node name="BackButton" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "返回"
+
+[node name="TargetSelector" type="Control" parent="BattleUI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_top = 0.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 1
+
+[node name="TurnOrderDisplay" type="VBoxContainer" parent="BattleUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.85
+anchor_right = 1.0
+anchor_bottom = 0.3
+offset_left = 0.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 0.0
+theme_override_constants/separation = 4
+
+[node name="BattleLog" type="RichTextLabel" parent="BattleUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 0.6
+anchor_top = 0.85
+anchor_bottom = 1.0
+offset_left = 24.0
+offset_top = 0.0
+offset_right = -24.0
+offset_bottom = -24.0
+bbcode_enabled = true
+scroll_following = true
+
+[node name="DamageNumbers" type="Node2D" parent="."]

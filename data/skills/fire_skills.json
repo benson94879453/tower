@@ -1,0 +1,67 @@
+[
+	{
+		"id": "skill_fireball",
+		"name": "火球術",
+		"element": "fire",
+		"type": "attack_single",
+		"rarity": "N",
+		"base_power": 65,
+		"mp_cost": 12,
+		"pp_max": 10,
+		"hit_rate": 95,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 65},
+			{"type": "status", "target": "single_enemy", "status": "burn", "chance": 10, "duration": 3}
+		],
+		"level_scaling": {
+			"2": {"power": 75, "effects_override": []},
+			"3": {
+				"power": 85,
+				"mp_cost": 14,
+				"effects_override": [
+					{"type": "damage", "target": "single_enemy", "power": 85},
+					{"type": "status", "target": "single_enemy", "status": "burn", "chance": 20, "duration": 3}
+				]
+			},
+			"max": {"power": 95, "mp_cost": 15}
+		},
+		"mutations": {
+			"A": {
+				"id": "skill_meteor",
+				"name": "隕石術",
+				"required_proficiency": 500,
+				"required_items": [{"id": "mat_fire_crystal", "count": 5}]
+			},
+			"B": {
+				"id": "skill_exploding_fireball",
+				"name": "爆裂火球",
+				"required_proficiency": 500,
+				"required_items": [{"id": "mat_burst_core", "count": 3}]
+			}
+		},
+		"description": "基礎火系攻擊魔法，對單一目標發射火球"
+	},
+	{
+		"id": "skill_spark",
+		"name": "火花術",
+		"element": "fire",
+		"type": "attack_single",
+		"rarity": "N",
+		"base_power": 45,
+		"mp_cost": 8,
+		"pp_max": 15,
+		"hit_rate": 98,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 45}
+		],
+		"level_scaling": {
+			"max": {"power": 55, "mp_cost": 10}
+		},
+		"mutations": {},
+		"description": "小型火系魔法，消耗較低"
+	}
+]

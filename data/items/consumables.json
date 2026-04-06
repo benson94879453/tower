@@ -1,0 +1,56 @@
+[
+	{
+		"id": "item_hp_potion_s",
+		"name": "回復藥水（小）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 10,
+		"buy_price": 30,
+		"sell_price": 15,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "heal_hp", "value": 50}
+		],
+		"description": "回復 50 HP",
+		"available_from_floor": 1
+	},
+	{
+		"id": "item_hp_potion_m",
+		"name": "回復藥水（中）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 10,
+		"buy_price": 80,
+		"sell_price": 40,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "heal_hp", "value": 150}
+		],
+		"description": "回復 150 HP",
+		"available_from_floor": 10
+	},
+	{
+		"id": "item_mp_potion_s",
+		"name": "魔力藥水（小）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 10,
+		"buy_price": 25,
+		"sell_price": 12,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "heal_mp", "value": 30}
+		],
+		"description": "回復 30 MP",
+		"available_from_floor": 1
+	}
+]
