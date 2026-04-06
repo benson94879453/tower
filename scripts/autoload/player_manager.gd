@@ -10,9 +10,9 @@ signal equipment_changed
 const PlayerDataResource = preload("res://scripts/data/player_data.gd")
 const GROWTH_PER_LEVEL := {
 	"base_hp": 12,
-	"base_mp": 6,
-	"base_matk": 2,
-	"base_mdef": 1,
+	"base_mp": 8,
+	"base_matk": 3,
+	"base_mdef": 2,
 	"base_patk": 1,
 	"base_pdef": 1,
 	"base_speed": 1,
@@ -338,7 +338,7 @@ func _check_level_up() -> void:
 
 
 func _get_exp_required(level: int) -> int:
-	return 100 + max(level - 1, 0) * 25
+	return 50 + level * level * 5
 
 
 func _ensure_player_data() -> void:

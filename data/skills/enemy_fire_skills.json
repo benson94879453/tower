@@ -1,0 +1,37 @@
+[
+	{
+		"id": "skill_flame_shot",
+		"name": "火焰射擊",
+		"element": "fire",
+		"type": "attack_single",
+		"rarity": "N",
+		"base_power": 55,
+		"mp_cost": 10,
+		"pp_max": 99,
+		"hit_rate": 90,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 55},
+			{"type": "status", "target": "single_enemy", "status": "burn", "chance": 15, "duration": 3}
+		],
+		"description": "火焰精靈的射擊技能"
+	},
+	{
+		"id": "skill_flame_claw",
+		"name": "火焰爪擊",
+		"element": "fire",
+		"type": "attack_single",
+		"rarity": "N",
+		"base_power": 48,
+		"mp_cost": 6,
+		"pp_max": 10,
+		"hit_rate": 95,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 48}
+		],
+		"description": "火焰小鬼的近身爪擊"
+	}
+]

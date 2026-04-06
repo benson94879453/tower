@@ -1,0 +1,36 @@
+[
+	{
+		"id": "skill_ice_shard",
+		"name": "冰晶碎片",
+		"element": "water",
+		"type": "attack_single",
+		"rarity": "N",
+		"base_power": 50,
+		"mp_cost": 10,
+		"pp_max": 99,
+		"hit_rate": 95,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 50}
+		],
+		"description": "冰霜精靈的基礎攻擊"
+	},
+	{
+		"id": "skill_frost_armor",
+		"name": "霜甲術",
+		"element": "water",
+		"type": "buff_self",
+		"rarity": "N",
+		"base_power": 0,
+		"mp_cost": 15,
+		"pp_max": 99,
+		"hit_rate": 100,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "buff", "target": "self", "stat": "mdef", "value": 10, "duration": 3}
+		],
+		"description": "提升自身魔防 3 回合"
+	}
+]

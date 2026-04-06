@@ -2,6 +2,7 @@ class_name BattleManager
 extends Node
 
 const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
+const TurnManagerClass = preload("res://scripts/battle/turn_manager.gd")
 
 enum BattleState {
 	INACTIVE,
@@ -32,6 +33,7 @@ var familiar
 var enemies: Array = []
 var all_combatants: Array = []
 var turn_order: Array = []
+var turn_manager
 
 var is_boss_battle := false
 var floor_number := 1
@@ -75,12 +77,15 @@ func start_battle(enemy_ids: Array[String], config: Dictionary = {}) -> void:
 
 	_rebuild_all_combatants()
 	battle_ui.setup_battle(player, familiar, enemies)
-	battle_ui.set_player_input_enabled(true)
+	battle_ui.set_player_input_enabled(false)
+
+	turn_manager = TurnManagerClass.new()
+	turn_manager._battle_manager = self
 
 	battle_started.emit()
 	turn_number = 1
-	_change_state(BattleState.PLAYER_TURN)
 	turn_started.emit(turn_number)
+	_run_battle_loop()
 
 
 func end_battle(result: String) -> void:
@@ -103,6 +108,7 @@ func end_battle(result: String) -> void:
 
 
 func cleanup() -> void:
+	turn_manager = null
 	player = null
 	familiar = null
 	enemies.clear()
@@ -117,18 +123,23 @@ func on_player_skill_selected(skill_id: String, target) -> void:
 	if battle_state != BattleState.PLAYER_TURN:
 		return
 
-	print("[BattleManager] Player uses skill: %s on %s" % [skill_id, target.display_name])
-	battle_ui.set_player_input_enabled(false)
-	_change_state(BattleState.EXECUTING)
+	if turn_manager != null:
+		turn_manager.player_action = {
+			"type": "skill",
+			"skill_id": skill_id,
+			"target": target,
+		}
 
 
 func on_player_item_selected(item_id: String) -> void:
 	if battle_state != BattleState.PLAYER_TURN:
 		return
 
-	print("[BattleManager] Player uses item: %s" % item_id)
-	battle_ui.set_player_input_enabled(false)
-	_change_state(BattleState.EXECUTING)
+	if turn_manager != null:
+		turn_manager.player_action = {
+			"type": "item",
+			"item_id": item_id,
+		}
 
 
 func on_player_familiar_mode_changed(mode: int) -> void:
@@ -136,7 +147,7 @@ func on_player_familiar_mode_changed(mode: int) -> void:
 		return
 
 	familiar.familiar_mode = mode
-	print("[BattleManager] Familiar mode -> %s" % CombatantDataClass.FamiliarMode.keys()[mode])
+	battle_ui._update_familiar_display()
 
 
 func on_player_flee() -> void:
@@ -144,12 +155,13 @@ func on_player_flee() -> void:
 		return
 
 	if is_boss_battle:
-		print("[BattleManager] Cannot flee from boss battle!")
+		battle_ui.add_log("無法從 Boss 戰逃跑！")
 		return
 
-	print("[BattleManager] Player attempts to flee")
-	battle_ui.set_player_input_enabled(false)
-	_change_state(BattleState.FLEEING)
+	if turn_manager != null:
+		turn_manager.player_action = {
+			"type": "flee",
+		}
 
 
 func get_alive_enemies() -> Array:
@@ -187,3 +199,22 @@ func _rebuild_all_combatants() -> void:
 	if familiar != null:
 		all_combatants.append(familiar)
 	all_combatants.append_array(enemies)
+
+
+func _run_battle_loop() -> void:
+	while battle_state != BattleState.VICTORY \
+		and battle_state != BattleState.DEFEAT \
+		and battle_state != BattleState.FLEEING \
+		and battle_state != BattleState.INACTIVE:
+		battle_ui.add_log("--- 第 %d 回合 ---" % turn_number, Color.YELLOW)
+		await turn_manager.execute_turn()
+
+		if battle_state == BattleState.VICTORY \
+			or battle_state == BattleState.DEFEAT \
+			or battle_state == BattleState.FLEEING:
+			break
+
+		_change_state(BattleState.TURN_END)
+		turn_ended.emit(turn_number)
+		turn_number += 1
+		turn_started.emit(turn_number)

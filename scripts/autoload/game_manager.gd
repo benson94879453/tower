@@ -4,6 +4,7 @@ const ThemeBuilderClass = preload("res://scripts/ui/theme_builder.gd")
 const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
 const DrawShapeClass = preload("res://scripts/ui/draw_shape.gd")
 const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
+const TurnManagerScript = preload("res://scripts/battle/turn_manager.gd")
 
 enum GameState { TITLE, SAFE_ZONE, EXPLORATION, BATTLE, CUTSCENE }
 
@@ -22,6 +23,9 @@ func _ready() -> void:
 	_test_theme()
 	_test_player_system()
 	_test_battle_framework()
+	_test_turn_manager()
+	if false:
+		_test_full_battle()
 	change_state(GameState.TITLE)
 
 
@@ -210,3 +214,64 @@ func _test_battle_framework() -> void:
 	print("After enemy defeated, alive: ", alive_count)
 
 	print("=== End Battle Framework Test ===")
+
+
+func _test_turn_manager() -> void:
+	print("=== Turn Manager Test ===")
+
+	PlayerManager.init_new_game()
+	PlayerManager.learn_skill("skill_fireball")
+	PlayerManager.equip_active_skill("skill_fireball", 0)
+	PlayerManager.learn_skill("skill_spark")
+	PlayerManager.equip_active_skill("skill_spark", 1)
+
+	var player_combatant := CombatantDataClass.from_player()
+	var enemy_combatant := CombatantDataClass.from_enemy("enemy_fire_sprite")
+	var familiar_combatant := CombatantDataClass.from_familiar("familiar_fire_imp", 3)
+	var turn_helper = TurnManagerScript.new()
+
+	var combatants: Array = [player_combatant, enemy_combatant, familiar_combatant]
+	combatants.sort_custom(func(a, b): return turn_helper._compare_speed(a, b))
+	print("Speed order: %s(%d), %s(%d), %s(%d)" % [
+		combatants[0].display_name, combatants[0].speed,
+		combatants[1].display_name, combatants[1].speed,
+		combatants[2].display_name, combatants[2].speed,
+	])
+
+	var damage: int = turn_helper._calc_simple_damage(player_combatant, enemy_combatant, 65)
+	print("Player -> Enemy damage (power 65): ~%d" % damage)
+
+	var damage2: int = turn_helper._calc_simple_damage(enemy_combatant, player_combatant, 55)
+	print("Enemy -> Player damage (power 55): ~%d" % damage2)
+
+	print("Player speed: %d, Enemy speed: %d" % [player_combatant.speed, enemy_combatant.speed])
+	print("Flee bonus: %s" % ("speed < enemy -> -10%" if player_combatant.speed < enemy_combatant.speed else "+20%"))
+
+	print("Player skill_fireball PP: %d" % int(player_combatant.skill_pp.get("skill_fireball", -1)))
+	print("Player skill_spark PP: %d" % int(player_combatant.skill_pp.get("skill_spark", -1)))
+	print("Enemy skill_spark PP: %d" % int(enemy_combatant.skill_pp.get("skill_spark", -1)))
+	print("Enemy skill_flame_shot PP: %d" % int(enemy_combatant.skill_pp.get("skill_flame_shot", -1)))
+
+	PlayerManager.init_new_game()
+	print("=== End Turn Manager Test ===")
+
+
+func _test_full_battle() -> void:
+	PlayerManager.init_new_game()
+	PlayerManager.learn_skill("skill_fireball")
+	PlayerManager.equip_active_skill("skill_fireball", 0)
+	PlayerManager.learn_skill("skill_spark")
+	PlayerManager.equip_active_skill("skill_spark", 1)
+
+	await SceneManager.change_scene("res://scenes/battle/battle.tscn")
+
+	var battle_scene = SceneManager.get_current_scene()
+	if battle_scene != null and battle_scene.has_method("start_battle"):
+		battle_scene.start_battle(
+			["enemy_fire_sprite"],
+			{
+				"floor": 5,
+				"familiar_id": "familiar_fire_imp",
+				"familiar_level": 3,
+			}
+		)

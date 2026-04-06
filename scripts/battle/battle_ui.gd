@@ -70,7 +70,7 @@ func setup_battle(player_data, familiar_data, enemy_list: Array) -> void:
 	_update_player_display()
 	_update_familiar_display()
 	_generate_enemy_panels()
-	_show_action_menu()
+	set_player_input_enabled(false)
 	add_log("戰鬥開始！")
 
 
@@ -267,7 +267,7 @@ func _on_skill_chosen(skill_id: String) -> void:
 		skill_selected.emit(skill_id)
 		_battle_manager.on_player_skill_selected(skill_id, _enemies[0])
 		_hide_all_subpanels()
-		_show_action_menu()
+		action_menu.visible = false
 
 
 func _populate_item_list() -> void:
@@ -293,7 +293,7 @@ func _on_enemy_panel_clicked(event: InputEvent, enemy) -> void:
 		_battle_manager.on_player_skill_selected(_pending_skill_id, enemy)
 		_pending_skill_id = ""
 		_hide_all_subpanels()
-		_show_action_menu()
+		action_menu.visible = false
 
 
 func update_turn_order(order: Array) -> void:
@@ -320,6 +320,10 @@ func add_log(text: String, color: Color = Color.WHITE) -> void:
 
 func add_element_log(text: String, element: String) -> void:
 	add_log(text, ThemeConstantsClass.get_element_color(element))
+
+
+func show_waiting_indicator(actor_name: String) -> void:
+	add_log("等待 %s 行動..." % actor_name, Color.GRAY)
 
 
 func set_player_input_enabled(enabled: bool) -> void:
