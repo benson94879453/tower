@@ -1,0 +1,70 @@
+[
+	{
+		"id": "skill_heal",
+		"name": "治癒術",
+		"element": "light",
+		"type": "heal_single",
+		"rarity": "N",
+		"base_power": 0,
+		"mp_cost": 15,
+		"pp_max": 8,
+		"hit_rate": 100,
+		"priority": 1,
+		"cooldown": 0,
+		"effects": [
+			{"type": "heal", "target": "single_ally", "heal_type": "matk_scale", "value": 150}
+		],
+		"description": "回復單一目標HP，回復量受魔攻影響"
+	},
+	{
+		"id": "skill_group_heal",
+		"name": "群體治癒",
+		"element": "light",
+		"type": "heal_all",
+		"rarity": "R",
+		"base_power": 0,
+		"mp_cost": 30,
+		"pp_max": 5,
+		"hit_rate": 100,
+		"priority": 1,
+		"cooldown": 1,
+		"effects": [
+			{"type": "heal", "target": "all_allies", "heal_type": "matk_scale", "value": 80}
+		],
+		"description": "回復全體隊友HP，冷卻1回合"
+	},
+	{
+		"id": "skill_magic_shield",
+		"name": "魔法護盾",
+		"element": "none",
+		"type": "buff_self",
+		"rarity": "N",
+		"base_power": 0,
+		"mp_cost": 20,
+		"pp_max": 5,
+		"hit_rate": 100,
+		"priority": 2,
+		"cooldown": 2,
+		"effects": [
+			{"type": "shield", "target": "self", "value": 50}
+		],
+		"description": "為自己施加50點護盾，冷卻2回合"
+	},
+	{
+		"id": "skill_power_up",
+		"name": "力量增幅",
+		"element": "none",
+		"type": "buff_self",
+		"rarity": "N",
+		"base_power": 0,
+		"mp_cost": 10,
+		"pp_max": 5,
+		"hit_rate": 100,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "buff", "target": "self", "stat": "matk", "value": 10, "duration": 3}
+		],
+		"description": "提升自身魔攻3回合"
+	}
+]

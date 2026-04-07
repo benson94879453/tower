@@ -26,11 +26,15 @@ var crit: float = 5.0
 
 var skill_ids: Array[String] = []
 var skill_pp: Dictionary = {}
+var cooldowns: Dictionary = {}
+var sealed_skill_id: String = ""
 
 var familiar_mode: int = FamiliarMode.ATTACK
 
 var status_effects: Array[Dictionary] = []
 var battle_buffs: Array[Dictionary] = []
+var shield_hp: int = 0
+var shield_max: int = 0
 
 var is_alive: bool = true
 
@@ -41,6 +45,30 @@ var ai_type: String = ""
 var drops: Array[Dictionary] = []
 var base_exp: int = 0
 var base_gold: int = 0
+
+
+func has_status(status_id: String) -> bool:
+	for effect in status_effects:
+		if String(effect.get("id", "")) == status_id:
+			return true
+	return false
+
+
+func remove_status(status_id: String) -> bool:
+	for index in range(status_effects.size()):
+		if String(status_effects[index].get("id", "")) == status_id:
+			status_effects.remove_at(index)
+			if status_id == "seal":
+				sealed_skill_id = ""
+			return true
+	return false
+
+
+func get_status(status_id: String) -> Dictionary:
+	for effect in status_effects:
+		if String(effect.get("id", "")) == status_id:
+			return effect
+	return {}
 
 
 static func from_player() -> CombatantData:

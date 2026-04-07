@@ -6,8 +6,12 @@ signal player_mp_changed(new_mp: int, max_mp: int)
 signal player_gold_changed(new_gold: int)
 signal player_died
 signal equipment_changed
+signal item_added(item_id: String, amount: int)
+signal item_removed(item_id: String, amount: int)
+signal item_used(item_id: String)
 
 const PlayerDataResource = preload("res://scripts/data/player_data.gd")
+const InventoryClass = preload("res://scripts/data/inventory.gd")
 const GROWTH_PER_LEVEL := {
 	"base_hp": 12,
 	"base_mp": 8,
@@ -49,6 +53,7 @@ const SAVE_FIELDS := [
 ]
 
 var player_data: PlayerDataResource
+var inventory = null
 var _active_buffs: Array[Dictionary] = []
 
 
@@ -59,6 +64,8 @@ func _ready() -> void:
 
 func init_new_game() -> void:
 	player_data = PlayerDataResource.new()
+	inventory = InventoryClass.new()
+	player_data.inventory_data = inventory.to_save_dict()
 	_active_buffs.clear()
 	_clamp_resources()
 	_emit_resource_signals()
@@ -71,6 +78,8 @@ func load_from_save(save_dict: Dictionary) -> void:
 
 	if player_data == null:
 		player_data = PlayerDataResource.new()
+	if inventory == null:
+		inventory = InventoryClass.new()
 
 	for field_name in SAVE_FIELDS:
 		if not source.has(field_name):
@@ -82,6 +91,13 @@ func load_from_save(save_dict: Dictionary) -> void:
 		else:
 			player_data.set(field_name, value)
 
+	var inventory_source = save_dict.get("inventory", source.get("inventory", {}))
+	if inventory_source is Dictionary:
+		inventory.load_from_dict(inventory_source)
+	else:
+		inventory.clear()
+	player_data.inventory_data = inventory.to_save_dict()
+
 	_active_buffs.clear()
 	_clamp_resources()
 	_emit_resource_signals()
@@ -91,6 +107,8 @@ func load_from_save(save_dict: Dictionary) -> void:
 func to_save_dict() -> Dictionary:
 	if player_data == null:
 		init_new_game()
+	if inventory == null:
+		inventory = InventoryClass.new()
 
 	var save_dict: Dictionary = {}
 	for field_name in SAVE_FIELDS:
@@ -100,6 +118,8 @@ func to_save_dict() -> Dictionary:
 		else:
 			save_dict[field_name] = value
 
+	player_data.inventory_data = inventory.to_save_dict()
+	save_dict["inventory"] = player_data.inventory_data.duplicate(true)
 	return save_dict
 
 
@@ -213,6 +233,82 @@ func spend_gold(amount: int) -> bool:
 	player_data.gold -= amount
 	player_gold_changed.emit(player_data.gold)
 	return true
+
+
+func add_item(item_id: String, amount: int = 1) -> bool:
+	_ensure_player_data()
+	var result: bool = inventory.add(item_id, amount)
+	if result:
+		player_data.inventory_data = inventory.to_save_dict()
+		item_added.emit(item_id, amount)
+	return result
+
+
+func remove_item(item_id: String, amount: int = 1) -> bool:
+	_ensure_player_data()
+	var result: bool = inventory.remove(item_id, amount)
+	if result:
+		player_data.inventory_data = inventory.to_save_dict()
+		item_removed.emit(item_id, amount)
+	return result
+
+
+func has_item(item_id: String, amount: int = 1) -> bool:
+	if inventory == null:
+		return false
+	return inventory.has(item_id, amount)
+
+
+func get_item_count(item_id: String) -> int:
+	if inventory == null:
+		return 0
+	return inventory.count(item_id)
+
+
+func use_item(item_id: String) -> Dictionary:
+	_ensure_player_data()
+	if inventory == null or not inventory.has(item_id):
+		return {"success": false, "reason": "not_owned"}
+
+	var item_data: Dictionary = DataManager.get_item(item_id)
+	if item_data.is_empty():
+		return {"success": false, "reason": "unknown_item"}
+
+	var item_type: String = String(item_data.get("type", ""))
+	if item_type != "consumable":
+		return {"success": false, "reason": "not_consumable"}
+
+	var effects: Array = Array(item_data.get("effects", []))
+	if effects.is_empty():
+		return {"success": false, "reason": "no_effects"}
+
+	inventory.remove(item_id)
+	player_data.inventory_data = inventory.to_save_dict()
+	item_removed.emit(item_id, 1)
+
+	var applied: Array = []
+	for raw_effect in effects:
+		if raw_effect is not Dictionary:
+			continue
+		var effect: Dictionary = raw_effect
+		var effect_type: String = String(effect.get("type", ""))
+		var value: int = int(effect.get("value", 0))
+		match effect_type:
+			"heal_hp":
+				heal_hp(value)
+				applied.append("HP +%d" % value)
+			"heal_mp":
+				restore_mp(value)
+				applied.append("MP +%d" % value)
+			_:
+				applied.append("(%s - 尚未實作)" % effect_type)
+
+	item_used.emit(item_id)
+	return {
+		"success": true,
+		"item_name": String(item_data.get("name", item_id)),
+		"effects": applied,
+	}
 
 
 func equip_weapon(item_id: String) -> String:
@@ -344,6 +440,9 @@ func _get_exp_required(level: int) -> int:
 func _ensure_player_data() -> void:
 	if player_data == null:
 		init_new_game()
+	elif inventory == null:
+		inventory = InventoryClass.new()
+		player_data.inventory_data = inventory.to_save_dict()
 
 
 func _clamp_resources() -> void:

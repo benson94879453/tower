@@ -1,0 +1,64 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/title_ui.gd" id="1"]
+
+[node name="TitleUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.101961, 0.101961, 0.180392, 1)
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 212.0
+offset_top = 120.0
+offset_right = 812.0
+offset_bottom = 176.0
+theme_override_font_sizes/font_size = 36
+text = "魔導之塔 Mage's Ascent"
+horizontal_alignment = 1
+
+[node name="MenuContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 412.0
+offset_top = 260.0
+offset_right = 612.0
+offset_bottom = 428.0
+theme_override_constants/separation = 12
+
+[node name="NewGameButton" type="Button" parent="MenuContainer"]
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 2
+text = "新遊戲"
+
+[node name="LoadGameButton" type="Button" parent="MenuContainer"]
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 2
+text = "讀取存檔"
+
+[node name="QuitButton" type="Button" parent="MenuContainer"]
+custom_minimum_size = Vector2(200, 48)
+layout_mode = 2
+text = "結束遊戲"
+
+[node name="SaveInfoLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 412.0
+offset_top = 446.0
+offset_right = 612.0
+offset_bottom = 470.0
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1

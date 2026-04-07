@@ -2,6 +2,9 @@ class_name TurnManager
 extends RefCounted
 
 const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
+const BattleAIClass = preload("res://scripts/battle/battle_ai.gd")
+const SkillExecutorClass = preload("res://scripts/battle/skill_executor.gd")
+const StatusProcessorClass = preload("res://scripts/battle/status_processor.gd")
 const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
 
 signal turn_order_determined(order: Array)
@@ -44,16 +47,42 @@ func execute_turn() -> void:
 			continue
 
 		combatant_turn_started.emit(actor)
+		var all_allies: Array = _get_friendly_targets_for(actor)
+		var all_enemies: Array = _get_hostile_targets_for(actor)
+		var status_check: Dictionary = StatusProcessorClass.check_before_action(actor, all_allies, all_enemies)
+		for raw_log_entry in Array(status_check.get("logs", [])):
+			var log_entry: Dictionary = raw_log_entry
+			_battle_manager.battle_ui.add_log(
+				String(log_entry.get("text", "")),
+				log_entry.get("color", Color.WHITE)
+			)
+
+		if not bool(status_check.get("can_act", true)):
+			combatant_turn_ended.emit(actor)
+			await _battle_manager.get_tree().process_frame
+			continue
+
+		var redirect_target = status_check.get("redirect_target", null)
 
 		match actor.team:
 			CombatantDataClass.Team.PLAYER:
-				await _execute_player_turn(actor)
+				if redirect_target != null:
+					_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
+					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
+				else:
+					await _execute_player_turn(actor)
 			CombatantDataClass.Team.FAMILIAR:
 				_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
-				_execute_familiar_turn(actor)
+				if redirect_target != null:
+					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
+				else:
+					_execute_familiar_turn(actor)
 			CombatantDataClass.Team.ENEMY:
 				_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
-				_execute_enemy_turn(actor)
+				if redirect_target != null:
+					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
+				else:
+					_execute_enemy_turn(actor)
 
 		combatant_turn_ended.emit(actor)
 
@@ -66,6 +95,8 @@ func execute_turn() -> void:
 		await _battle_manager.get_tree().process_frame
 
 	_end_of_turn_phase()
+	if _check_battle_end():
+		return
 	all_actions_resolved.emit()
 
 
@@ -134,101 +165,61 @@ func _resolve_action(actor, action: Dictionary) -> void:
 func _resolve_skill_action(actor, action: Dictionary) -> void:
 	var skill_id: String = String(action.get("skill_id", ""))
 	var target = action.get("target", null)
-	var skill_data: Dictionary = {}
-	if not skill_id.is_empty():
-		skill_data = DataManager.get_skill(skill_id)
-
 	if target == null:
 		target = actor
 
-	var skill_name := "普通攻擊"
-	var mp_cost := 0
-	var remaining_pp := 0
-	var power := 40
-	var element := "none"
-	var skill_type := "attack_single"
-	var effects: Array = []
+	var target_groups: Dictionary = _get_target_groups_for(actor)
+	var all_enemies: Array = Array(target_groups.get("enemies", []))
+	var all_allies: Array = Array(target_groups.get("allies", []))
+	var exec_result: Dictionary = SkillExecutorClass.execute_skill(
+		actor,
+		skill_id,
+		target,
+		all_enemies,
+		all_allies,
+		_battle_manager.environment_element
+	)
+	var skill_name: String = String(exec_result.get("skill_name", "普通攻擊"))
+	var skill_element: String = String(exec_result.get("skill_element", "none"))
 
-	if not skill_id.is_empty() and not skill_data.is_empty():
-		skill_name = String(skill_data.get("name", "???"))
-		mp_cost = int(skill_data.get("mp_cost", 0))
-		remaining_pp = int(actor.skill_pp.get(skill_id, 0))
-		power = int(skill_data.get("base_power", skill_data.get("power", 50)))
-		element = String(skill_data.get("element", "none"))
-		skill_type = String(skill_data.get("type", "attack_single"))
-		effects = Array(skill_data.get("effects", []))
-
-		if actor.current_mp < mp_cost:
-			_battle_manager.battle_ui.add_log("%s MP 不足！" % actor.display_name)
-			return
-		if remaining_pp <= 0:
-			_battle_manager.battle_ui.add_log("%s 已無法使用 %s！" % [actor.display_name, skill_name])
-			return
-
-		actor.current_mp -= mp_cost
-		actor.skill_pp[skill_id] = remaining_pp - 1
-
-	var handled_effect := false
-	for effect in effects:
-		if effect is not Dictionary:
-			continue
-		if String(effect.get("type", "")) != "buff":
-			continue
-
-		var buff_target = actor if String(effect.get("target", "self")) == "self" else target
-		if buff_target == null:
-			continue
-
-		var buff_value := int(effect.get("value", 0))
-		var buff_turns := int(effect.get("duration", 1))
-		buff_target.battle_buffs.append({
-			"stat": String(effect.get("stat", "")),
-			"value": buff_value,
-			"turns": buff_turns,
-			"source": skill_id,
-		})
-		_battle_manager.battle_ui.add_element_log(
-			"%s 使用了 %s，%s 獲得增益效果！" % [actor.display_name, skill_name, buff_target.display_name],
-			element
-		)
-		handled_effect = true
-		_update_display_for(buff_target)
-
-	if power > 0 and (target != null or not skill_type.contains("self")):
-		var damage := _calc_simple_damage(actor, target, power)
-		if _has_defend_buff(target):
-			damage = max(1, int(ceil(float(damage) / 2.0)))
-
-		target.current_hp = clampi(target.current_hp - damage, 0, target.max_hp)
-		_battle_manager.battle_ui.add_element_log(
-			"%s 使用了 %s，對 %s 造成 %d 點傷害！" % [actor.display_name, skill_name, target.display_name, damage],
-			element
-		)
-		_battle_manager.damage_dealt.emit(target, damage, element, false)
-		_battle_manager.combatant_hp_changed.emit(target)
-		_update_display_for(actor)
-		_update_display_for(target)
-
-		if target.current_hp <= 0:
-			target.is_alive = false
-			_battle_manager.combatant_defeated.emit(target)
-			_battle_manager.battle_ui.add_log("%s 被擊倒了！" % target.display_name)
-			_update_display_for(target)
-		return
-
-	if handled_effect:
+	if not bool(exec_result.get("success", false)):
+		match String(exec_result.get("fail_reason", "")):
+			"no_mp":
+				_battle_manager.battle_ui.add_log("%s MP 不足！" % actor.display_name)
+			"no_pp":
+				_battle_manager.battle_ui.add_log("%s 已無法使用 %s！" % [actor.display_name, skill_name])
+			"on_cooldown":
+				_battle_manager.battle_ui.add_log("%s 的 %s 仍在冷卻中！" % [actor.display_name, skill_name])
+			"sealed":
+				_battle_manager.battle_ui.add_log("%s 的 %s 被封印了！" % [actor.display_name, skill_name])
 		_update_display_for(actor)
 		return
 
-	_battle_manager.battle_ui.add_log("%s 使用了 %s，但沒有產生效果" % [actor.display_name, skill_name])
+	var results: Array = Array(exec_result.get("results", []))
+	for result in results:
+		if result is not Dictionary:
+			continue
+
+		var result_dict: Dictionary = result
+		var effect_type: String = String(result_dict.get("effect_type", ""))
+		var effect_target = result_dict.get("target", null)
+
+		match effect_type:
+			"damage":
+				_handle_damage_result(actor, result_dict, skill_name, skill_element, skill_id)
+			"heal":
+				_handle_heal_result(actor, result_dict, skill_name, skill_element)
+			"status":
+				_handle_status_result(actor, result_dict, skill_name, skill_element)
+			"buff":
+				_handle_buff_result(actor, result_dict, skill_name, skill_element)
+			"shield":
+				_handle_shield_result(actor, result_dict, skill_name, skill_element)
+
+		if effect_target != null:
+			_update_display_for(effect_target)
+
 	_update_display_for(actor)
-
-
-static func _calc_simple_damage(attacker, defender, power: int) -> int:
-	var raw := int(float(attacker.matk) * float(power) / 100.0) - int(float(defender.mdef) / 2.0)
-	var damage: int = max(1, raw)
-	damage = int(float(damage) * randf_range(0.85, 1.15))
-	return max(1, damage)
 
 
 func _resolve_item_action(actor, action: Dictionary) -> void:
@@ -269,68 +260,26 @@ func _resolve_defend_action(actor) -> void:
 
 
 func _get_enemy_action(actor) -> Dictionary:
-	var targets: Array = _battle_manager.get_alive_allies()
-	if targets.is_empty():
+	var hostile: Array = _get_hostile_targets_for(actor)
+	var friendly: Array = _get_friendly_targets_for(actor)
+	if hostile.is_empty():
 		return {}
-
-	var usable_skills: Array[String] = []
-	for skill_id in actor.skill_ids:
-		var pp := int(actor.skill_pp.get(skill_id, 0))
-		var skill_data := DataManager.get_skill(skill_id)
-		var mp_cost := int(skill_data.get("mp_cost", 0))
-		if pp > 0 and actor.current_mp >= mp_cost:
-			usable_skills.append(skill_id)
-
-	if usable_skills.is_empty():
-		var target_index := randi() % targets.size()
-		return {"type": "skill", "skill_id": "", "target": targets[target_index]}
-
-	var chosen_skill: String = usable_skills[randi() % usable_skills.size()]
-	var chosen_skill_data := DataManager.get_skill(chosen_skill)
-	var chosen_type := String(chosen_skill_data.get("type", "attack_single"))
-	if chosen_type.contains("self"):
-		return {"type": "skill", "skill_id": chosen_skill, "target": actor}
-
-	var target = targets[randi() % targets.size()]
-	return {"type": "skill", "skill_id": chosen_skill, "target": target}
+	return BattleAIClass.decide_enemy_action(actor, hostile, friendly)
 
 
 func _get_familiar_action(actor) -> Dictionary:
-	var targets: Array = []
-
 	match actor.familiar_mode:
-		CombatantDataClass.FamiliarMode.ATTACK:
-			targets = _battle_manager.get_alive_enemies()
-		CombatantDataClass.FamiliarMode.SUPPORT:
-			targets = _battle_manager.get_alive_allies()
 		CombatantDataClass.FamiliarMode.DEFEND:
 			return {"type": "defend"}
 		CombatantDataClass.FamiliarMode.STANDBY:
 			_battle_manager.battle_ui.add_log("%s 待命中" % actor.display_name)
 			return {}
-
-	if targets.is_empty():
-		return {}
-
-	var usable_skills: Array[String] = []
-	for skill_id in actor.skill_ids:
-		var pp := int(actor.skill_pp.get(skill_id, 0))
-		var skill_data := DataManager.get_skill(skill_id)
-		var mp_cost := int(skill_data.get("mp_cost", 0))
-		if pp > 0 and actor.current_mp >= mp_cost:
-			usable_skills.append(skill_id)
-
-	if usable_skills.is_empty():
-		return {}
-
-	var chosen_skill: String = usable_skills[randi() % usable_skills.size()]
-	var chosen_skill_data := DataManager.get_skill(chosen_skill)
-	var chosen_type := String(chosen_skill_data.get("type", "attack_single"))
-	if chosen_type.contains("self"):
-		return {"type": "skill", "skill_id": chosen_skill, "target": actor}
-
-	var target = targets[randi() % targets.size()]
-	return {"type": "skill", "skill_id": chosen_skill, "target": target}
+		_:
+			var hostile: Array = _get_hostile_targets_for(actor)
+			var friendly: Array = _get_friendly_targets_for(actor)
+			if hostile.is_empty() and actor.familiar_mode == CombatantDataClass.FamiliarMode.ATTACK:
+				return {}
+			return BattleAIClass.decide_familiar_action(actor, hostile, friendly)
 
 
 func _check_battle_end() -> bool:
@@ -358,6 +307,15 @@ func _end_of_turn_phase() -> void:
 		if not combatant.is_alive:
 			continue
 
+		var status_results: Array = StatusProcessorClass.process_end_of_turn(combatant)
+		for raw_result in status_results:
+			_handle_status_tick_result(raw_result)
+
+		if not combatant.is_alive:
+			continue
+
+		SkillExecutorClass.tick_cooldowns(combatant)
+
 		var expired: Array[int] = []
 		for index in range(combatant.battle_buffs.size()):
 			combatant.battle_buffs[index]["turns"] = int(combatant.battle_buffs[index].get("turns", 0)) - 1
@@ -371,6 +329,226 @@ func _end_of_turn_phase() -> void:
 	_pending_actions.clear()
 
 
+func _handle_damage_result(actor, result: Dictionary, skill_name: String, element: String, skill_id: String = "") -> void:
+	var target = result.get("target", null)
+	if target == null:
+		return
+
+	var extra_logs: Array = Array(result.get("extra_logs", []))
+	for raw_log_entry in extra_logs:
+		var log_entry: Dictionary = raw_log_entry
+		_battle_manager.battle_ui.add_log(
+			String(log_entry.get("text", "")),
+			log_entry.get("color", Color.WHITE)
+		)
+
+	if not bool(result.get("is_hit", false)) and not extra_logs.is_empty():
+		return
+
+	if not bool(result.get("is_hit", false)):
+		_battle_manager.battle_ui.add_log("%s 的 %s 沒有命中 %s！" % [actor.display_name, skill_name, target.display_name])
+		return
+
+	var damage: int = int(result.get("damage", 0))
+	var is_crit: bool = bool(result.get("is_crit", false))
+	var log_text: String = "%s 使用了 %s，對 %s 造成 %d 點傷害！" % [
+		actor.display_name,
+		skill_name,
+		target.display_name,
+		damage,
+	]
+	if is_crit:
+		log_text += "（暴擊！）"
+
+	var shield_absorbed: int = int(result.get("shield_absorbed", 0))
+	if shield_absorbed > 0:
+		log_text += "（護盾吸收了 %d 點）" % shield_absorbed
+
+	var effectiveness: String = String(result.get("effectiveness_text", ""))
+	if not effectiveness.is_empty():
+		log_text += " " + effectiveness
+
+	_battle_manager.battle_ui.add_element_log(log_text, element)
+	_battle_manager.damage_dealt.emit(target, damage, element, is_crit)
+	_battle_manager.combatant_hp_changed.emit(target)
+
+	if bool(result.get("is_hit", false)) and not skill_id.is_empty():
+		if target.team == CombatantDataClass.Team.PLAYER and actor.team == CombatantDataClass.Team.ENEMY:
+			_battle_manager.record_enemy_skill_hit(skill_id)
+
+	if bool(result.get("killed", false)):
+		_battle_manager.combatant_defeated.emit(target)
+		_battle_manager.battle_ui.add_log("%s 被擊倒了！" % target.display_name)
+
+
+func _handle_heal_result(actor, result: Dictionary, skill_name: String, element: String) -> void:
+	var target = result.get("target", null)
+	if target == null:
+		return
+
+	var heal: int = int(result.get("heal_amount", 0))
+	if bool(result.get("cursed", false)) or heal < 0:
+		var reversed_damage: int = abs(heal)
+		_battle_manager.battle_ui.add_element_log(
+			"%s 使用了 %s，但 %s 的詛咒使回復反轉，受到 %d 點傷害！" % [
+				actor.display_name,
+				skill_name,
+				target.display_name,
+				reversed_damage,
+			],
+			element
+		)
+		_battle_manager.combatant_hp_changed.emit(target)
+		if bool(result.get("killed", false)):
+			_battle_manager.combatant_defeated.emit(target)
+			_battle_manager.battle_ui.add_log("%s 被擊倒了！" % target.display_name)
+		return
+
+	_battle_manager.battle_ui.add_element_log(
+		"%s 使用了 %s，%s 回復了 %d HP！" % [actor.display_name, skill_name, target.display_name, heal],
+		element
+	)
+	_battle_manager.combatant_hp_changed.emit(target)
+
+
+func _handle_status_result(actor, result: Dictionary, skill_name: String, element: String) -> void:
+	var target = result.get("target", null)
+	if target == null:
+		return
+
+	var status_id: String = String(result.get("status_id", ""))
+	if bool(result.get("applied", false)):
+		_battle_manager.battle_ui.add_element_log(
+			"%s 對 %s 施加了 %s！" % [actor.display_name, target.display_name, _get_status_display_name(status_id)],
+			element
+		)
+
+
+func _handle_buff_result(actor, result: Dictionary, skill_name: String, element: String) -> void:
+	var target = result.get("target", null)
+	if target == null:
+		return
+
+	var stat: String = String(result.get("stat", ""))
+	var value: int = int(result.get("value", 0))
+	var verb: String = "提升" if value > 0 else "降低"
+	_battle_manager.battle_ui.add_element_log(
+		"%s 使用了 %s，%s 的 %s %s了！" % [
+			actor.display_name,
+			skill_name,
+			target.display_name,
+			_get_stat_display_name(stat),
+			verb,
+		],
+		element
+	)
+
+
+func _handle_shield_result(actor, result: Dictionary, skill_name: String, element: String) -> void:
+	var target = result.get("target", null)
+	if target == null:
+		return
+
+	var shield_val: int = int(result.get("shield_value", 0))
+	_battle_manager.battle_ui.add_element_log(
+		"%s 使用了 %s，%s 獲得了 %d 點護盾！" % [
+			actor.display_name,
+			skill_name,
+			target.display_name,
+			shield_val,
+		],
+		element
+	)
+
+
+func _handle_status_tick_result(result: Dictionary) -> void:
+	var combatant = result.get("combatant", null)
+	if combatant == null:
+		return
+
+	var status_id: String = String(result.get("status_id", ""))
+	var value: int = int(result.get("value", 0))
+	var result_type: String = String(result.get("type", ""))
+
+	match result_type:
+		"dot_damage":
+			_battle_manager.battle_ui.add_log(
+				"%s 受到 %s 的傷害，損失 %d HP！" % [
+					combatant.display_name,
+					_get_status_display_name(status_id),
+					value,
+				],
+				_get_status_color(status_id)
+			)
+			_battle_manager.combatant_hp_changed.emit(combatant)
+			_update_display_for(combatant)
+			if bool(result.get("killed", false)):
+				_battle_manager.combatant_defeated.emit(combatant)
+				_battle_manager.battle_ui.add_log(
+					"%s 被 %s 擊倒了！" % [combatant.display_name, _get_status_display_name(status_id)]
+				)
+		"regen":
+			_battle_manager.battle_ui.add_log(
+				"%s 的再生效果回復了 %d HP" % [combatant.display_name, value],
+				Color("#44CC44")
+			)
+			_battle_manager.combatant_hp_changed.emit(combatant)
+			_update_display_for(combatant)
+		"mp_regen":
+			_battle_manager.battle_ui.add_log(
+				"%s 的魔力再生回復了 %d MP" % [combatant.display_name, value],
+				Color("#1E90FF")
+			)
+			_update_display_for(combatant)
+		"status_expired":
+			_battle_manager.battle_ui.add_log(
+				"%s 的 %s 狀態解除了" % [combatant.display_name, _get_status_display_name(status_id)],
+				Color("#D3D3D3")
+			)
+			_update_display_for(combatant)
+		"seal_released":
+			_battle_manager.battle_ui.add_log(
+				"%s 的技能封印解除了" % combatant.display_name,
+				Color("#D3D3D3")
+			)
+			_update_display_for(combatant)
+
+
+func _get_target_groups_for(actor) -> Dictionary:
+	return {
+		"enemies": _get_hostile_targets_for(actor),
+		"allies": _get_friendly_targets_for(actor),
+	}
+
+
+func _get_hostile_targets_for(actor) -> Array:
+	var targets: Array = []
+	for combatant in _battle_manager.all_combatants:
+		if combatant == null or not combatant.is_alive:
+			continue
+		if actor.team == CombatantDataClass.Team.ENEMY:
+			if combatant.team != CombatantDataClass.Team.ENEMY:
+				targets.append(combatant)
+		elif combatant.team == CombatantDataClass.Team.ENEMY:
+			targets.append(combatant)
+
+	return targets
+
+
+func _get_friendly_targets_for(actor) -> Array:
+	var targets: Array = []
+	for combatant in _battle_manager.all_combatants:
+		if combatant == null or not combatant.is_alive:
+			continue
+		if actor.team == CombatantDataClass.Team.ENEMY:
+			if combatant.team == CombatantDataClass.Team.ENEMY:
+				targets.append(combatant)
+		elif combatant.team != CombatantDataClass.Team.ENEMY:
+			targets.append(combatant)
+
+	return targets
+
+
 func _update_display_for(combatant) -> void:
 	if combatant.team == CombatantDataClass.Team.PLAYER:
 		_battle_manager.battle_ui._update_player_display()
@@ -380,12 +558,58 @@ func _update_display_for(combatant) -> void:
 		_battle_manager.battle_ui.update_enemy_display(combatant)
 
 
-func _has_defend_buff(combatant) -> bool:
-	for buff in combatant.battle_buffs:
-		if String(buff.get("stat", "")) == "defending":
-			return true
+static func _get_status_display_name(status_id: String) -> String:
+	var names: Dictionary = {
+		"burn": "燃燒",
+		"poison": "中毒",
+		"heavy_poison": "猛毒",
+		"freeze": "凍結",
+		"paralyze": "麻痺",
+		"sleep": "睡眠",
+		"confuse": "混亂",
+		"charm": "魅惑",
+		"atk_down": "攻擊下降",
+		"def_down": "防禦下降",
+		"speed_down": "速度下降",
+		"hit_down": "命中下降",
+		"seal": "封印",
+		"curse": "詛咒",
+		"atk_up": "攻擊提升",
+		"def_up": "防禦提升",
+		"speed_up": "速度提升",
+		"regen": "再生",
+		"mp_regen": "魔力再生",
+		"reflect": "反射",
+		"stealth": "隱身",
+	}
+	return String(names.get(status_id, status_id))
 
-	return false
+
+static func _get_status_color(status_id: String) -> Color:
+	var colors: Dictionary = {
+		"burn": Color("#FF4500"),
+		"poison": Color("#9370DB"),
+		"heavy_poison": Color("#9400D3"),
+		"freeze": Color("#00FFFF"),
+		"paralyze": Color("#FFD700"),
+		"sleep": Color("#9370DB"),
+		"confuse": Color("#FFA500"),
+		"charm": Color("#FF69B4"),
+	}
+	return colors.get(status_id, Color.WHITE)
+
+
+static func _get_stat_display_name(stat: String) -> String:
+	var names: Dictionary = {
+		"matk": "魔攻",
+		"mdef": "魔防",
+		"patk": "物攻",
+		"pdef": "物防",
+		"speed": "速度",
+		"hit": "命中",
+		"crit": "暴擊率",
+	}
+	return String(names.get(stat, stat))
 
 
 static func _compare_speed(a, b) -> bool:

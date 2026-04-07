@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/exploration/exploration_manager.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/exploration/node_map_ui.gd" id="2"]
+
+[node name="Exploration" type="Node"]
+script = ExtResource("1")
+
+[node name="FloorInfoLabel" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 8.0
+offset_right = 320.0
+offset_bottom = 36.0
+theme_override_font_sizes/font_size = 22
+text = "1F - 廢墟入口"
+
+[node name="NodeMapUI" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 40.0
+offset_bottom = -200.0
+script = ExtResource("2")
+
+[node name="ActionLog" type="RichTextLabel" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -180.0
+offset_right = -16.0
+offset_bottom = -16.0
+bbcode_enabled = true
+scroll_following = true
+
+[node name="ReturnButton" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 8.0
+offset_right = -16.0
+offset_bottom = 40.0
+text = "返回安全區"
+
+[node name="InventoryButton" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 8.0
+offset_right = -176.0
+offset_bottom = 40.0
+text = "背包"

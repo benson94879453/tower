@@ -1,0 +1,26 @@
+{
+  "zones": {
+    "1": { "name": "廢墟入口", "element": "none", "floors": [2, 9], "boss_floor": 9 },
+    "2": { "name": "熔岩鍛爐", "element": "fire", "floors": [11, 19], "boss_floor": 19 },
+    "3": { "name": "極寒冰域", "element": "water", "floors": [21, 29], "boss_floor": 29 },
+    "4": { "name": "暴風迴廊", "element": "wind", "floors": [31, 39], "boss_floor": 39 },
+    "5": { "name": "大地迷宮", "element": "earth", "floors": [41, 49], "boss_floor": 49 },
+    "6": { "name": "雷鳴雲海", "element": "thunder", "floors": [51, 59], "boss_floor": 59 },
+    "7": { "name": "暗影深淵", "element": "dark", "floors": [61, 69], "boss_floor": 69 },
+    "8": { "name": "聖光殿堂", "element": "light", "floors": [71, 79], "boss_floor": 79 },
+    "9": { "name": "虛空之境", "element": "none", "floors": [81, 89], "boss_floor": 89 },
+    "10": { "name": "混沌領域", "element": "none", "floors": [91, 99], "boss_floor": 99 }
+  },
+  "safe_floors": [1, 10, 20, 30, 40, 50, 60, 70, 80, 90],
+  "node_weights": {
+    "battle": 40,
+    "event": 15,
+    "elite": 8,
+    "chest": 12,
+    "merchant": 5,
+    "rest": 8,
+    "altar": 2
+  },
+  "rows_range": [3, 4],
+  "cols_range": [2, 3]
+}

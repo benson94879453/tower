@@ -141,3 +141,17 @@ func get_events_by_type(event_type: String) -> Array[Dictionary]:
 			result.append(event)
 
 	return result
+
+
+func get_items_for_shop(floor_number: int) -> Array:
+	var result: Array = []
+	for raw_item in _items.values():
+		var item: Dictionary = raw_item
+		var buy_price: int = int(item.get("buy_price", 0))
+		if buy_price <= 0:
+			continue
+		var available_from: int = int(item.get("available_from_floor", 1))
+		if floor_number < available_from:
+			continue
+		result.append(item)
+	return result

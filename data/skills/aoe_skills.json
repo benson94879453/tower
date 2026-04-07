@@ -1,0 +1,39 @@
+[
+	{
+		"id": "skill_fire_storm",
+		"name": "火焰風暴",
+		"element": "fire",
+		"type": "attack_all",
+		"rarity": "R",
+		"base_power": 45,
+		"mp_cost": 25,
+		"pp_max": 5,
+		"hit_rate": 90,
+		"priority": 0,
+		"cooldown": 1,
+		"effects": [
+			{"type": "damage", "target": "all_enemies", "power": 45},
+			{"type": "status", "target": "all_enemies", "status": "burn", "chance": 20, "duration": 3}
+		],
+		"description": "對全體敵人造成火屬性傷害並可能附帶燃燒"
+	},
+	{
+		"id": "skill_thunder_bolt",
+		"name": "雷電一擊",
+		"element": "thunder",
+		"type": "attack_single",
+		"rarity": "R",
+		"base_power": 80,
+		"mp_cost": 18,
+		"pp_max": 6,
+		"hit_rate": 85,
+		"priority": 0,
+		"cooldown": 0,
+		"crit_bonus": 25,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 80},
+			{"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 20, "duration": 2}
+		],
+		"description": "強力雷電攻擊，高暴擊率，可能麻痺目標"
+	}
+]

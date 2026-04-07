@@ -2,6 +2,7 @@ class_name BattleManager
 extends Node
 
 const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
+const BattleResultClass = preload("res://scripts/battle/battle_result.gd")
 const TurnManagerClass = preload("res://scripts/battle/turn_manager.gd")
 
 enum BattleState {
@@ -34,6 +35,7 @@ var enemies: Array = []
 var all_combatants: Array = []
 var turn_order: Array = []
 var turn_manager
+var _received_enemy_skill_ids: Array[String] = []
 
 var is_boss_battle := false
 var floor_number := 1
@@ -50,6 +52,7 @@ func start_battle(enemy_ids: Array[String], config: Dictionary = {}) -> void:
 	_change_state(BattleState.STARTING)
 	turn_number = 0
 	turn_order.clear()
+	_received_enemy_skill_ids.clear()
 
 	is_boss_battle = bool(config.get("is_boss", false))
 	floor_number = int(config.get("floor", 1))
@@ -103,6 +106,12 @@ func end_battle(result: String) -> void:
 		PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
 		PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
 
+	match result:
+		"victory":
+			_process_victory()
+		"defeat":
+			_process_defeat()
+
 	battle_ui.set_player_input_enabled(false)
 	battle_ended.emit(result)
 
@@ -114,6 +123,7 @@ func cleanup() -> void:
 	enemies.clear()
 	all_combatants.clear()
 	turn_order.clear()
+	_received_enemy_skill_ids.clear()
 	turn_number = 0
 	battle_ui.set_player_input_enabled(false)
 	_change_state(BattleState.INACTIVE)
@@ -187,6 +197,13 @@ func is_battle_active() -> bool:
 	return battle_state != BattleState.INACTIVE
 
 
+func record_enemy_skill_hit(skill_id: String) -> void:
+	if skill_id.is_empty():
+		return
+	if not _received_enemy_skill_ids.has(skill_id):
+		_received_enemy_skill_ids.append(skill_id)
+
+
 func _change_state(new_state: int) -> void:
 	battle_state = new_state
 	state_changed.emit(new_state)
@@ -218,3 +235,19 @@ func _run_battle_loop() -> void:
 		turn_ended.emit(turn_number)
 		turn_number += 1
 		turn_started.emit(turn_number)
+
+
+func _process_victory() -> void:
+	var rewards: Dictionary = BattleResultClass.calculate_victory_rewards(
+		enemies,
+		floor_number,
+		_received_enemy_skill_ids
+	)
+	var level_result: Dictionary = BattleResultClass.apply_victory_rewards(rewards)
+	battle_ui.show_victory_result(rewards, level_result)
+
+
+func _process_defeat() -> void:
+	var penalty: Dictionary = BattleResultClass.calculate_defeat_penalty()
+	BattleResultClass.apply_defeat_penalty(penalty)
+	battle_ui.show_defeat_result(penalty)

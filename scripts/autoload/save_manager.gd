@@ -28,11 +28,12 @@ func save_game(slot: int) -> void:
 			"storage": [],
 		},
 		"familiar_instances": {},
-		"inventory": {
+		"inventory": PlayerManager.inventory.to_save_dict() if PlayerManager.inventory != null else {
 			"consumables": [],
 			"materials": [],
 			"key_items": [],
 			"magic_books": [],
+			"equipment": [],
 		},
 		"equipment": {
 			"weapon": {},
@@ -82,6 +83,12 @@ func load_game(slot: int) -> void:
 		return
 
 	PlayerManager.load_from_save(parsed)
+
+	var inventory_data = parsed.get("inventory", {})
+	if inventory_data is Dictionary and PlayerManager.inventory != null:
+		PlayerManager.inventory.load_from_dict(inventory_data)
+		if PlayerManager.player_data != null:
+			PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
 
 	var settings = parsed.get("settings", {})
 	if settings is Dictionary:

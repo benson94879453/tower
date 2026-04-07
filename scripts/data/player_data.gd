@@ -35,3 +35,4 @@ extends Resource
 @export var defeated_bosses: Array[int] = []
 @export var title: String = "見習法師"
 @export var titles_unlocked: Array[String] = ["見習法師"]
+@export var inventory_data: Dictionary = {}
