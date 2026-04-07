@@ -8,6 +8,7 @@ var _items: Dictionary = {}
 var _familiars: Dictionary = {}
 var _events: Dictionary = {}
 var _quests: Dictionary = {}
+var _recipes: Dictionary = {}
 var _floor_config: Dictionary = {}
 
 
@@ -18,6 +19,7 @@ func load_all_data() -> void:
 	_familiars.clear()
 	_events.clear()
 	_quests.clear()
+	_recipes.clear()
 	_floor_config.clear()
 
 	_load_directory("res://data/skills/", _skills)
@@ -26,6 +28,7 @@ func load_all_data() -> void:
 	_load_directory("res://data/familiars/", _familiars)
 	_load_directory("res://data/events/", _events)
 	_load_directory("res://data/quests/", _quests)
+	_load_directory("res://data/recipes/", _recipes)
 	_load_directory("res://data/floors/", _floor_config)
 
 	if FileAccess.file_exists("res://data/floors/floor_config.json"):
@@ -111,6 +114,10 @@ func get_quest(id: String) -> Dictionary:
 	return _quests.get(id, {})
 
 
+func get_recipe(id: String) -> Dictionary:
+	return _recipes.get(id, {})
+
+
 func get_floor_config() -> Dictionary:
 	return _floor_config
 
@@ -154,4 +161,24 @@ func get_items_for_shop(floor_number: int) -> Array:
 		if floor_number < available_from:
 			continue
 		result.append(item)
+	return result
+
+
+func get_recipes_by_type(recipe_type: String, floor_number: int = 999) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for raw_recipe in _recipes.values():
+		var recipe: Dictionary = raw_recipe
+		if String(recipe.get("type", "")) != recipe_type:
+			continue
+		var available_from: int = int(recipe.get("available_from_floor", 1))
+		if floor_number < available_from:
+			continue
+		result.append(recipe)
+	result.sort_custom(func(a: Dictionary, b: Dictionary):
+		var a_floor: int = int(a.get("available_from_floor", 1))
+		var b_floor: int = int(b.get("available_from_floor", 1))
+		if a_floor != b_floor:
+			return a_floor < b_floor
+		return String(a.get("id", "")) < String(b.get("id", ""))
+	)
 	return result

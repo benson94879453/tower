@@ -5,7 +5,7 @@ var consumables: Dictionary = {}
 var materials: Dictionary = {}
 var key_items: Dictionary = {}
 var magic_books: Dictionary = {}
-var equipment: Array[String] = []
+var equipment: Array[Dictionary] = []
 
 
 func add(item_id: String, amount: int = 1) -> bool:
@@ -16,7 +16,10 @@ func add(item_id: String, amount: int = 1) -> bool:
 	match category:
 		"equipment":
 			for _index in range(amount):
-				equipment.append(item_id)
+				equipment.append({
+					"id": item_id,
+					"enhance": 0,
+				})
 			return true
 		_:
 			var bag: Dictionary = _get_bag(category)
@@ -39,7 +42,11 @@ func remove(item_id: String, amount: int = 1) -> bool:
 		"equipment":
 			var removed: int = 0
 			for _index in range(amount):
-				var found_index: int = equipment.find(item_id)
+				var found_index: int = -1
+				for equipment_index in range(equipment.size()):
+					if String(equipment[equipment_index].get("id", "")) == item_id:
+						found_index = equipment_index
+						break
 				if found_index < 0:
 					break
 				equipment.remove_at(found_index)
@@ -63,7 +70,11 @@ func count(item_id: String) -> int:
 	var category: String = _get_category(item_id)
 	match category:
 		"equipment":
-			return equipment.count(item_id)
+			var total: int = 0
+			for entry in equipment:
+				if String(entry.get("id", "")) == item_id:
+					total += 1
+			return total
 		_:
 			var bag: Dictionary = _get_bag(category)
 			return int(bag.get(item_id, 0))
@@ -79,8 +90,17 @@ func get_all_items() -> Array:
 		for raw_id in bag.keys():
 			var item_id: String = String(raw_id)
 			result.append({"id": item_id, "count": int(bag.get(raw_id, 0))})
-	for equipment_id in equipment:
-		result.append({"id": equipment_id, "count": 1})
+	for index in range(equipment.size()):
+		var entry: Dictionary = equipment[index]
+		var equipment_id: String = String(entry.get("id", ""))
+		var enhance: int = int(entry.get("enhance", 0))
+		result.append({
+			"id": equipment_id,
+			"count": 1,
+			"enhance": enhance,
+			"is_equipment": true,
+			"equipment_index": index,
+		})
 	return result
 
 
@@ -98,7 +118,7 @@ func to_save_dict() -> Dictionary:
 		"materials": _bag_to_array(materials),
 		"key_items": _bag_to_array(key_items),
 		"magic_books": _bag_to_array(magic_books),
-		"equipment": equipment.duplicate(),
+		"equipment": equipment.duplicate(true),
 	}
 
 
@@ -110,8 +130,59 @@ func load_from_dict(data: Dictionary) -> void:
 	magic_books = _array_to_bag(Array(data.get("magic_books", [])))
 
 	var saved_equipment: Array = Array(data.get("equipment", []))
-	for raw_item_id in saved_equipment:
-		equipment.append(String(raw_item_id))
+	for raw_entry in saved_equipment:
+		if raw_entry is Dictionary:
+			var entry: Dictionary = raw_entry
+			equipment.append({
+				"id": String(entry.get("id", "")),
+				"enhance": int(entry.get("enhance", 0)),
+			})
+		elif raw_entry is String:
+			equipment.append({
+				"id": String(raw_entry),
+				"enhance": 0,
+			})
+
+
+func add_equipment(item_id: String, enhance_level: int = 0) -> bool:
+	if item_id.is_empty():
+		return false
+	equipment.append({
+		"id": item_id,
+		"enhance": enhance_level,
+	})
+	return true
+
+
+func remove_equipment_at(index: int) -> Dictionary:
+	if index < 0 or index >= equipment.size():
+		return {}
+	var entry: Dictionary = equipment[index].duplicate()
+	equipment.remove_at(index)
+	return entry
+
+
+func get_equipment_list() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for index in range(equipment.size()):
+		var entry: Dictionary = equipment[index]
+		result.append({
+			"index": index,
+			"id": String(entry.get("id", "")),
+			"enhance": int(entry.get("enhance", 0)),
+		})
+	return result
+
+
+func get_equipment_at(index: int) -> Dictionary:
+	if index < 0 or index >= equipment.size():
+		return {}
+	return equipment[index].duplicate()
+
+
+func set_equipment_enhance(index: int, level: int) -> void:
+	if index >= 0 and index < equipment.size():
+		equipment[index]["enhance"] = level
 
 
 func _get_category(item_id: String) -> String:

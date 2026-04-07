@@ -1,0 +1,52 @@
+[
+	{
+		"id": "recipe_weapon_fire_staff",
+		"type": "craft",
+		"result_id": "weapon_fire_staff",
+		"result_name": "火焰法杖",
+		"available_from_floor": 10,
+		"gold_cost": 300,
+		"materials": [
+			{"id": "mat_iron_ore", "count": 5},
+			{"id": "mat_fire_crystal", "count": 3}
+		],
+		"description": "使用鐵礦石與火焰結晶鍛造火焰法杖"
+	},
+	{
+		"id": "recipe_armor_flame_robe",
+		"type": "craft",
+		"result_id": "armor_flame_robe",
+		"result_name": "烈焰法袍",
+		"available_from_floor": 10,
+		"gold_cost": 500,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 5},
+			{"id": "mat_fire_crystal", "count": 4}
+		],
+		"description": "使用魔力結晶與火焰結晶鍛造烈焰法袍"
+	},
+	{
+		"id": "recipe_weapon_apprentice_staff",
+		"type": "craft",
+		"result_id": "weapon_apprentice_staff",
+		"result_name": "見習法杖",
+		"available_from_floor": 1,
+		"gold_cost": 60,
+		"materials": [
+			{"id": "mat_iron_ore", "count": 3}
+		],
+		"description": "使用鐵礦石鍛造基礎法杖"
+	},
+	{
+		"id": "recipe_armor_apprentice_robe",
+		"type": "craft",
+		"result_id": "armor_apprentice_robe",
+		"result_name": "見習法袍",
+		"available_from_floor": 1,
+		"gold_cost": 80,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 3}
+		],
+		"description": "使用魔力結晶鍛造基礎法袍"
+	}
+]

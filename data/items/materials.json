@@ -1,0 +1,57 @@
+[
+	{
+		"id": "mat_iron_ore",
+		"name": "鐵礦石",
+		"type": "material",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 5,
+		"description": "基本鍛造素材，用於武器和防具強化",
+		"available_from_floor": 1
+	},
+	{
+		"id": "mat_magic_crystal",
+		"name": "魔力結晶",
+		"type": "material",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 8,
+		"description": "蘊含魔力的結晶，用於防具和飾品強化",
+		"available_from_floor": 1
+	},
+	{
+		"id": "mat_fire_crystal",
+		"name": "火焰結晶",
+		"type": "material",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 15,
+		"description": "從火焰精靈身上掉落的結晶",
+		"available_from_floor": 10
+	},
+	{
+		"id": "mat_ice_crystal",
+		"name": "冰霜結晶",
+		"type": "material",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 15,
+		"description": "從冰霜精靈身上掉落的結晶",
+		"available_from_floor": 1
+	},
+	{
+		"id": "mat_enhance_stone",
+		"name": "強化石",
+		"type": "material",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 20,
+		"description": "通用強化素材，高等級強化必要材料",
+		"available_from_floor": 10
+	}
+]

@@ -39,8 +39,11 @@ const SAVE_FIELDS := [
 	"current_hp",
 	"current_mp",
 	"weapon_id",
+	"weapon_enhance",
 	"armor_id",
+	"armor_enhance",
 	"accessory_ids",
+	"accessory_enhances",
 	"active_skill_ids",
 	"passive_skill_ids",
 	"learned_skill_ids",
@@ -55,6 +58,7 @@ const SAVE_FIELDS := [
 var player_data: PlayerDataResource
 var inventory = null
 var _active_buffs: Array[Dictionary] = []
+var _last_unequipped_enhance: int = 0
 
 
 func _ready() -> void:
@@ -67,6 +71,7 @@ func init_new_game() -> void:
 	inventory = InventoryClass.new()
 	player_data.inventory_data = inventory.to_save_dict()
 	_active_buffs.clear()
+	_last_unequipped_enhance = 0
 	_clamp_resources()
 	_emit_resource_signals()
 
@@ -96,6 +101,8 @@ func load_from_save(save_dict: Dictionary) -> void:
 		inventory.load_from_dict(inventory_source)
 	else:
 		inventory.clear()
+	while player_data.accessory_enhances.size() < player_data.accessory_ids.size():
+		player_data.accessory_enhances.append(0)
 	player_data.inventory_data = inventory.to_save_dict()
 
 	_active_buffs.clear()
@@ -311,34 +318,42 @@ func use_item(item_id: String) -> Dictionary:
 	}
 
 
-func equip_weapon(item_id: String) -> String:
+func equip_weapon(item_id: String, enhance_level: int = 0) -> String:
 	_ensure_player_data()
 	var old_id := player_data.weapon_id
+	_last_unequipped_enhance = player_data.weapon_enhance
 	player_data.weapon_id = item_id
+	player_data.weapon_enhance = enhance_level
 	_refresh_player_state()
 	equipment_changed.emit()
 	return old_id
 
 
-func equip_armor(item_id: String) -> String:
+func equip_armor(item_id: String, enhance_level: int = 0) -> String:
 	_ensure_player_data()
 	var old_id := player_data.armor_id
+	_last_unequipped_enhance = player_data.armor_enhance
 	player_data.armor_id = item_id
+	player_data.armor_enhance = enhance_level
 	_refresh_player_state()
 	equipment_changed.emit()
 	return old_id
 
 
-func equip_accessory(item_id: String, slot: int) -> String:
+func equip_accessory(item_id: String, slot: int, enhance_level: int = 0) -> String:
 	_ensure_player_data()
 	if slot < 0 or slot > 2:
 		return ""
 
 	while player_data.accessory_ids.size() <= slot:
 		player_data.accessory_ids.append("")
+	while player_data.accessory_enhances.size() <= slot:
+		player_data.accessory_enhances.append(0)
 
 	var old_id := player_data.accessory_ids[slot]
+	_last_unequipped_enhance = int(player_data.accessory_enhances[slot])
 	player_data.accessory_ids[slot] = item_id
+	player_data.accessory_enhances[slot] = enhance_level
 	_refresh_player_state()
 	equipment_changed.emit()
 	return old_id
@@ -354,6 +369,10 @@ func unequip_armor() -> String:
 
 func unequip_accessory(slot: int) -> String:
 	return equip_accessory("", slot)
+
+
+func get_last_unequip_enhance() -> int:
+	return _last_unequipped_enhance
 
 
 func learn_skill(skill_id: String) -> void:
@@ -461,15 +480,22 @@ func _get_equipment_bonus(stat_name: String) -> int:
 	var bonus := 0
 	if not player_data.weapon_id.is_empty():
 		bonus += _get_item_stat_bonus(player_data.weapon_id, stat_name)
+		bonus += _get_enhance_bonus(player_data.weapon_id, player_data.weapon_enhance, stat_name)
 
 	if not player_data.armor_id.is_empty():
 		bonus += _get_item_stat_bonus(player_data.armor_id, stat_name)
+		bonus += _get_enhance_bonus(player_data.armor_id, player_data.armor_enhance, stat_name)
 
-	for accessory_id in player_data.accessory_ids:
+	for acc_index in range(player_data.accessory_ids.size()):
+		var accessory_id: String = player_data.accessory_ids[acc_index]
 		if accessory_id.is_empty():
 			continue
 
 		bonus += _get_item_stat_bonus(accessory_id, stat_name)
+		var acc_enhance: int = 0
+		if acc_index < player_data.accessory_enhances.size():
+			acc_enhance = int(player_data.accessory_enhances[acc_index])
+		bonus += _get_enhance_bonus(accessory_id, acc_enhance, stat_name)
 
 	return bonus
 
@@ -490,6 +516,28 @@ func _get_item_stat_bonus(item_id: String, stat_name: String) -> int:
 		return int(stats.get(stat_name, 0))
 
 	return 0
+
+
+func _get_enhance_bonus(item_id: String, enhance_level: int, stat_name: String) -> int:
+	if enhance_level <= 0:
+		return 0
+	var item_data: Dictionary = DataManager.get_item(item_id)
+	var per_level: Dictionary = Dictionary(item_data.get("enhance_bonus_per_level", {}))
+	if per_level.is_empty():
+		per_level = _get_default_enhance_bonus(String(item_data.get("type", "")))
+	return int(per_level.get(stat_name, 0)) * enhance_level
+
+
+static func _get_default_enhance_bonus(item_type: String) -> Dictionary:
+	match item_type:
+		"weapon":
+			return {"matk": 1}
+		"armor":
+			return {"pdef": 1, "mdef": 1}
+		"accessory":
+			return {"hp": 3}
+		_:
+			return {}
 
 
 func _refresh_player_state() -> void:

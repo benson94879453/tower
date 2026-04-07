@@ -222,7 +222,7 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 	_update_display_for(actor)
 
 
-func _resolve_item_action(actor, action: Dictionary) -> void:
+func _resolve_item_action(actor, _action: Dictionary) -> void:
 	_battle_manager.battle_ui.add_log("%s 使用了道具（尚未實作）" % actor.display_name)
 
 
@@ -411,7 +411,7 @@ func _handle_heal_result(actor, result: Dictionary, skill_name: String, element:
 	_battle_manager.combatant_hp_changed.emit(target)
 
 
-func _handle_status_result(actor, result: Dictionary, skill_name: String, element: String) -> void:
+func _handle_status_result(actor, result: Dictionary, _skill_name: String, element: String) -> void:
 	var target = result.get("target", null)
 	if target == null:
 		return

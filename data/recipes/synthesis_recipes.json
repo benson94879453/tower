@@ -1,0 +1,28 @@
+[
+	{
+		"id": "recipe_acc_burn_ring",
+		"type": "synthesis",
+		"result_id": "acc_burn_ring",
+		"result_name": "燃燒之戒",
+		"available_from_floor": 10,
+		"gold_cost": 200,
+		"materials": [
+			{"id": "mat_fire_crystal", "count": 5},
+			{"id": "mat_magic_crystal", "count": 3}
+		],
+		"description": "融合火焰結晶與魔力結晶，合成附帶燃燒效果的戒指"
+	},
+	{
+		"id": "recipe_acc_regen_ring",
+		"type": "synthesis",
+		"result_id": "acc_regen_ring",
+		"result_name": "再生指環",
+		"available_from_floor": 1,
+		"gold_cost": 150,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 5},
+			{"id": "mat_ice_crystal", "count": 2}
+		],
+		"description": "融合魔力結晶與冰霜結晶，合成附帶再生效果的指環"
+	}
+]

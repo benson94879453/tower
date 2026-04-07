@@ -137,7 +137,7 @@ static func _pick_node_type(weights: Dictionary, floor_number: int) -> String:
 		var node_type: String = String(raw_node_type)
 		var weight: int = int(weights.get(node_type, 0))
 		if node_type == "elite" and floor_number < 5:
-			weight = max(1, weight / 2)
+			weight = max(1, int(float(weight) / 2.0))
 		if node_type == "altar" and floor_number < 10:
 			weight = 0
 		entries.append({"type": node_type, "weight": weight})

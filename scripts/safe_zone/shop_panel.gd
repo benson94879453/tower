@@ -12,6 +12,7 @@ var _current_tab: int = Tab.BUY
 var _floor_number: int = 1
 var _shop_stock: Array = []
 var _selected_item_id: String = ""
+var _selected_equipment_index: int = -1
 
 var _title_label: Label
 var _gold_label: Label
@@ -39,6 +40,7 @@ func setup(floor_number: int) -> void:
 	_floor_number = floor_number
 	_current_tab = Tab.BUY
 	_selected_item_id = ""
+	_selected_equipment_index = -1
 
 	for child in get_children():
 		child.queue_free()
@@ -208,6 +210,7 @@ func _refresh_list() -> void:
 		child.queue_free()
 
 	_selected_item_id = ""
+	_selected_equipment_index = -1
 	_clear_detail()
 	_update_gold_display()
 	_update_tab_style()
@@ -268,6 +271,7 @@ func _populate_sell_list() -> void:
 		var entry: Dictionary = raw_entry
 		var item_id: String = String(entry.get("id", ""))
 		var item_count: int = int(entry.get("count", 0))
+		var equipment_index: int = int(entry.get("equipment_index", -1))
 		if item_id.is_empty() or item_count <= 0:
 			continue
 
@@ -281,11 +285,15 @@ func _populate_sell_list() -> void:
 		var row := Button.new()
 		row.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		row.custom_minimum_size.y = 36.0
-		row.text = "[%s] %s  x%d    %dG" % [rarity, item_name, item_count, sell_price]
+		if bool(entry.get("is_equipment", false)):
+			var enhance: int = int(entry.get("enhance", 0))
+			row.text = "[%s] %s%s    %dG" % [rarity, item_name, _format_enhance(enhance), sell_price]
+		else:
+			row.text = "[%s] %s  x%d    %dG" % [rarity, item_name, item_count, sell_price]
 		row.add_theme_color_override("font_color", ThemeConstantsClass.get_rarity_border(rarity))
 
 		var bound_item_id: String = item_id
-		row.pressed.connect(_on_item_selected.bind(bound_item_id))
+		row.pressed.connect(_on_item_selected.bind(bound_item_id, equipment_index))
 		_item_list_container.add_child(row)
 		shown += 1
 
@@ -301,8 +309,9 @@ func _add_empty_label(text: String) -> void:
 	_item_list_container.add_child(label)
 
 
-func _show_detail(item_id: String) -> void:
+func _show_detail(item_id: String, equipment_index: int = -1) -> void:
 	_selected_item_id = item_id
+	_selected_equipment_index = equipment_index
 	var item_data: Dictionary = DataManager.get_item(item_id)
 	if item_data.is_empty():
 		_clear_detail()
@@ -311,8 +320,12 @@ func _show_detail(item_id: String) -> void:
 	var item_name: String = String(item_data.get("name", item_id))
 	var rarity: String = String(item_data.get("rarity", "N"))
 	var description: String = String(item_data.get("description", ""))
+	var enhance: int = 0
+	if equipment_index >= 0 and PlayerManager.inventory != null:
+		var equipment_entry: Dictionary = PlayerManager.inventory.get_equipment_at(equipment_index)
+		enhance = int(equipment_entry.get("enhance", 0))
 
-	_detail_name.text = item_name
+	_detail_name.text = "%s%s" % [item_name, _format_enhance(enhance)]
 	_detail_name.add_theme_color_override("font_color", ThemeConstantsClass.get_rarity_border(rarity))
 
 	_detail_desc.clear()
@@ -352,12 +365,13 @@ func _show_detail(item_id: String) -> void:
 			sell_button.custom_minimum_size = Vector2(100, 40)
 			sell_button.disabled = sell_price <= 0
 			var sell_item_id: String = item_id
-			sell_button.pressed.connect(_on_sell_pressed.bind(sell_item_id))
+			sell_button.pressed.connect(_on_sell_pressed.bind(sell_item_id, equipment_index))
 			_action_container.add_child(sell_button)
 
 
 func _clear_detail() -> void:
 	_selected_item_id = ""
+	_selected_equipment_index = -1
 	_detail_name.text = "選擇商品"
 	_detail_name.remove_theme_color_override("font_color")
 	_detail_desc.clear()
@@ -385,12 +399,17 @@ func _on_buy_pressed(item_id: String) -> void:
 	_show_detail(item_id)
 
 
-func _on_sell_pressed(item_id: String) -> void:
+func _on_sell_pressed(item_id: String, equipment_index: int = -1) -> void:
 	var item_data: Dictionary = DataManager.get_item(item_id)
 	var sell_price: int = int(item_data.get("sell_price", 0))
 	if sell_price <= 0:
 		return
-	if not PlayerManager.remove_item(item_id):
+	if equipment_index >= 0 and PlayerManager.inventory != null:
+		if PlayerManager.inventory.get_equipment_at(equipment_index).is_empty():
+			return
+		PlayerManager.inventory.remove_equipment_at(equipment_index)
+		PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
+	elif not PlayerManager.remove_item(item_id):
 		return
 	PlayerManager.add_gold(sell_price)
 	transaction_completed.emit(item_id, "sell")
@@ -402,8 +421,8 @@ func _on_tab_pressed(tab: int) -> void:
 	_refresh_list()
 
 
-func _on_item_selected(item_id: String) -> void:
-	_show_detail(item_id)
+func _on_item_selected(item_id: String, equipment_index: int = -1) -> void:
+	_show_detail(item_id, equipment_index)
 
 
 func _update_gold_display() -> void:
@@ -437,3 +456,9 @@ func _can_buy_item(item_id: String, price: int) -> bool:
 			return false
 
 	return true
+
+
+func _format_enhance(level: int) -> String:
+	if level <= 0:
+		return ""
+	return " +%d" % level

@@ -13,6 +13,8 @@ const TurnManagerScript = preload("res://scripts/battle/turn_manager.gd")
 const InventoryClass = preload("res://scripts/data/inventory.gd")
 const InventoryPanelClass = preload("res://scripts/ui/inventory_panel.gd")
 const ShopPanelClass = preload("res://scripts/safe_zone/shop_panel.gd")
+const ForgeLogicClass = preload("res://scripts/safe_zone/forge_logic.gd")
+const ForgePanelClass = preload("res://scripts/safe_zone/forge_panel.gd")
 const FloorGeneratorClass = preload("res://scripts/exploration/floor_generator.gd")
 const NodeHandlerClass = preload("res://scripts/exploration/node_handler.gd")
 
@@ -45,6 +47,8 @@ func _ready() -> void:
 	_test_inventory()
 	_test_inventory_panel()
 	_test_shop()
+	_test_forge()
+	_test_craft_synthesis()
 	_test_game_flow()
 	if false:
 		_test_full_battle()
@@ -406,10 +410,9 @@ func _test_turn_manager() -> void:
 	var player_combatant := CombatantDataClass.from_player()
 	var enemy_combatant := CombatantDataClass.from_enemy("enemy_fire_sprite")
 	var familiar_combatant := CombatantDataClass.from_familiar("familiar_fire_imp", 3)
-	var turn_helper = TurnManagerScript.new()
 
 	var combatants: Array = [player_combatant, enemy_combatant, familiar_combatant]
-	combatants.sort_custom(func(a, b): return turn_helper._compare_speed(a, b))
+	combatants.sort_custom(func(a, b): return TurnManagerScript._compare_speed(a, b))
 	print("Speed order: %s(%d), %s(%d), %s(%d)" % [
 		combatants[0].display_name, combatants[0].speed,
 		combatants[1].display_name, combatants[1].speed,
@@ -1255,6 +1258,176 @@ func _test_shop() -> void:
 
 	PlayerManager.init_new_game()
 	print("=== End Shop Test ===")
+
+
+func _test_forge() -> void:
+	print("=== Forge Test ===")
+
+	PlayerManager.init_new_game()
+	PlayerManager.add_gold(2000)
+
+	print("--- Material data ---")
+	var iron: Dictionary = DataManager.get_item("mat_iron_ore")
+	print("iron_ore: name=%s type=%s" % [iron.get("name", ""), iron.get("type", "")])
+	var fire_crystal: Dictionary = DataManager.get_item("mat_fire_crystal")
+	print("fire_crystal: name=%s rarity=%s" % [fire_crystal.get("name", ""), fire_crystal.get("rarity", "")])
+
+	print("--- Equipment enhance tracking ---")
+	PlayerManager.add_item("weapon_apprentice_staff")
+	var eq_list: Array = PlayerManager.inventory.get_equipment_list()
+	print("equipment in bag: %d (expected 1)" % eq_list.size())
+	print("enhance level: %d (expected 0)" % int(eq_list[0].get("enhance", -1)))
+
+	print("--- Equip with enhance ---")
+	PlayerManager.inventory.set_equipment_enhance(0, 3)
+	PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
+	var equip_entry: Dictionary = PlayerManager.inventory.get_equipment_at(0)
+	print("bag enhance before equip: %d (expected 3)" % int(equip_entry.get("enhance", 0)))
+	PlayerManager.equip_weapon("weapon_apprentice_staff", 3)
+	PlayerManager.inventory.remove_equipment_at(0)
+	PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
+	print("weapon_enhance on player: %d (expected 3)" % PlayerManager.player_data.weapon_enhance)
+	print("matk with +3 weapon: %d (expected 15+5+3=23)" % PlayerManager.get_matk())
+
+	var old_id: String = PlayerManager.unequip_weapon()
+	var old_enh: int = PlayerManager.get_last_unequip_enhance()
+	PlayerManager.inventory.add_equipment(old_id, old_enh)
+	PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
+	print("unequip enhance: %d (expected 3)" % old_enh)
+	var bag_entry: Dictionary = PlayerManager.inventory.get_equipment_at(0)
+	print("bag enhance after unequip: %d (expected 3)" % int(bag_entry.get("enhance", 0)))
+
+	print("--- Enhance logic ---")
+	PlayerManager.equip_weapon("weapon_apprentice_staff", 0)
+	PlayerManager.inventory.remove_equipment_at(0)
+	PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
+	PlayerManager.add_item("mat_iron_ore", 20)
+	PlayerManager.add_item("mat_enhance_stone", 10)
+
+	var cost: Dictionary = ForgeLogicClass.get_enhance_cost("weapon_apprentice_staff", 0)
+	print("enhance +0→+1 cost: gold=%d mat=%s x%d rate=%.0f%%" % [
+		int(cost.get("gold_cost", 0)),
+		String(cost.get("material_id", "")),
+		int(cost.get("material_count", 0)),
+		float(cost.get("success_rate", 0.0)) * 100.0,
+	])
+
+	var check: Dictionary = ForgeLogicClass.can_enhance("weapon_apprentice_staff", 0)
+	print("can enhance: %s" % bool(check.get("can", false)))
+
+	var enhance_result: Dictionary = ForgeLogicClass.execute_enhance("weapon_apprentice_staff", 0)
+	print("enhance result: success=%s enhanced=%s" % [
+		bool(enhance_result.get("success", false)),
+		bool(enhance_result.get("enhanced", false)),
+	])
+
+	print("--- Dismantle logic ---")
+	PlayerManager.add_item("weapon_fire_staff")
+	var dismantle_preview: Dictionary = ForgeLogicClass.get_dismantle_result("weapon_fire_staff", 0)
+	print("dismantle fire_staff: gold=%d materials=%s" % [
+		int(dismantle_preview.get("gold", 0)),
+		str(dismantle_preview.get("materials", [])),
+	])
+
+	var equipment_list: Array = PlayerManager.inventory.get_equipment_list()
+	var eq_index: int = int(equipment_list[0].get("index", -1))
+	var dismantle_result: Dictionary = ForgeLogicClass.execute_dismantle(eq_index)
+	print("dismantle executed: success=%s" % bool(dismantle_result.get("success", false)))
+	print("iron_ore count after dismantle: %d" % PlayerManager.get_item_count("mat_iron_ore"))
+
+	print("--- Panel ---")
+	var panel = ForgePanelClass.new()
+	panel.setup()
+	print("forge panel created: %s" % (panel != null))
+	panel.free()
+
+	PlayerManager.init_new_game()
+	print("=== End Forge Test ===")
+
+
+func _test_craft_synthesis() -> void:
+	print("=== Craft & Synthesis Test ===")
+
+	PlayerManager.init_new_game()
+	PlayerManager.add_gold(5000)
+
+	print("--- Recipe data ---")
+	var craft_recipes: Array = DataManager.get_recipes_by_type("craft", 1)
+	print("craft recipes at floor 1: %d" % craft_recipes.size())
+	for raw_recipe in craft_recipes:
+		var recipe: Dictionary = raw_recipe
+		print("  %s -> %s" % [String(recipe.get("id", "")), String(recipe.get("result_name", ""))])
+
+	var craft_recipes_10: Array = DataManager.get_recipes_by_type("craft", 10)
+	print("craft recipes at floor 10: %d (expected >= floor 1)" % craft_recipes_10.size())
+
+	var synth_recipes: Array = DataManager.get_recipes_by_type("synthesis", 1)
+	print("synthesis recipes at floor 1: %d" % synth_recipes.size())
+	for raw_recipe in synth_recipes:
+		var recipe_s: Dictionary = raw_recipe
+		print("  %s -> %s" % [String(recipe_s.get("id", "")), String(recipe_s.get("result_name", ""))])
+
+	var synth_recipes_10: Array = DataManager.get_recipes_by_type("synthesis", 10)
+	print("synthesis recipes at floor 10: %d (expected >= floor 1)" % synth_recipes_10.size())
+
+	print("--- Craft: insufficient materials ---")
+	var staff_recipe: Dictionary = {}
+	for raw_recipe in craft_recipes:
+		var recipe_staff: Dictionary = raw_recipe
+		if String(recipe_staff.get("result_id", "")) == "weapon_apprentice_staff":
+			staff_recipe = recipe_staff
+			break
+	var check: Dictionary = ForgeLogicClass.can_craft(staff_recipe)
+	print("can craft apprentice_staff without mats: %s (expected false)" % bool(check.get("can", false)))
+
+	print("--- Craft: success ---")
+	PlayerManager.add_item("mat_iron_ore", 10)
+	check = ForgeLogicClass.can_craft(staff_recipe)
+	print("can craft with mats: %s (expected true)" % bool(check.get("can", false)))
+	var gold_before: int = PlayerManager.player_data.gold
+	var result: Dictionary = ForgeLogicClass.execute_craft(staff_recipe)
+	print("craft success: %s" % bool(result.get("success", false)))
+	print("result_name: %s" % String(result.get("result_name", "")))
+	print("gold after craft: %d (expected %d)" % [
+		PlayerManager.player_data.gold,
+		gold_before - int(staff_recipe.get("gold_cost", 0)),
+	])
+	print("iron_ore after craft: %d (expected 7)" % PlayerManager.get_item_count("mat_iron_ore"))
+	print("apprentice_staff in bag: %d (expected 1)" % PlayerManager.get_item_count("weapon_apprentice_staff"))
+
+	print("--- Synthesis ---")
+	PlayerManager.add_item("mat_magic_crystal", 10)
+	PlayerManager.add_item("mat_ice_crystal", 5)
+	var regen_recipe: Dictionary = {}
+	for raw_recipe in synth_recipes_10:
+		var recipe_regen_10: Dictionary = raw_recipe
+		if String(recipe_regen_10.get("result_id", "")) == "acc_regen_ring":
+			regen_recipe = recipe_regen_10
+			break
+	if regen_recipe.is_empty():
+		for raw_recipe in synth_recipes:
+			var recipe_regen_1: Dictionary = raw_recipe
+			if String(recipe_regen_1.get("result_id", "")) == "acc_regen_ring":
+				regen_recipe = recipe_regen_1
+				break
+
+	if not regen_recipe.is_empty():
+		check = ForgeLogicClass.can_synthesize(regen_recipe)
+		print("can synthesize regen_ring: %s (expected true)" % bool(check.get("can", false)))
+		result = ForgeLogicClass.execute_synthesize(regen_recipe)
+		print("synthesis success: %s" % bool(result.get("success", false)))
+		print("regen_ring in bag: %d (expected 1)" % PlayerManager.get_item_count("acc_regen_ring"))
+	else:
+		print("regen_ring recipe not found (check floor filter)")
+
+	print("--- Multiple craft ---")
+	var result2: Dictionary = ForgeLogicClass.execute_craft(staff_recipe)
+	print("second craft success: %s" % bool(result2.get("success", false)))
+	print("apprentice_staff in bag: %d (expected 2)" % PlayerManager.get_item_count("weapon_apprentice_staff"))
+	print("iron_ore after 2nd craft: %d (expected 4)" % PlayerManager.get_item_count("mat_iron_ore"))
+
+	PlayerManager.init_new_game()
+	print("=== End Craft & Synthesis Test ===")
 
 
 func _test_game_flow() -> void:

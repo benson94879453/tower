@@ -36,3 +36,6 @@ extends Resource
 @export var title: String = "見習法師"
 @export var titles_unlocked: Array[String] = ["見習法師"]
 @export var inventory_data: Dictionary = {}
+@export var weapon_enhance: int = 0
+@export var armor_enhance: int = 0
+@export var accessory_enhances: Array[int] = []

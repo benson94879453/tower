@@ -21,9 +21,13 @@ signal battle_ended(result: String)
 signal turn_started(turn_number: int)
 signal turn_ended(turn_number: int)
 signal state_changed(new_state: int)
+@warning_ignore("unused_signal")
 signal combatant_hp_changed(combatant)
+@warning_ignore("unused_signal")
 signal combatant_defeated(combatant)
+@warning_ignore("unused_signal")
 signal action_executed(action: Dictionary)
+@warning_ignore("unused_signal")
 signal damage_dealt(target, amount: int, element: String, is_crit: bool)
 
 var battle_state: int = BattleState.INACTIVE

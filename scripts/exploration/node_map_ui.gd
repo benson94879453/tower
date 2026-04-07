@@ -72,8 +72,8 @@ func _calculate_positions() -> void:
 			var node: Dictionary = row_nodes[index]
 			var x: float = start_x + float(index) * COL_SPACING
 			var node_id: int = int(node.get("id", -1))
-			var position := Vector2(x, y)
-			_node_positions[node_id] = position
+			var node_pos := Vector2(x, y)
+			_node_positions[node_id] = node_pos
 
 
 func _draw() -> void:
@@ -108,7 +108,7 @@ func _draw() -> void:
 		if not _node_positions.has(node_id):
 			continue
 
-		var position: Vector2 = _node_positions[node_id]
+		var node_pos: Vector2 = _node_positions[node_id]
 		var node_type: String = String(node.get("type", ""))
 		var visited: bool = bool(node.get("visited", false))
 		var fill_color: Color = _get_node_color(node_type)
@@ -116,7 +116,7 @@ func _draw() -> void:
 
 		if node_id == _current_node_id:
 			border_color = Color.GOLD
-			draw_circle(position, NODE_RADIUS + 4.0, Color(1, 0.84, 0, 0.3))
+			draw_circle(node_pos, NODE_RADIUS + 4.0, Color(1, 0.84, 0, 0.3))
 		elif _reachable_ids.has(node_id):
 			border_color = Color.GREEN
 		elif visited:
@@ -127,10 +127,10 @@ func _draw() -> void:
 			border_color = Color(1, 1, 1, 0.2)
 
 		if node_id == _hovered_node_id and _reachable_ids.has(node_id):
-			draw_circle(position, NODE_RADIUS + 6.0, Color(0, 1, 0, 0.25))
+			draw_circle(node_pos, NODE_RADIUS + 6.0, Color(0, 1, 0, 0.25))
 
-		draw_circle(position, NODE_RADIUS, fill_color)
-		draw_arc(position, NODE_RADIUS, 0.0, TAU, 32, border_color, 2.0, true)
+		draw_circle(node_pos, NODE_RADIUS, fill_color)
+		draw_arc(node_pos, NODE_RADIUS, 0.0, TAU, 32, border_color, 2.0, true)
 
 		var icon: String = FloorGeneratorClass.get_node_icon(node_type)
 		var font: Font = ThemeDB.fallback_font
@@ -138,7 +138,7 @@ func _draw() -> void:
 			var font_size: int = 16
 			var text_size: Vector2 = font.get_string_size(icon, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size)
 			var ascent: float = font.get_ascent(font_size)
-			var baseline_pos: Vector2 = position - Vector2(text_size.x / 2.0, text_size.y / 2.0) + Vector2(0, ascent)
+			var baseline_pos: Vector2 = node_pos - Vector2(text_size.x / 2.0, text_size.y / 2.0) + Vector2(0, ascent)
 			draw_string(
 				font,
 				baseline_pos,
@@ -192,10 +192,10 @@ func _gui_input(event: InputEvent) -> void:
 			queue_redraw()
 
 
-func _get_node_at_position(position: Vector2) -> int:
+func _get_node_at_position(pointer_position: Vector2) -> int:
 	for raw_node_id in _node_positions.keys():
 		var node_id: int = int(raw_node_id)
 		var node_position: Vector2 = _node_positions[node_id]
-		if position.distance_to(node_position) <= NODE_RADIUS + 4.0:
+		if pointer_position.distance_to(node_position) <= NODE_RADIUS + 4.0:
 			return node_id
 	return -1

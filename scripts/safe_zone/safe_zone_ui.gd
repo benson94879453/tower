@@ -4,6 +4,7 @@ extends Control
 const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
 const InventoryPanelClass = preload("res://scripts/ui/inventory_panel.gd")
 const ShopPanelClass = preload("res://scripts/safe_zone/shop_panel.gd")
+const ForgePanelClass = preload("res://scripts/safe_zone/forge_panel.gd")
 
 signal explore_requested(floor_number: int)
 signal teleport_requested(floor_number: int)
@@ -14,11 +15,13 @@ var current_safe_floor: int = 1
 var highest_floor: int = 1
 var _inventory_panel = null
 var _shop_panel = null
+var _forge_panel = null
 
 @onready var zone_label: Label = $ZoneLabel
 @onready var status_label: RichTextLabel = $StatusPanel/StatusLabel
 @onready var inventory_button: Button = $ActionContainer/InventoryButton
 @onready var shop_button: Button = $ActionContainer/ShopButton
+@onready var forge_button: Button = $ActionContainer/ForgeButton
 @onready var explore_button: Button = $ActionContainer/ExploreButton
 @onready var teleport_button: Button = $ActionContainer/TeleportButton
 @onready var rest_button: Button = $ActionContainer/RestButton
@@ -31,6 +34,7 @@ var _shop_panel = null
 func _ready() -> void:
 	inventory_button.pressed.connect(_on_inventory_pressed)
 	shop_button.pressed.connect(_on_shop_pressed)
+	forge_button.pressed.connect(_on_forge_pressed)
 	explore_button.pressed.connect(_on_explore_pressed)
 	teleport_button.pressed.connect(_on_teleport_pressed)
 	rest_button.pressed.connect(func(): rest_requested.emit())
@@ -85,7 +89,7 @@ func _on_explore_pressed() -> void:
 
 
 func _on_inventory_pressed() -> void:
-	if _inventory_panel != null or _shop_panel != null:
+	if _inventory_panel != null or _shop_panel != null or _forge_panel != null:
 		return
 
 	_inventory_panel = InventoryPanelClass.new()
@@ -108,7 +112,7 @@ func _on_inventory_action(_item_id: String, _action: String) -> void:
 
 
 func _on_shop_pressed() -> void:
-	if _shop_panel != null or _inventory_panel != null:
+	if _shop_panel != null or _inventory_panel != null or _forge_panel != null:
 		return
 
 	_shop_panel = ShopPanelClass.new()
@@ -127,6 +131,29 @@ func _close_shop_panel() -> void:
 
 
 func _on_shop_transaction(_item_id: String, _action: String) -> void:
+	_update_status()
+
+
+func _on_forge_pressed() -> void:
+	if _forge_panel != null or _inventory_panel != null or _shop_panel != null:
+		return
+
+	_forge_panel = ForgePanelClass.new()
+	_forge_panel.position = Vector2(60, 30)
+	add_child(_forge_panel)
+	_forge_panel.setup(current_safe_floor)
+	_forge_panel.panel_closed.connect(_close_forge_panel)
+	_forge_panel.forge_action_performed.connect(_on_forge_action)
+
+
+func _close_forge_panel() -> void:
+	if _forge_panel != null:
+		_forge_panel.queue_free()
+	_forge_panel = null
+	_update_status()
+
+
+func _on_forge_action(_action: String, _detail: String) -> void:
 	_update_status()
 
 

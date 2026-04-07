@@ -10,6 +10,7 @@ enum Mode { SAFE_ZONE, EXPLORATION }
 
 var _mode: int = Mode.SAFE_ZONE
 var _selected_item_id: String = ""
+var _selected_equipment_index: int = -1
 var _current_filter: String = "all"
 
 var _title_label: Label
@@ -35,6 +36,7 @@ func _init() -> void:
 func setup(mode: int) -> void:
 	_mode = mode
 	_selected_item_id = ""
+	_selected_equipment_index = -1
 	_current_filter = "all"
 
 	for child in get_children():
@@ -170,6 +172,7 @@ func _refresh_item_list() -> void:
 		var entry: Dictionary = raw_entry
 		var item_id: String = String(entry.get("id", ""))
 		var item_count: int = int(entry.get("count", 0))
+		var equipment_index: int = int(entry.get("equipment_index", -1))
 		if item_id.is_empty() or item_count <= 0:
 			continue
 
@@ -186,7 +189,8 @@ func _refresh_item_list() -> void:
 		row.custom_minimum_size.y = 36.0
 
 		if category == "equipment":
-			row.text = "[%s] %s" % [rarity, item_name]
+			var enhance: int = int(entry.get("enhance", 0))
+			row.text = "[%s] %s%s" % [rarity, item_name, _format_enhance(enhance)]
 		else:
 			row.text = "[%s] %s  x%d" % [rarity, item_name, item_count]
 
@@ -195,7 +199,7 @@ func _refresh_item_list() -> void:
 			row.text += "  [E]"
 
 		var bound_item_id: String = item_id
-		row.pressed.connect(_on_item_selected.bind(bound_item_id))
+		row.pressed.connect(_on_item_selected.bind(bound_item_id, equipment_index))
 		_item_list_container.add_child(row)
 		shown_count += 1
 
@@ -206,14 +210,20 @@ func _refresh_item_list() -> void:
 		empty_label.add_theme_color_override("font_color", ThemeConstantsClass.TEXT_SECONDARY)
 		_item_list_container.add_child(empty_label)
 
-	if not _selected_item_id.is_empty() and PlayerManager.has_item(_selected_item_id):
+	if _selected_equipment_index >= 0:
+		if not PlayerManager.inventory.get_equipment_at(_selected_equipment_index).is_empty():
+			_show_detail(_selected_item_id, _selected_equipment_index)
+		else:
+			_clear_detail()
+	elif not _selected_item_id.is_empty() and PlayerManager.has_item(_selected_item_id):
 		_show_detail(_selected_item_id)
 	else:
 		_clear_detail()
 
 
-func _show_detail(item_id: String) -> void:
+func _show_detail(item_id: String, equipment_index: int = -1) -> void:
 	_selected_item_id = item_id
+	_selected_equipment_index = equipment_index
 	var item_data: Dictionary = DataManager.get_item(item_id)
 	if item_data.is_empty():
 		_clear_detail()
@@ -223,8 +233,12 @@ func _show_detail(item_id: String) -> void:
 	var item_type: String = String(item_data.get("type", ""))
 	var rarity: String = String(item_data.get("rarity", "N"))
 	var description: String = String(item_data.get("description", ""))
+	var enhance: int = 0
+	if equipment_index >= 0:
+		var equipment_entry: Dictionary = PlayerManager.inventory.get_equipment_at(equipment_index)
+		enhance = int(equipment_entry.get("enhance", 0))
 
-	_detail_name.text = item_name
+	_detail_name.text = "%s%s" % [item_name, _format_enhance(enhance)]
 	_detail_name.add_theme_color_override("font_color", ThemeConstantsClass.get_rarity_border(rarity))
 
 	_detail_desc.clear()
@@ -252,11 +266,12 @@ func _show_detail(item_id: String) -> void:
 		_detail_stats.append_text("\n賣出: %d G" % sell_price)
 		_detail_stats.pop()
 
-	_build_action_buttons(item_id, item_type, item_data)
+	_build_action_buttons(item_id, item_type, item_data, equipment_index)
 
 
 func _clear_detail() -> void:
 	_selected_item_id = ""
+	_selected_equipment_index = -1
 	_detail_name.text = "選擇道具"
 	_detail_name.remove_theme_color_override("font_color")
 	_detail_desc.clear()
@@ -266,7 +281,7 @@ func _clear_detail() -> void:
 		child.queue_free()
 
 
-func _build_action_buttons(item_id: String, item_type: String, item_data: Dictionary) -> void:
+func _build_action_buttons(item_id: String, item_type: String, item_data: Dictionary, equipment_index: int) -> void:
 	for child in _action_container.get_children():
 		child.queue_free()
 
@@ -297,7 +312,7 @@ func _build_action_buttons(item_id: String, item_type: String, item_data: Dictio
 				equip_button.text = "裝備"
 				equip_button.custom_minimum_size = Vector2(80, 36)
 				var equip_item_id: String = item_id
-				equip_button.pressed.connect(_on_equip_pressed.bind(equip_item_id, item_type))
+				equip_button.pressed.connect(_on_equip_pressed.bind(equip_item_id, item_type, equipment_index))
 				_action_container.add_child(equip_button)
 		else:
 			var locked_label := Label.new()
@@ -316,19 +331,31 @@ func _on_use_pressed(item_id: String) -> void:
 	_refresh_item_list()
 
 
-func _on_equip_pressed(item_id: String, item_type: String) -> void:
+func _on_equip_pressed(item_id: String, item_type: String, equipment_index: int) -> void:
+	var equip_enhance: int = 0
+	if equipment_index >= 0 and PlayerManager.inventory != null:
+		var equip_entry: Dictionary = PlayerManager.inventory.get_equipment_at(equipment_index)
+		equip_enhance = int(equip_entry.get("enhance", 0))
+
 	var old_id: String = ""
 	match item_type:
 		"weapon":
-			old_id = PlayerManager.equip_weapon(item_id)
+			old_id = PlayerManager.equip_weapon(item_id, equip_enhance)
 		"armor":
-			old_id = PlayerManager.equip_armor(item_id)
+			old_id = PlayerManager.equip_armor(item_id, equip_enhance)
 		"accessory":
-			old_id = PlayerManager.equip_accessory(item_id, 0)
+			old_id = PlayerManager.equip_accessory(item_id, 0, equip_enhance)
 
-	PlayerManager.remove_item(item_id)
+	var old_enhance: int = PlayerManager.get_last_unequip_enhance()
+
+	if equipment_index >= 0 and PlayerManager.inventory != null:
+		PlayerManager.inventory.remove_equipment_at(equipment_index)
+		PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
+	else:
+		PlayerManager.remove_item(item_id)
 	if not old_id.is_empty():
-		PlayerManager.add_item(old_id)
+		PlayerManager.inventory.add_equipment(old_id, old_enhance)
+		PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
 
 	item_action_performed.emit(item_id, "裝備")
 	_refresh_item_list()
@@ -348,7 +375,9 @@ func _on_unequip_pressed(item_id: String, item_type: String) -> void:
 					break
 
 	if not removed_item_id.is_empty():
-		PlayerManager.add_item(removed_item_id)
+		var old_enhance: int = PlayerManager.get_last_unequip_enhance()
+		PlayerManager.inventory.add_equipment(removed_item_id, old_enhance)
+		PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
 
 	item_action_performed.emit(item_id, "卸下")
 	_refresh_item_list()
@@ -359,8 +388,8 @@ func _on_category_pressed(category: String) -> void:
 	_refresh_item_list()
 
 
-func _on_item_selected(item_id: String) -> void:
-	_show_detail(item_id)
+func _on_item_selected(item_id: String, equipment_index: int = -1) -> void:
+	_show_detail(item_id, equipment_index)
 
 
 static func _type_to_filter(item_type: String) -> String:
@@ -385,3 +414,9 @@ func _is_equipped(item_id: String) -> bool:
 	if PlayerManager.player_data.accessory_ids.has(item_id):
 		return true
 	return false
+
+
+func _format_enhance(level: int) -> String:
+	if level <= 0:
+		return ""
+	return " +%d" % level

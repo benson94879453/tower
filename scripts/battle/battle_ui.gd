@@ -6,6 +6,7 @@ const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
 const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
 
 signal skill_selected(skill_id: String)
+@warning_ignore("unused_signal")
 signal item_selected(item_id: String)
 signal familiar_mode_selected(mode: int)
 signal flee_pressed
