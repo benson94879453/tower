@@ -35,7 +35,7 @@ layout_mode = 0
 offset_left = 24.0
 offset_top = 60.0
 offset_right = 324.0
-offset_bottom = 260.0
+offset_bottom = 292.0
 
 [node name="StatusLabel" type="RichTextLabel" parent="StatusPanel"]
 layout_mode = 1
@@ -50,9 +50,9 @@ scroll_active = false
 [node name="ActionContainer" type="VBoxContainer" parent="."]
 layout_mode = 0
 offset_left = 400.0
-offset_top = 140.0
+offset_top = 300.0
 offset_right = 640.0
-offset_bottom = 548.0
+offset_bottom = 828.0
 theme_override_constants/separation = 12
 
 [node name="InventoryButton" type="Button" parent="ActionContainer"]
@@ -69,6 +69,16 @@ text = "商店"
 custom_minimum_size = Vector2(240, 48)
 layout_mode = 2
 text = "鍛造"
+
+[node name="FamiliarButton" type="Button" parent="ActionContainer"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+text = "使魔小屋"
+
+[node name="LibraryButton" type="Button" parent="ActionContainer"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+text = "圖書館"
 
 [node name="ExploreButton" type="Button" parent="ActionContainer"]
 custom_minimum_size = Vector2(240, 48)
@@ -119,14 +129,3 @@ theme_override_constants/separation = 6
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "取消"
-
-[node name="PlaceholderLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = 252.0
-offset_top = 680.0
-offset_right = 772.0
-offset_bottom = 704.0
-theme_override_font_sizes/font_size = 12
-theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
-text = "使魔小屋 / 圖書館 - 待後續實作"
-horizontal_alignment = 1

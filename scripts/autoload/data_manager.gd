@@ -122,6 +122,22 @@ func get_floor_config() -> Dictionary:
 	return _floor_config
 
 
+func get_all_items() -> Array[Dictionary]:
+	return _dictionary_values_sorted(_items)
+
+
+func get_all_skills() -> Array[Dictionary]:
+	return _dictionary_values_sorted(_skills)
+
+
+func get_all_enemies() -> Array[Dictionary]:
+	return _dictionary_values_sorted(_enemies)
+
+
+func get_all_familiars() -> Array[Dictionary]:
+	return _dictionary_values_sorted(_familiars)
+
+
 func get_skills_by_element(element: String) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for skill in _skills.values():
@@ -139,6 +155,18 @@ func get_enemies_by_floor(floor_num: int) -> Array[Dictionary]:
 			result.append(enemy)
 
 	return result
+
+
+func get_familiars_by_element(element: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for familiar in get_all_familiars():
+		if String(familiar.get("element", "")) == element:
+			result.append(familiar)
+	return result
+
+
+func get_familiar_exp_required(level: int) -> int:
+	return 30 + level * level * 3
 
 
 func get_events_by_type(event_type: String) -> Array[Dictionary]:
@@ -181,4 +209,16 @@ func get_recipes_by_type(recipe_type: String, floor_number: int = 999) -> Array[
 			return a_floor < b_floor
 		return String(a.get("id", "")) < String(b.get("id", ""))
 	)
+	return result
+
+
+func _dictionary_values_sorted(source: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var ids: Array = source.keys()
+	ids.sort()
+	for raw_id in ids:
+		var key: String = String(raw_id)
+		var value = source.get(key, {})
+		if value is Dictionary:
+			result.append(Dictionary(value))
 	return result

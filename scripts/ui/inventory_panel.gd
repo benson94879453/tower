@@ -398,7 +398,7 @@ static func _type_to_filter(item_type: String) -> String:
 			return "consumable"
 		"weapon", "armor", "accessory":
 			return "equipment"
-		"material", "key_item", "magic_book":
+		"material", "familiar_core", "key_item", "magic_book":
 			return "material"
 		_:
 			return "consumable"

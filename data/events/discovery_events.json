@@ -78,5 +78,55 @@
 			}
 		],
 		"conditional_options": []
+	},
+	{
+		"id": "event_injured_ice_guard",
+		"name": "受傷的使魔",
+		"type": "discovery",
+		"floor_range": [1, 9],
+		"weight": 8,
+		"description": "角落裡蜷縮著一隻受傷的冰霜守衛，牠正警戒地看著你。",
+		"options": [
+			{
+				"text": "小心替牠包紮",
+				"condition": null,
+				"results": [
+					{"type": "familiar_reward", "familiar_id": "familiar_ice_guard", "chance": 1.0}
+				]
+			},
+			{
+				"text": "留下治療藥就離開",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.5}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_injured_fire_imp",
+		"name": "受傷的使魔",
+		"type": "discovery",
+		"floor_range": [11, 19],
+		"weight": 8,
+		"description": "熾熱的碎石堆旁，一隻受傷的火焰小鬼正努力維持火苗。",
+		"options": [
+			{
+				"text": "替牠穩定火焰",
+				"condition": null,
+				"results": [
+					{"type": "familiar_reward", "familiar_id": "familiar_fire_imp", "chance": 1.0}
+				]
+			},
+			{
+				"text": "留下結晶後離開",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_fire_crystal", "chance": 0.5}
+				]
+			}
+		],
+		"conditional_options": []
 	}
 ]

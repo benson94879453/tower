@@ -50,7 +50,7 @@
 		"drops": [
 			{"id": "mat_ice_crystal", "rate": 0.35},
 			{"id": "item_mp_potion_s", "rate": 0.15},
-			{"id": "core_ice_imp", "rate": 0.01}
+			{"id": "core_ice_guard", "rate": 0.01}
 		],
 		"exp": 20,
 		"gold": 12,

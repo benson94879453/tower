@@ -13,9 +13,9 @@ signal quit_requested
 
 
 func _ready() -> void:
-	new_game_button.pressed.connect(func(): new_game_requested.emit())
+	new_game_button.pressed.connect(_request_new_game)
 	load_game_button.pressed.connect(func(): _try_load_game())
-	quit_button.pressed.connect(func(): quit_requested.emit())
+	quit_button.pressed.connect(_request_quit)
 
 	load_game_button.disabled = not SaveManager.has_save(1)
 	if SaveManager.has_save(1):
@@ -29,4 +29,24 @@ func _ready() -> void:
 
 
 func _try_load_game() -> void:
+	if get_signal_connection_list("load_game_requested").is_empty():
+		if GameManager != null:
+			GameManager.load_saved_game(1)
+		return
 	load_game_requested.emit(1)
+
+
+func _request_new_game() -> void:
+	if get_signal_connection_list("new_game_requested").is_empty():
+		if GameManager != null:
+			GameManager.start_new_game()
+		return
+	new_game_requested.emit()
+
+
+func _request_quit() -> void:
+	if get_signal_connection_list("quit_requested").is_empty():
+		if GameManager != null:
+			GameManager.quit_game()
+		return
+	quit_requested.emit()

@@ -135,7 +135,7 @@ static func from_enemy(enemy_id: String) -> CombatantData:
 	return combatant
 
 
-static func from_familiar(familiar_id: String, level: int = 1) -> CombatantData:
+static func from_familiar(familiar_id: String, level: int = 1, skill_ids: Array = []) -> CombatantData:
 	var data := DataManager.get_familiar(familiar_id)
 	if data.is_empty():
 		push_error("Familiar not found: " + familiar_id)
@@ -162,7 +162,10 @@ static func from_familiar(familiar_id: String, level: int = 1) -> CombatantData:
 	combatant.hit = int(base_stats.get("hit", 100))
 	combatant.dodge = float(base_stats.get("dodge", 0.0))
 	combatant.crit = float(base_stats.get("crit", 5.0))
-	_append_skill_data(combatant, data.get("default_skills", []), 10)
+	var active_skill_ids: Array = Array(skill_ids)
+	if active_skill_ids.is_empty():
+		active_skill_ids = Array(data.get("default_skills", []))
+	_append_skill_data(combatant, active_skill_ids, 10)
 	combatant.familiar_mode = FamiliarMode.ATTACK
 	combatant.visual = data.get("visual", {}).duplicate(true) if data.get("visual", {}) is Dictionary else {}
 	combatant.is_alive = combatant.current_hp > 0

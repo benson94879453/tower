@@ -21,13 +21,22 @@ static func generate_battle_enemies(floor_number: int, is_elite: bool) -> Array:
 	return enemy_ids
 
 
-static func build_battle_config(floor_number: int, zone_element: String, is_boss: bool) -> Dictionary:
+static func build_battle_config(floor_number: int, zone_element: String, is_boss: bool, is_elite: bool = false) -> Dictionary:
+	var active_familiar: Dictionary = PlayerManager.get_active_familiar()
+	var familiar_id: String = String(active_familiar.get("id", ""))
+	var familiar_level: int = int(active_familiar.get("level", 1))
+	var familiar_skill_ids: Array = []
+	if not active_familiar.is_empty():
+		familiar_skill_ids = Array(active_familiar.get("skill_ids", [])).duplicate(true)
+
 	return {
 		"floor": floor_number,
 		"is_boss": is_boss,
+		"is_elite": is_elite,
 		"environment_element": zone_element,
-		"familiar_id": "",
-		"familiar_level": 1,
+		"familiar_id": familiar_id,
+		"familiar_level": familiar_level,
+		"familiar_skill_ids": familiar_skill_ids,
 	}
 
 
@@ -138,6 +147,18 @@ static func execute_event_results(option: Dictionary) -> Array:
 			"battle":
 				var enemy_id: String = _sanitize_enemy_id(String(result.get("enemy_id", "")))
 				outcomes.append({"type": "battle", "text": "遭遇敵人！", "enemy_id": enemy_id})
+			"familiar_reward":
+				var familiar_id: String = String(result.get("familiar_id", ""))
+				var familiar_data: Dictionary = DataManager.get_familiar(familiar_id)
+				var familiar_name: String = String(familiar_data.get("name", familiar_id if not familiar_id.is_empty() else "未知使魔"))
+				if PlayerManager.player_data != null and PlayerManager.player_data.owned_familiars.size() >= PlayerManager.FAMILIAR_ROSTER_LIMIT:
+					outcomes.append({"type": "familiar", "text": "使魔小屋已滿，無法帶回 %s" % familiar_name, "familiar_id": familiar_id})
+				else:
+					var familiar_index: int = PlayerManager.add_familiar(familiar_id)
+					if familiar_index >= 0:
+						outcomes.append({"type": "familiar", "text": "%s 願意加入隊伍！" % familiar_name, "familiar_id": familiar_id})
+					else:
+						outcomes.append({"type": "familiar", "text": "未能帶回 %s" % familiar_name, "familiar_id": familiar_id})
 			"research_points":
 				var value: int = int(result.get("value", 0))
 				outcomes.append({"type": "research", "text": "獲得 %d 研究點數" % value})

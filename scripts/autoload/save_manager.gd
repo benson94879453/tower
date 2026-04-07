@@ -24,8 +24,8 @@ func save_game(slot: int) -> void:
 		"play_time_seconds": 0,
 		"player": player_snapshot,
 		"familiars": {
-			"party": "",
-			"storage": [],
+			"party": int(player_snapshot.get("active_familiar_index", -1)),
+			"roster": Array(player_snapshot.get("owned_familiars", [])).duplicate(true),
 		},
 		"familiar_instances": {},
 		"inventory": PlayerManager.inventory.to_save_dict() if PlayerManager.inventory != null else {
@@ -83,6 +83,9 @@ func load_game(slot: int) -> void:
 		return
 
 	PlayerManager.load_from_save(parsed)
+	var familiar_data = parsed.get("familiars", {})
+	if familiar_data is Dictionary:
+		PlayerManager.load_familiars_from_save(familiar_data)
 
 	var inventory_data = parsed.get("inventory", {})
 	if inventory_data is Dictionary and PlayerManager.inventory != null:

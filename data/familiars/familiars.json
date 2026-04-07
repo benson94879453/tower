@@ -74,5 +74,73 @@
 			"size": "medium"
 		},
 		"obtain_source": "冰晶洞窟區域掉落"
+	},
+	{
+		"id": "familiar_inferno_demon",
+		"name": "獄炎魔",
+		"element": "fire",
+		"type": "attack",
+		"base_stats": {
+			"hp": 160,
+			"mp": 60,
+			"matk": 70,
+			"mdef": 25,
+			"patk": 40,
+			"pdef": 20,
+			"speed": 45
+		},
+		"growth_per_level": {
+			"hp": 12,
+			"mp": 5,
+			"matk": 5,
+			"mdef": 2,
+			"patk": 3,
+			"pdef": 2,
+			"speed": 3
+		},
+		"max_level": 50,
+		"skill_slots": 3,
+		"default_skills": ["skill_flame_claw", "skill_fireball", "skill_fire_storm"],
+		"evolution": {},
+		"visual": {
+			"shape": "diamond",
+			"color": "#FF3311",
+			"size": "large"
+		},
+		"obtain_source": "火焰小鬼進化"
+	},
+	{
+		"id": "familiar_ice_golem",
+		"name": "寒冰魔像",
+		"element": "ice",
+		"type": "defense",
+		"base_stats": {
+			"hp": 220,
+			"mp": 40,
+			"matk": 22,
+			"mdef": 36,
+			"patk": 18,
+			"pdef": 42,
+			"speed": 12
+		},
+		"growth_per_level": {
+			"hp": 14,
+			"mp": 3,
+			"matk": 2,
+			"mdef": 4,
+			"patk": 2,
+			"pdef": 5,
+			"speed": 1
+		},
+		"max_level": 50,
+		"skill_slots": 3,
+		"default_skills": ["skill_frost_armor", "skill_ice_shard", "skill_magic_shield"],
+		"evolution": {},
+		"visual": {
+			"shape": "hexagon",
+			"color": "#99DDFF",
+			"size": "large"
+		},
+		"obtain_source": "冰霜守衛進化"
 	}
 ]

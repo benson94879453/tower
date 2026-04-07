@@ -199,7 +199,8 @@ func _handle_battle_node(is_elite: bool, is_boss: bool) -> void:
 	var config: Dictionary = NodeHandlerClass.build_battle_config(
 		current_floor,
 		String(floor_data.get("zone_element", "none")),
-		is_boss
+		is_boss,
+		is_elite
 	)
 
 	var enemy_names: Array = []
@@ -410,6 +411,7 @@ func _handle_event_battle(enemy_id: String) -> void:
 	var config: Dictionary = NodeHandlerClass.build_battle_config(
 		current_floor,
 		String(floor_data.get("zone_element", "none")),
+		false,
 		false
 	)
 	GameManager.start_exploration_battle([enemy_id], config, save_state())

@@ -197,6 +197,9 @@ func _on_save_requested(safe_floor: int) -> void:
 
 
 func _on_floor_completed(floor_number: int) -> void:
+	if PlayerManager.player_data != null and _is_boss_floor(floor_number):
+		if not PlayerManager.player_data.defeated_bosses.has(floor_number):
+			PlayerManager.player_data.defeated_bosses.append(floor_number)
 	advance_to_next_floor(floor_number)
 
 
@@ -241,6 +244,15 @@ func _get_safe_floors() -> Array:
 	for raw_floor in raw_safe_floors:
 		safe_floors.append(int(raw_floor))
 	return safe_floors
+
+
+func _is_boss_floor(floor_number: int) -> bool:
+	var zones: Dictionary = Dictionary(DataManager.get_floor_config().get("zones", {}))
+	for raw_zone in zones.values():
+		var zone: Dictionary = Dictionary(raw_zone)
+		if int(zone.get("boss_floor", -1)) == floor_number:
+			return true
+	return false
 
 
 func _test_data_loading() -> void:

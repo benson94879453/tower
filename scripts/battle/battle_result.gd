@@ -5,7 +5,9 @@ extends RefCounted
 static func calculate_victory_rewards(
 	enemies: Array,
 	floor_number: int,
-	received_skill_ids: Array[String]
+	received_skill_ids: Array[String],
+	is_boss_battle: bool = false,
+	is_elite_battle: bool = false
 ) -> Dictionary:
 	var total_exp: int = 0
 	var total_gold: int = 0
@@ -30,10 +32,13 @@ static func calculate_victory_rewards(
 			if raw_drop is not Dictionary:
 				continue
 			var drop: Dictionary = raw_drop
+			var drop_id: String = String(drop.get("id", ""))
 			var rate: float = float(drop.get("rate", 0.0))
+			if drop_id.begins_with("core_"):
+				rate = _get_familiar_core_drop_rate(rate, floor_number, is_boss_battle, is_elite_battle)
 			if randf() < rate:
 				dropped_items.append({
-					"id": String(drop.get("id", "")),
+					"id": drop_id,
 					"source": enemy.display_name,
 				})
 
@@ -60,6 +65,27 @@ static func calculate_victory_rewards(
 		"familiar_exp": familiar_exp,
 		"level_before": int(PlayerManager.player_data.level) if PlayerManager.player_data != null else 1,
 	}
+
+
+static func _get_familiar_core_drop_rate(
+	default_rate: float,
+	floor_number: int,
+	is_boss_battle: bool,
+	is_elite_battle: bool
+) -> float:
+	if is_boss_battle:
+		return 1.0 if _is_first_boss_clear(floor_number) else 0.15
+	if is_elite_battle:
+		return 0.05
+	if default_rate > 0.0:
+		return default_rate
+	return 0.01
+
+
+static func _is_first_boss_clear(floor_number: int) -> bool:
+	if PlayerManager.player_data == null:
+		return true
+	return not PlayerManager.player_data.defeated_bosses.has(floor_number)
 
 
 static func apply_victory_rewards(rewards: Dictionary) -> Dictionary:

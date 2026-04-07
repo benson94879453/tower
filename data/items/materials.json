@@ -53,5 +53,35 @@
 		"sell_price": 20,
 		"description": "通用強化素材，高等級強化必要材料",
 		"available_from_floor": 10
+	},
+	{
+		"id": "core_fire_imp",
+		"name": "火焰小鬼核心",
+		"type": "familiar_core",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 0,
+		"sell_price": 50,
+		"description": "蘊含火焰小鬼靈魂的核心，可在使魔小屋孵化。",
+		"hatches_into": "familiar_fire_imp",
+		"hatch_cost": {
+			"gold": 200
+		}
+	},
+	{
+		"id": "core_ice_guard",
+		"name": "冰霜守衛核心",
+		"type": "familiar_core",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 0,
+		"sell_price": 50,
+		"description": "蘊含冰霜守衛靈魂的核心，可在使魔小屋孵化。",
+		"hatches_into": "familiar_ice_guard",
+		"hatch_cost": {
+			"gold": 200
+		}
 	}
 ]

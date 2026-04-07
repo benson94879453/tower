@@ -191,7 +191,7 @@ func _get_category(item_id: String) -> String:
 	match item_type:
 		"consumable":
 			return "consumable"
-		"material":
+		"material", "familiar_core":
 			return "material"
 		"key_item":
 			return "key_item"

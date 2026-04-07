@@ -42,6 +42,7 @@ var turn_manager
 var _received_enemy_skill_ids: Array[String] = []
 
 var is_boss_battle := false
+var is_elite_battle := false
 var floor_number := 1
 var environment_element := "none"
 
@@ -59,6 +60,7 @@ func start_battle(enemy_ids: Array[String], config: Dictionary = {}) -> void:
 	_received_enemy_skill_ids.clear()
 
 	is_boss_battle = bool(config.get("is_boss", false))
+	is_elite_battle = bool(config.get("is_elite", false))
 	floor_number = int(config.get("floor", 1))
 	environment_element = String(config.get("environment_element", "none"))
 
@@ -66,13 +68,15 @@ func start_battle(enemy_ids: Array[String], config: Dictionary = {}) -> void:
 
 	var familiar_id := String(config.get("familiar_id", ""))
 	var familiar_level := int(config.get("familiar_level", 1))
+	var familiar_skill_ids: Array = Array(config.get("familiar_skill_ids", []))
 	if not familiar_id.is_empty():
-		familiar = CombatantDataClass.from_familiar(familiar_id, familiar_level)
+		familiar = CombatantDataClass.from_familiar(familiar_id, familiar_level, familiar_skill_ids)
 	else:
 		familiar = null
 
 	enemies.clear()
 	for enemy_id in enemy_ids:
+		PlayerManager.discover_enemy(enemy_id)
 		var enemy = CombatantDataClass.from_enemy(enemy_id)
 		if enemy != null:
 			enemies.append(enemy)
@@ -128,6 +132,8 @@ func cleanup() -> void:
 	all_combatants.clear()
 	turn_order.clear()
 	_received_enemy_skill_ids.clear()
+	is_boss_battle = false
+	is_elite_battle = false
 	turn_number = 0
 	battle_ui.set_player_input_enabled(false)
 	_change_state(BattleState.INACTIVE)
@@ -245,9 +251,14 @@ func _process_victory() -> void:
 	var rewards: Dictionary = BattleResultClass.calculate_victory_rewards(
 		enemies,
 		floor_number,
-		_received_enemy_skill_ids
+		_received_enemy_skill_ids,
+		is_boss_battle,
+		is_elite_battle
 	)
 	var level_result: Dictionary = BattleResultClass.apply_victory_rewards(rewards)
+	var familiar_exp: int = int(rewards.get("familiar_exp", 0))
+	if familiar != null and familiar_exp > 0 and PlayerManager.player_data != null:
+		PlayerManager.train_familiar(PlayerManager.player_data.active_familiar_index, familiar_exp)
 	battle_ui.show_victory_result(rewards, level_result)
 
 
