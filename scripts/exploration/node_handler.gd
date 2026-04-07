@@ -26,8 +26,10 @@ static func build_battle_config(floor_number: int, zone_element: String, is_boss
 	var familiar_id: String = String(active_familiar.get("id", ""))
 	var familiar_level: int = int(active_familiar.get("level", 1))
 	var familiar_skill_ids: Array = []
+	var familiar_mode: String = "attack"
 	if not active_familiar.is_empty():
 		familiar_skill_ids = Array(active_familiar.get("skill_ids", [])).duplicate(true)
+		familiar_mode = String(active_familiar.get("mode", "attack"))
 
 	return {
 		"floor": floor_number,
@@ -37,6 +39,7 @@ static func build_battle_config(floor_number: int, zone_element: String, is_boss
 		"familiar_id": familiar_id,
 		"familiar_level": familiar_level,
 		"familiar_skill_ids": familiar_skill_ids,
+		"familiar_mode": familiar_mode,
 	}
 
 

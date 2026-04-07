@@ -301,10 +301,12 @@ func _show_party_detail(entry: Dictionary, familiar_data: Dictionary) -> void:
 	_prepare_detail(entry, familiar_data)
 
 	var level: int = int(entry.get("level", 1))
+	var mode: String = String(entry.get("mode", "attack"))
 	var preview = CombatantDataClass.from_familiar(
 		String(entry.get("id", "")),
 		level,
-		Array(entry.get("skill_ids", []))
+		Array(entry.get("skill_ids", [])),
+		mode
 	)
 	var is_active: bool = (
 		PlayerManager.player_data != null
@@ -315,6 +317,7 @@ func _show_party_detail(entry: Dictionary, familiar_data: Dictionary) -> void:
 		"屬性: %s" % _format_element_name(String(familiar_data.get("element", "none"))),
 		"定位: %s" % _format_role_name(String(familiar_data.get("type", ""))),
 		"出戰狀態: %s" % ("已出戰" if is_active else "待命中"),
+		"AI 模式: %s" % _format_familiar_mode_name(mode),
 	]
 	_append_lines(_detail_desc, description_lines)
 
@@ -337,13 +340,32 @@ func _show_party_detail(entry: Dictionary, familiar_data: Dictionary) -> void:
 	stats_lines.append_array(_build_skill_name_lines(Array(entry.get("skill_ids", []))))
 	_append_lines(_detail_stats, stats_lines)
 
-	_footer_label.text = "目前僅可出戰 1 隻使魔"
+	_footer_label.text = "目前僅可出戰 1 隻使魔%s" % ("，可調整 AI 模式" if is_active else "")
 
 	var action_button := Button.new()
 	action_button.custom_minimum_size = Vector2(120, 40)
 	action_button.text = "取消出戰" if is_active else "設為出戰"
 	action_button.pressed.connect(_on_party_button_pressed.bind(_selected_index, is_active))
 	_action_container.add_child(action_button)
+
+	if is_active:
+		var mode_box := VBoxContainer.new()
+		mode_box.add_theme_constant_override("separation", 4)
+
+		var mode_label := Label.new()
+		mode_label.text = "AI 模式"
+		mode_box.add_child(mode_label)
+
+		var mode_option := OptionButton.new()
+		mode_option.custom_minimum_size = Vector2(120, 40)
+		mode_option.add_item("攻擊")
+		mode_option.add_item("防禦")
+		mode_option.add_item("輔助")
+		mode_option.add_item("待命")
+		mode_option.select(_familiar_mode_to_option_index(mode))
+		mode_option.item_selected.connect(_on_familiar_mode_selected.bind(_selected_index))
+		mode_box.add_child(mode_option)
+		_action_container.add_child(mode_box)
 
 
 func _prepare_detail(entry: Dictionary, familiar_data: Dictionary) -> void:
@@ -430,6 +452,18 @@ func _on_party_button_pressed(index: int, is_active: bool) -> void:
 	else:
 		detail = "%s 設為出戰" % familiar_name
 	familiar_action_performed.emit("party", detail)
+	_refresh_list()
+
+
+func _on_familiar_mode_selected(option_index: int, familiar_index: int) -> void:
+	var mode: String = _option_index_to_familiar_mode(option_index)
+	PlayerManager.set_familiar_mode(familiar_index, mode)
+
+	var entry: Dictionary = PlayerManager.get_familiar_instance(familiar_index)
+	var familiar_data: Dictionary = DataManager.get_familiar(String(entry.get("id", "")))
+	var familiar_name: String = _get_display_name(entry, familiar_data)
+	var detail: String = "%s AI 模式切換為 %s" % [familiar_name, _format_familiar_mode_name(mode)]
+	familiar_action_performed.emit("mode", detail)
 	_refresh_list()
 
 
@@ -768,6 +802,42 @@ func _format_role_name(role: String) -> String:
 			return "支援型"
 		_:
 			return role if not role.is_empty() else "未知"
+
+
+func _format_familiar_mode_name(mode: String) -> String:
+	match mode:
+		"defend":
+			return "防禦"
+		"support":
+			return "輔助"
+		"standby":
+			return "待命"
+		_:
+			return "攻擊"
+
+
+func _familiar_mode_to_option_index(mode: String) -> int:
+	match mode:
+		"defend":
+			return 1
+		"support":
+			return 2
+		"standby":
+			return 3
+		_:
+			return 0
+
+
+func _option_index_to_familiar_mode(option_index: int) -> String:
+	match option_index:
+		1:
+			return "defend"
+		2:
+			return "support"
+		3:
+			return "standby"
+		_:
+			return "attack"
 
 
 func _format_hatch_failure_reason(reason: String) -> String:

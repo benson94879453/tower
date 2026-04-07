@@ -1,0 +1,63 @@
+[
+	{
+		"id": "side_herb_collection",
+		"name": "消失的藥草",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 1,
+		"description": "酒館女侍希望你幫忙蒐集 5 份藥草，好替受傷的冒險者準備藥湯。",
+		"objectives": [
+			{ "type": "collect", "item_id": "mat_herb", "count": 5 }
+		],
+		"rewards": {
+			"gold": 250,
+			"exp": 120,
+			"items": [
+				{ "id": "item_hp_potion_m", "count": 2 }
+			],
+			"skills": [
+				"skill_heal"
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_smith_challenge",
+		"name": "鍛造大師的挑戰",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 1,
+		"description": "替酒館常客的鐵匠蒐集 10 塊鐵礦石，看看他願不願意拿出壓箱寶。",
+		"objectives": [
+			{ "type": "collect", "item_id": "mat_iron_ore", "count": 10 }
+		],
+		"rewards": {
+			"gold": 350,
+			"exp": 180,
+			"items": [
+				{ "id": "mat_enhance_stone", "count": 3 }
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_familiar_rescue",
+		"name": "迷路的使魔",
+		"type": "side",
+		"trigger": "reach_floor",
+		"trigger_floor": 5,
+		"description": "有人在 5F 之後看見迷路的使魔蹤跡。請一路追查到 8F，並擊退附近的冰霜精靈。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 8, "count": 1 },
+			{ "type": "kill", "target_id": "enemy_ice_sprite", "count": 3 }
+		],
+		"rewards": {
+			"gold": 500,
+			"exp": 250,
+			"items": [
+				{ "id": "core_ice_guard", "count": 1 }
+			]
+		},
+		"repeatable": false
+	}
+]

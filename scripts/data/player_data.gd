@@ -44,3 +44,7 @@ extends Resource
 @export var discovered_familiar_ids: Array[String] = []
 @export var discovered_item_ids: Array[String] = []
 @export var discovered_enemy_ids: Array[String] = []
+@export var active_quests: Array[Dictionary] = []
+@export var completed_quests: Array[String] = []
+@export var battle_victories: int = 0
+@export var skill_element_usage: Dictionary = {}

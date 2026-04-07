@@ -2,7 +2,9 @@ class_name BattleManager
 extends Node
 
 const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
+const AccessoryProcessorClass = preload("res://scripts/battle/accessory_processor.gd")
 const BattleResultClass = preload("res://scripts/battle/battle_result.gd")
+const PassiveProcessorClass = preload("res://scripts/battle/passive_processor.gd")
 const TurnManagerClass = preload("res://scripts/battle/turn_manager.gd")
 
 enum BattleState {
@@ -49,10 +51,17 @@ var environment_element := "none"
 @onready var battle_ui = $BattleUI
 
 
-func start_battle(enemy_ids: Array[String], config: Dictionary = {}) -> void:
+func start_battle(enemy_ids: Array, config: Dictionary = {}) -> void:
 	if battle_state != BattleState.INACTIVE:
 		push_warning("Battle already in progress")
 		return
+
+	var normalized_enemy_ids: Array[String] = []
+	for raw_enemy_id in enemy_ids:
+		var enemy_id: String = String(raw_enemy_id).strip_edges()
+		if enemy_id.is_empty():
+			continue
+		normalized_enemy_ids.append(enemy_id)
 
 	_change_state(BattleState.STARTING)
 	turn_number = 0
@@ -69,13 +78,14 @@ func start_battle(enemy_ids: Array[String], config: Dictionary = {}) -> void:
 	var familiar_id := String(config.get("familiar_id", ""))
 	var familiar_level := int(config.get("familiar_level", 1))
 	var familiar_skill_ids: Array = Array(config.get("familiar_skill_ids", []))
+	var familiar_mode: String = String(config.get("familiar_mode", "attack"))
 	if not familiar_id.is_empty():
-		familiar = CombatantDataClass.from_familiar(familiar_id, familiar_level, familiar_skill_ids)
+		familiar = CombatantDataClass.from_familiar(familiar_id, familiar_level, familiar_skill_ids, familiar_mode)
 	else:
 		familiar = null
 
 	enemies.clear()
-	for enemy_id in enemy_ids:
+	for enemy_id in normalized_enemy_ids:
 		PlayerManager.discover_enemy(enemy_id)
 		var enemy = CombatantDataClass.from_enemy(enemy_id)
 		if enemy != null:
@@ -92,6 +102,23 @@ func start_battle(enemy_ids: Array[String], config: Dictionary = {}) -> void:
 
 	turn_manager = TurnManagerClass.new()
 	turn_manager._battle_manager = self
+
+	AccessoryProcessorClass.reset_battle_state()
+	var passive_logs: Array[Dictionary] = PassiveProcessorClass.on_battle_start(player, familiar)
+	var accessory_logs: Array[Dictionary] = AccessoryProcessorClass.on_battle_start(player, familiar)
+	battle_ui.refresh_all_displays()
+	for raw_log in passive_logs:
+		var log_entry: Dictionary = raw_log
+		battle_ui.add_log(
+			String(log_entry.get("text", "")),
+			log_entry.get("color", Color.WHITE)
+		)
+	for raw_log in accessory_logs:
+		var log_entry: Dictionary = raw_log
+		battle_ui.add_log(
+			String(log_entry.get("text", "")),
+			log_entry.get("color", Color.WHITE)
+		)
 
 	battle_started.emit()
 	turn_number = 1
@@ -256,9 +283,25 @@ func _process_victory() -> void:
 		is_elite_battle
 	)
 	var level_result: Dictionary = BattleResultClass.apply_victory_rewards(rewards)
+	if PlayerManager.player_data != null:
+		PlayerManager.player_data.battle_victories += 1
+	if QuestManager != null:
+		for enemy in enemies:
+			if enemy == null:
+				continue
+			QuestManager.on_enemy_defeated(String(enemy.id))
+		if is_boss_battle:
+			QuestManager.on_boss_defeated(floor_number)
 	var familiar_exp: int = int(rewards.get("familiar_exp", 0))
+	if familiar_exp > 0:
+		var title_bonuses: Dictionary = PlayerManager.get_title_bonuses()
+		var familiar_exp_bonus_percent: int = int(title_bonuses.get("familiar_exp_bonus_percent", 0))
+		if familiar_exp_bonus_percent != 0:
+			familiar_exp = max(1, int(round(float(familiar_exp) * (1.0 + float(familiar_exp_bonus_percent) / 100.0))))
+			rewards["familiar_exp"] = familiar_exp
 	if familiar != null and familiar_exp > 0 and PlayerManager.player_data != null:
 		PlayerManager.train_familiar(PlayerManager.player_data.active_familiar_index, familiar_exp)
+	PlayerManager.check_title_unlocks()
 	battle_ui.show_victory_result(rewards, level_result)
 
 

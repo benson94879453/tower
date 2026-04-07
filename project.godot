@@ -20,9 +20,15 @@ config/icon="res://icon.svg"
 GameManager="*res://scripts/autoload/game_manager.gd"
 DataManager="*res://scripts/autoload/data_manager.gd"
 PlayerManager="*res://scripts/autoload/player_manager.gd"
+QuestManager="*res://scripts/autoload/quest_manager.gd"
 SaveManager="*res://scripts/autoload/save_manager.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 SceneManager="*res://scripts/autoload/scene_manager.gd"
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
 
 [gui]
 

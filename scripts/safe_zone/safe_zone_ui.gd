@@ -7,6 +7,7 @@ const ShopPanelClass = preload("res://scripts/safe_zone/shop_panel.gd")
 const ForgePanelClass = preload("res://scripts/safe_zone/forge_panel.gd")
 const FamiliarHousePanelClass = preload("res://scripts/safe_zone/familiar_house_panel.gd")
 const LibraryPanelClass = preload("res://scripts/safe_zone/library_panel.gd")
+const TavernPanelClass = preload("res://scripts/safe_zone/tavern_panel.gd")
 
 signal explore_requested(floor_number: int)
 signal teleport_requested(floor_number: int)
@@ -20,6 +21,7 @@ var _shop_panel = null
 var _forge_panel = null
 var _familiar_house_panel = null
 var _library_panel = null
+var _tavern_panel = null
 
 @onready var zone_label: Label = $ZoneLabel
 @onready var status_label: RichTextLabel = $StatusPanel/StatusLabel
@@ -28,6 +30,7 @@ var _library_panel = null
 @onready var forge_button: Button = $ActionContainer/ForgeButton
 @onready var familiar_button: Button = $ActionContainer/FamiliarButton
 @onready var library_button: Button = $ActionContainer/LibraryButton
+@onready var tavern_button: Button = $ActionContainer/TavernButton
 @onready var explore_button: Button = $ActionContainer/ExploreButton
 @onready var teleport_button: Button = $ActionContainer/TeleportButton
 @onready var rest_button: Button = $ActionContainer/RestButton
@@ -43,6 +46,7 @@ func _ready() -> void:
 	forge_button.pressed.connect(_on_forge_pressed)
 	familiar_button.pressed.connect(_on_familiar_pressed)
 	library_button.pressed.connect(_on_library_pressed)
+	tavern_button.pressed.connect(_on_tavern_pressed)
 	explore_button.pressed.connect(_on_explore_pressed)
 	teleport_button.pressed.connect(_on_teleport_pressed)
 	rest_button.pressed.connect(_request_rest)
@@ -85,6 +89,7 @@ func _update_status() -> void:
 	status_label.append_text("HP: %d/%d\n" % [pd.current_hp, PlayerManager.get_max_hp()])
 	status_label.append_text("MP: %d/%d\n" % [pd.current_mp, PlayerManager.get_max_mp()])
 	status_label.append_text("金幣: %d\n" % pd.gold)
+	status_label.append_text("稱號: %s\n" % String(pd.title))
 	status_label.append_text("使魔: %s\n" % _get_active_familiar_status())
 	status_label.append_text("最高樓層: %dF" % pd.highest_floor)
 	status_label.pop()
@@ -209,6 +214,29 @@ func _close_library_panel() -> void:
 	_library_panel = null
 
 
+func _on_tavern_pressed() -> void:
+	if _has_open_panel():
+		return
+
+	_tavern_panel = TavernPanelClass.new()
+	_tavern_panel.position = Vector2(60, 30)
+	add_child(_tavern_panel)
+	_tavern_panel.setup(current_safe_floor)
+	_tavern_panel.panel_closed.connect(_close_tavern_panel)
+	_tavern_panel.quest_action_performed.connect(_on_tavern_action)
+
+
+func _close_tavern_panel() -> void:
+	if _tavern_panel != null:
+		_tavern_panel.queue_free()
+	_tavern_panel = null
+	_update_status()
+
+
+func _on_tavern_action(_action: String, _detail: String) -> void:
+	_update_status()
+
+
 func _on_teleport_pressed() -> void:
 	for child in teleport_list.get_children():
 		child.queue_free()
@@ -239,6 +267,8 @@ func _on_teleport_pressed() -> void:
 
 
 func _request_rest() -> void:
+	if QuestManager != null:
+		QuestManager.refresh_bounty_board(current_safe_floor)
 	if get_signal_connection_list("rest_requested").is_empty():
 		if PlayerManager.player_data != null:
 			PlayerManager.player_data.current_hp = PlayerManager.get_max_hp()
@@ -285,7 +315,7 @@ func _is_safe_floor(floor_number: int) -> bool:
 
 func _has_open_panel() -> bool:
 	return _inventory_panel != null or _shop_panel != null or _forge_panel != null \
-		or _familiar_house_panel != null or _library_panel != null
+		or _familiar_house_panel != null or _library_panel != null or _tavern_panel != null
 
 
 func _get_active_familiar_status() -> String:

@@ -8,6 +8,7 @@ var _items: Dictionary = {}
 var _familiars: Dictionary = {}
 var _events: Dictionary = {}
 var _quests: Dictionary = {}
+var _titles: Dictionary = {}
 var _recipes: Dictionary = {}
 var _floor_config: Dictionary = {}
 
@@ -19,6 +20,7 @@ func load_all_data() -> void:
 	_familiars.clear()
 	_events.clear()
 	_quests.clear()
+	_titles.clear()
 	_recipes.clear()
 	_floor_config.clear()
 
@@ -28,6 +30,7 @@ func load_all_data() -> void:
 	_load_directory("res://data/familiars/", _familiars)
 	_load_directory("res://data/events/", _events)
 	_load_directory("res://data/quests/", _quests)
+	_load_directory("res://data/titles/", _titles)
 	_load_directory("res://data/recipes/", _recipes)
 	_load_directory("res://data/floors/", _floor_config)
 
@@ -114,6 +117,10 @@ func get_quest(id: String) -> Dictionary:
 	return _quests.get(id, {})
 
 
+func get_title(id: String) -> Dictionary:
+	return _titles.get(id, {})
+
+
 func get_recipe(id: String) -> Dictionary:
 	return _recipes.get(id, {})
 
@@ -136,6 +143,14 @@ func get_all_enemies() -> Array[Dictionary]:
 
 func get_all_familiars() -> Array[Dictionary]:
 	return _dictionary_values_sorted(_familiars)
+
+
+func get_all_quests() -> Array[Dictionary]:
+	return _dictionary_values_sorted(_quests)
+
+
+func get_all_titles() -> Array[Dictionary]:
+	return _dictionary_values_sorted(_titles)
 
 
 func get_skills_by_element(element: String) -> Array[Dictionary]:

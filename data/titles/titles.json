@@ -1,0 +1,67 @@
+[
+  {
+    "id": "見習法師",
+    "condition": { "type": "initial" },
+    "effects": {}
+  },
+  {
+    "id": "火焰使者",
+    "condition": { "type": "element_usage", "element": "fire", "count": 500 },
+    "effects": { "element_damage_bonus": { "fire": 10 } }
+  },
+  {
+    "id": "冰霜使者",
+    "condition": { "type": "element_usage", "element": "water", "count": 500 },
+    "effects": { "element_damage_bonus": { "water": 10 } }
+  },
+  {
+    "id": "雷霆使者",
+    "condition": { "type": "element_usage", "element": "thunder", "count": 500 },
+    "effects": { "element_damage_bonus": { "thunder": 10 } }
+  },
+  {
+    "id": "元素大師",
+    "condition": { "type": "has_titles", "titles": ["火焰使者", "冰霜使者", "雷霆使者"] },
+    "effects": { "element_damage_bonus": { "all": 5 } }
+  },
+  {
+    "id": "百戰法師",
+    "condition": { "type": "battle_victories", "count": 500 },
+    "effects": { "exp_bonus_percent": 10 }
+  },
+  {
+    "id": "千戰鬥神",
+    "condition": { "type": "battle_victories", "count": 1000 },
+    "effects": { "atk_bonus_percent": 5 }
+  },
+  {
+    "id": "收集家",
+    "condition": { "type": "skill_discovery_percent", "percent": 50 },
+    "effects": { "drop_rate_bonus": 10 }
+  },
+  {
+    "id": "探索者",
+    "condition": { "type": "highest_floor", "floor": 50 },
+    "effects": { "all_stats_percent": 2 }
+  },
+  {
+    "id": "使魔之友",
+    "condition": { "type": "familiar_count", "count": 10 },
+    "effects": { "familiar_exp_bonus_percent": 20 }
+  },
+  {
+    "id": "登頂者",
+    "condition": { "type": "highest_floor", "floor": 101 },
+    "effects": { "all_stats_percent": 3 }
+  },
+  {
+    "id": "魔法宗師",
+    "condition": { "type": "level", "level": 99 },
+    "effects": { "all_stats_percent": 5 }
+  },
+  {
+    "id": "完美主義者",
+    "condition": { "type": "all_achievements" },
+    "effects": { "all_stats_percent": 10 }
+  }
+]

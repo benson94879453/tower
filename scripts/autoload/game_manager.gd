@@ -127,6 +127,8 @@ func start_exploration(floor_number: int) -> void:
 
 	var scene = SceneManager.get_current_scene()
 	if scene != null and scene.has_method("enter_floor"):
+		if scene.has_signal("floor_entered"):
+			scene.floor_entered.connect(_on_floor_entered, CONNECT_ONE_SHOT)
 		if scene.has_signal("floor_completed"):
 			scene.floor_completed.connect(_on_floor_completed, CONNECT_ONE_SHOT)
 		if scene.has_signal("exploration_ended"):
@@ -178,6 +180,11 @@ func _on_explore_requested(floor_number: int) -> void:
 	start_exploration(floor_number)
 
 
+func _on_floor_entered(floor_number: int) -> void:
+	if QuestManager != null:
+		QuestManager.on_floor_reached(floor_number)
+
+
 func _on_teleport_requested(floor_number: int) -> void:
 	go_to_safe_zone(floor_number)
 
@@ -200,6 +207,8 @@ func _on_floor_completed(floor_number: int) -> void:
 	if PlayerManager.player_data != null and _is_boss_floor(floor_number):
 		if not PlayerManager.player_data.defeated_bosses.has(floor_number):
 			PlayerManager.player_data.defeated_bosses.append(floor_number)
+	if PlayerManager.player_data != null:
+		PlayerManager.check_title_unlocks()
 	advance_to_next_floor(floor_number)
 
 

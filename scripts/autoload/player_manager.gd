@@ -26,6 +26,8 @@ const GROWTH_PER_LEVEL := {
 	"base_speed": 1,
 }
 const FAMILIAR_ROSTER_LIMIT := 10
+const DEFAULT_TITLE_ID := "見習法師"
+const SKILL_LEVEL_THRESHOLDS := [0, 50, 120, 250]
 const SAVE_FIELDS := [
 	"name",
 	"level",
@@ -58,11 +60,15 @@ const SAVE_FIELDS := [
 	"defeated_bosses",
 	"title",
 	"titles_unlocked",
+	"battle_victories",
+	"skill_element_usage",
 	"owned_familiars",
 	"active_familiar_index",
 	"discovered_familiar_ids",
 	"discovered_item_ids",
 	"discovered_enemy_ids",
+	"active_quests",
+	"completed_quests",
 ]
 
 var player_data: PlayerDataResource
@@ -76,13 +82,36 @@ func _ready() -> void:
 		init_new_game()
 
 
+func _setup_initial_skills() -> void:
+	# Give player basic starting skills
+	var initial_skills = ["skill_fireball", "skill_spark", "skill_heal"]
+	
+	for skill_id in initial_skills:
+		learn_skill(skill_id)
+	
+	# Equip first few skills to active slots (up to 4)
+	var active_slots = min(initial_skills.size(), 4)
+	for i in range(active_slots):
+		equip_active_skill(initial_skills[i], i)
+
+
 func init_new_game() -> void:
 	player_data = PlayerDataResource.new()
 	inventory = InventoryClass.new()
 	player_data.inventory_data = inventory.to_save_dict()
 	_active_buffs.clear()
 	_last_unequipped_enhance = 0
+	
+	# Give player initial skills for new game
+	_setup_initial_skills()
+	
+	# Give player starting resources
+	player_data.gold = 500  # Starting gold
+	
+	_normalize_skill_proficiency()
 	_normalize_collection_progress()
+	_normalize_quest_progress()
+	_normalize_title_progress()
 	_normalize_owned_familiars()
 	_clamp_resources()
 	_emit_resource_signals()
@@ -101,8 +130,43 @@ func load_from_save(save_dict: Dictionary) -> void:
 	for field_name in SAVE_FIELDS:
 		if not source.has(field_name):
 			continue
+		if not _has_player_data_property(field_name):
+			continue
 
 		var value = source[field_name]
+		if field_name == "owned_familiars":
+			_set_owned_familiars(_coerce_familiar_roster(value))
+			continue
+		if field_name == "active_familiar_index":
+			player_data.active_familiar_index = int(value)
+			continue
+		if field_name == "skill_proficiency":
+			player_data.skill_proficiency = _coerce_skill_proficiency_map(value)
+			continue
+		if field_name == "skill_element_usage":
+			player_data.skill_element_usage = _coerce_element_usage_map(value)
+			continue
+		if field_name == "discovered_familiar_ids":
+			player_data.discovered_familiar_ids = _coerce_string_array(value)
+			continue
+		if field_name == "discovered_item_ids":
+			player_data.discovered_item_ids = _coerce_string_array(value)
+			continue
+		if field_name == "discovered_enemy_ids":
+			player_data.discovered_enemy_ids = _coerce_string_array(value)
+			continue
+		if field_name == "active_quests":
+			player_data.active_quests = _coerce_active_quests(value)
+			continue
+		if field_name == "completed_quests":
+			player_data.completed_quests = _coerce_string_array(value)
+			continue
+		if field_name == "titles_unlocked":
+			player_data.titles_unlocked = _coerce_string_array(value)
+			continue
+		if field_name == "title":
+			player_data.title = String(value)
+			continue
 		if value is Array or value is Dictionary:
 			player_data.set(field_name, value.duplicate(true))
 		else:
@@ -118,10 +182,14 @@ func load_from_save(save_dict: Dictionary) -> void:
 	player_data.inventory_data = inventory.to_save_dict()
 
 	_active_buffs.clear()
+	_normalize_skill_proficiency()
 	_normalize_collection_progress()
+	_normalize_quest_progress()
+	_normalize_title_progress()
 	_backfill_item_discovery_from_inventory()
 	_normalize_owned_familiars()
 	_clamp_resources()
+	check_title_unlocks()
 	_emit_resource_signals()
 	player_gold_changed.emit(player_data.gold)
 
@@ -132,7 +200,10 @@ func to_save_dict() -> Dictionary:
 	if inventory == null:
 		inventory = InventoryClass.new()
 
+	_normalize_skill_proficiency()
 	_normalize_collection_progress()
+	_normalize_quest_progress()
+	_normalize_title_progress()
 	_backfill_item_discovery_from_inventory()
 	_normalize_owned_familiars()
 
@@ -268,6 +339,8 @@ func add_item(item_id: String, amount: int = 1) -> bool:
 		player_data.inventory_data = inventory.to_save_dict()
 		discover_item(item_id)
 		item_added.emit(item_id, amount)
+		if QuestManager != null:
+			QuestManager.call_deferred("on_item_changed")
 	return result
 
 
@@ -277,6 +350,8 @@ func remove_item(item_id: String, amount: int = 1) -> bool:
 	if result:
 		player_data.inventory_data = inventory.to_save_dict()
 		item_removed.emit(item_id, amount)
+		if QuestManager != null:
+			QuestManager.call_deferred("on_item_changed")
 	return result
 
 
@@ -302,6 +377,7 @@ func add_familiar(familiar_id: String) -> int:
 
 	player_data.owned_familiars.append(familiar_entry)
 	discover_familiar(familiar_id)
+	check_title_unlocks()
 	var new_index: int = player_data.owned_familiars.size() - 1
 	familiar_added.emit(new_index)
 	return new_index
@@ -322,6 +398,7 @@ func remove_familiar(index: int) -> bool:
 		player_data.active_familiar_index -= 1
 		active_familiar_changed.emit(player_data.active_familiar_index)
 
+	check_title_unlocks()
 	familiar_removed.emit(index)
 	return true
 
@@ -450,6 +527,14 @@ func set_active_familiar(index: int) -> void:
 
 	player_data.active_familiar_index = index
 	active_familiar_changed.emit(index)
+
+
+func set_familiar_mode(index: int, mode: String) -> void:
+	_ensure_player_data()
+	if not _is_valid_familiar_index(index):
+		return
+
+	player_data.owned_familiars[index]["mode"] = _normalize_familiar_mode_string(mode)
 
 
 func train_familiar(index: int, exp_amount: int) -> Dictionary:
@@ -678,6 +763,95 @@ func learn_skill(skill_id: String) -> void:
 
 	if not player_data.learned_skill_ids.has(skill_id):
 		player_data.learned_skill_ids.append(skill_id)
+	if not player_data.skill_proficiency.has(skill_id):
+		player_data.skill_proficiency[skill_id] = 0
+	check_title_unlocks()
+
+
+func research_skill(skill_id: String) -> Dictionary:
+	_ensure_player_data()
+
+	var skill_data: Dictionary = DataManager.get_skill(skill_id)
+	var skill_name: String = String(skill_data.get("name", skill_id))
+	var base_result: Dictionary = {
+		"success": false,
+		"reason": "",
+		"skill_id": skill_id,
+		"skill_name": skill_name,
+		"missing_prereqs": [],
+		"missing_items": [],
+	}
+
+	if skill_id.is_empty() or skill_data.is_empty():
+		base_result["reason"] = "no_research_data"
+		return base_result
+
+	if player_data.learned_skill_ids.has(skill_id):
+		base_result["reason"] = "already_learned"
+		return base_result
+
+	var research_cost: Dictionary = Dictionary(skill_data.get("research_cost", {}))
+	if research_cost.is_empty():
+		base_result["reason"] = "no_research_data"
+		return base_result
+
+	var missing_prereqs: Array[String] = []
+	for raw_prereq in Array(research_cost.get("prerequisite_skills", [])):
+		var prereq_id: String = String(raw_prereq).strip_edges()
+		if prereq_id.is_empty():
+			continue
+		if player_data.learned_skill_ids.has(prereq_id):
+			continue
+		missing_prereqs.append(prereq_id)
+	if not missing_prereqs.is_empty():
+		base_result["reason"] = "prerequisite_missing"
+		base_result["missing_prereqs"] = missing_prereqs
+		return base_result
+
+	var gold_cost: int = max(int(research_cost.get("gold", 0)), 0)
+	if player_data.gold < gold_cost:
+		base_result["reason"] = "not_enough_gold"
+		return base_result
+
+	var required_items: Array = Array(research_cost.get("items", []))
+	var missing_items: Array[Dictionary] = _collect_missing_skill_items(required_items)
+	if not missing_items.is_empty():
+		base_result["reason"] = "missing_items"
+		base_result["missing_items"] = missing_items
+		return base_result
+
+	var spent_gold: bool = false
+	if gold_cost > 0:
+		if not spend_gold(gold_cost):
+			base_result["reason"] = "not_enough_gold"
+			return base_result
+		spent_gold = true
+
+	var consumed_items: Array[Dictionary] = []
+	for raw_item in required_items:
+		if raw_item is not Dictionary:
+			continue
+		var required_item: Dictionary = raw_item
+		var item_id: String = String(required_item.get("id", "")).strip_edges()
+		var count: int = max(int(required_item.get("count", 0)), 0)
+		if item_id.is_empty() or count <= 0:
+			continue
+		if remove_item(item_id, count):
+			consumed_items.append({"id": item_id, "count": count})
+			continue
+
+		for consumed in consumed_items:
+			add_item(String(consumed.get("id", "")), int(consumed.get("count", 0)))
+		if spent_gold:
+			add_gold(gold_cost)
+		base_result["reason"] = "missing_items"
+		base_result["missing_items"] = _collect_missing_skill_items(required_items)
+		return base_result
+
+	learn_skill(skill_id)
+	base_result["success"] = true
+	base_result["reason"] = ""
+	return base_result
 
 
 func equip_active_skill(skill_id: String, slot: int) -> void:
@@ -689,6 +863,243 @@ func equip_active_skill(skill_id: String, slot: int) -> void:
 		player_data.active_skill_ids.append("")
 
 	player_data.active_skill_ids[slot] = skill_id
+
+
+func add_skill_proficiency(skill_id: String, amount: int) -> Dictionary:
+	_ensure_player_data()
+	var old_total: int = _get_skill_proficiency_total(skill_id)
+	var gained: int = max(amount, 0)
+	var new_total: int = old_total
+	if not skill_id.is_empty() and gained > 0:
+		new_total += gained
+		player_data.skill_proficiency[skill_id] = new_total
+
+	var old_level: int = _skill_level_from_proficiency(old_total)
+	var new_level: int = _skill_level_from_proficiency(new_total)
+	return {
+		"skill_id": skill_id,
+		"gained": gained,
+		"total": new_total,
+		"old_level": old_level,
+		"new_level": new_level,
+		"leveled_up": new_level > old_level,
+	}
+
+
+func get_skill_level(skill_id: String) -> int:
+	_ensure_player_data()
+	return _skill_level_from_proficiency(_get_skill_proficiency_total(skill_id))
+
+
+func record_skill_element_usage(element: String, amount: int = 1) -> void:
+	_ensure_player_data()
+	var normalized: String = _normalize_title_element(String(element))
+	var gained: int = max(amount, 0)
+	if normalized == "none" or gained <= 0:
+		return
+	player_data.skill_element_usage[normalized] = int(player_data.skill_element_usage.get(normalized, 0)) + gained
+	check_title_unlocks()
+
+
+func check_title_unlocks() -> Array[String]:
+	_ensure_player_data()
+	_normalize_title_progress()
+	var unlocked_now: Array[String] = []
+	for title_data in DataManager.get_all_titles():
+		var title_id: String = String(title_data.get("id", "")).strip_edges()
+		if title_id.is_empty() or player_data.titles_unlocked.has(title_id):
+			continue
+		if not _is_title_condition_met(Dictionary(title_data.get("condition", {}))):
+			continue
+		player_data.titles_unlocked.append(title_id)
+		unlocked_now.append(title_id)
+
+	player_data.titles_unlocked = _sanitize_string_array(player_data.titles_unlocked)
+	if not player_data.titles_unlocked.has(player_data.title):
+		player_data.title = player_data.titles_unlocked[0] if not player_data.titles_unlocked.is_empty() else DEFAULT_TITLE_ID
+	return unlocked_now
+
+
+func set_active_title(title_id: String) -> bool:
+	_ensure_player_data()
+	var normalized_title: String = title_id.strip_edges()
+	if normalized_title.is_empty() or not player_data.titles_unlocked.has(normalized_title):
+		return false
+	player_data.title = normalized_title
+	return true
+
+
+func get_title_bonuses() -> Dictionary:
+	_ensure_player_data()
+	_normalize_title_progress()
+	var bonuses: Dictionary = {
+		"element_damage_bonus": {},
+		"exp_bonus_percent": 0,
+		"all_stats_percent": 0,
+		"drop_rate_bonus": 0,
+		"atk_bonus_percent": 0,
+		"familiar_exp_bonus_percent": 0,
+	}
+	var title_data: Dictionary = DataManager.get_title(player_data.title)
+	if title_data.is_empty():
+		return bonuses
+
+	var effects: Dictionary = Dictionary(title_data.get("effects", {}))
+	var raw_element_bonuses: Dictionary = Dictionary(effects.get("element_damage_bonus", {}))
+	var element_bonuses: Dictionary = {}
+	for raw_key in raw_element_bonuses.keys():
+		var key: String = _normalize_title_element(String(raw_key))
+		if key == "none" and String(raw_key) != "all":
+			continue
+		element_bonuses[key if String(raw_key) != "all" else "all"] = int(raw_element_bonuses.get(raw_key, 0))
+	bonuses["element_damage_bonus"] = element_bonuses
+	bonuses["exp_bonus_percent"] = int(effects.get("exp_bonus_percent", 0))
+	bonuses["all_stats_percent"] = int(effects.get("all_stats_percent", 0))
+	bonuses["drop_rate_bonus"] = int(effects.get("drop_rate_bonus", 0))
+	bonuses["atk_bonus_percent"] = int(effects.get("atk_bonus_percent", 0))
+	bonuses["familiar_exp_bonus_percent"] = int(effects.get("familiar_exp_bonus_percent", 0))
+	return bonuses
+
+
+func can_mutate_skill(skill_id: String) -> Dictionary:
+	_ensure_player_data()
+	var proficiency: int = _get_skill_proficiency_total(skill_id)
+	var skill_data: Dictionary = DataManager.get_skill(skill_id)
+	if skill_id.is_empty() or skill_data.is_empty() or not player_data.learned_skill_ids.has(skill_id):
+		return {
+			"can_mutate": false,
+			"reason": "not_learned",
+			"branches": [],
+			"proficiency": proficiency,
+		}
+
+	var current_level: int = _skill_level_from_proficiency(proficiency)
+	var branches: Array[Dictionary] = _build_skill_mutation_branches(skill_data, proficiency)
+	var mutations: Dictionary = Dictionary(skill_data.get("mutations", {}))
+	if mutations.is_empty():
+		return {
+			"can_mutate": false,
+			"reason": "no_mutations",
+			"branches": branches,
+			"proficiency": proficiency,
+		}
+
+	if current_level < SKILL_LEVEL_THRESHOLDS.size():
+		return {
+			"can_mutate": false,
+			"reason": "not_max",
+			"branches": branches,
+			"proficiency": proficiency,
+		}
+
+	var can_mutate: bool = false
+	for branch in branches:
+		if bool(branch.get("ready", false)):
+			can_mutate = true
+			break
+
+	return {
+		"can_mutate": can_mutate,
+		"reason": "",
+		"branches": branches,
+		"proficiency": proficiency,
+	}
+
+
+func mutate_skill(skill_id: String, branch: String) -> Dictionary:
+	_ensure_player_data()
+	var can_result: Dictionary = can_mutate_skill(skill_id)
+	var old_skill_name: String = skill_id
+	if not bool(can_result.get("can_mutate", false)):
+		var reason: String = String(can_result.get("reason", ""))
+		if reason != "":
+			return {
+				"success": false,
+				"reason": reason,
+				"old_skill": skill_id,
+				"new_skill": "",
+				"new_name": "",
+			}
+
+	var selected_branch: Dictionary = _get_mutation_branch_result(can_result, branch)
+	if selected_branch.is_empty():
+		return {
+			"success": false,
+			"reason": "invalid_branch",
+			"old_skill": skill_id,
+			"new_skill": "",
+			"new_name": "",
+		}
+
+	var target_id: String = String(selected_branch.get("id", ""))
+	var target_name: String = String(selected_branch.get("name", target_id))
+	var target_data: Dictionary = DataManager.get_skill(target_id)
+	if target_id.is_empty() or target_data.is_empty():
+		return {
+			"success": false,
+			"reason": "target_not_found",
+			"old_skill": skill_id,
+			"new_skill": target_id,
+			"new_name": target_name,
+		}
+
+	if not bool(selected_branch.get("has_items", false)):
+		return {
+			"success": false,
+			"reason": "missing_items",
+			"old_skill": skill_id,
+			"new_skill": target_id,
+			"new_name": target_name,
+		}
+	if not bool(selected_branch.get("meets_proficiency", false)):
+		return {
+			"success": false,
+			"reason": "not_enough_proficiency",
+			"old_skill": skill_id,
+			"new_skill": target_id,
+			"new_name": target_name,
+		}
+
+	var mutation_items: Array = Array(selected_branch.get("required_items", []))
+	var consumed_items: Array[Dictionary] = []
+	for raw_item in mutation_items:
+		if raw_item is not Dictionary:
+			continue
+		var required_item: Dictionary = raw_item
+		var item_id: String = String(required_item.get("id", ""))
+		var count: int = max(int(required_item.get("count", 0)), 0)
+		if item_id.is_empty() or count <= 0:
+			continue
+		if remove_item(item_id, count):
+			consumed_items.append({"id": item_id, "count": count})
+			continue
+
+		for consumed in consumed_items:
+			add_item(String(consumed.get("id", "")), int(consumed.get("count", 0)))
+		return {
+			"success": false,
+			"reason": "missing_items",
+			"old_skill": skill_id,
+			"new_skill": target_id,
+			"new_name": target_name,
+		}
+
+	player_data.learned_skill_ids = _remove_skill_from_list(player_data.learned_skill_ids, skill_id)
+	learn_skill(target_id)
+	for index in range(player_data.active_skill_ids.size()):
+		if String(player_data.active_skill_ids[index]) == skill_id:
+			player_data.active_skill_ids[index] = target_id
+
+	player_data.skill_proficiency.erase(skill_id)
+	player_data.skill_proficiency[target_id] = 0
+
+	return {
+		"success": true,
+		"reason": "",
+		"old_skill": old_skill_name,
+		"new_skill": target_id,
+		"new_name": target_name,
+	}
 
 
 func add_buff(stat: String, value: int, turns: int, source: String = "") -> void:
@@ -738,15 +1149,15 @@ func load_familiars_from_save(familiar_save: Dictionary) -> void:
 
 	var roster = familiar_save.get("roster", familiar_save.get("storage", null))
 	if roster is Array:
-		player_data.owned_familiars = Array(roster).duplicate(true)
+		_set_owned_familiars(_coerce_familiar_roster(roster))
 
 	var party_value = familiar_save.get("party", null)
 	if party_value is int:
-		player_data.active_familiar_index = int(party_value)
+		_set_active_familiar_index_value(int(party_value))
 	elif party_value is float:
-		player_data.active_familiar_index = int(party_value)
+		_set_active_familiar_index_value(int(party_value))
 	elif party_value is String:
-		player_data.active_familiar_index = _find_first_familiar_index_by_id(String(party_value))
+		_set_active_familiar_index_value(_find_first_familiar_index_by_id(String(party_value)))
 
 	_normalize_owned_familiars()
 
@@ -755,6 +1166,21 @@ func _normalize_collection_progress() -> void:
 	player_data.discovered_familiar_ids = _sanitize_string_array(player_data.discovered_familiar_ids)
 	player_data.discovered_item_ids = _sanitize_string_array(player_data.discovered_item_ids)
 	player_data.discovered_enemy_ids = _sanitize_string_array(player_data.discovered_enemy_ids)
+
+
+func _normalize_quest_progress() -> void:
+	player_data.completed_quests = _sanitize_string_array(player_data.completed_quests)
+	player_data.active_quests = _coerce_active_quests(player_data.get("active_quests"))
+
+
+func _normalize_title_progress() -> void:
+	player_data.titles_unlocked = _sanitize_string_array(player_data.titles_unlocked)
+	if not player_data.titles_unlocked.has(DEFAULT_TITLE_ID):
+		player_data.titles_unlocked.insert(0, DEFAULT_TITLE_ID)
+	player_data.title = String(player_data.title).strip_edges()
+	if player_data.title.is_empty() or not player_data.titles_unlocked.has(player_data.title):
+		player_data.title = DEFAULT_TITLE_ID
+	player_data.skill_element_usage = _coerce_element_usage_map(player_data.get("skill_element_usage"))
 
 
 func _backfill_item_discovery_from_inventory() -> void:
@@ -778,7 +1204,7 @@ func _backfill_item_discovery_from_inventory() -> void:
 
 func _normalize_owned_familiars() -> void:
 	var normalized: Array[Dictionary] = []
-	for raw_entry in player_data.owned_familiars:
+	for raw_entry in _get_owned_familiars_value():
 		if raw_entry is not Dictionary:
 			continue
 		var familiar_entry: Dictionary = _sanitize_familiar_entry(raw_entry)
@@ -787,9 +1213,10 @@ func _normalize_owned_familiars() -> void:
 		normalized.append(familiar_entry)
 		discover_familiar(String(familiar_entry.get("id", "")))
 
-	player_data.owned_familiars = normalized
-	if player_data.active_familiar_index < 0 or player_data.active_familiar_index >= player_data.owned_familiars.size():
-		player_data.active_familiar_index = -1
+	_set_owned_familiars(normalized)
+	var active_index: int = _get_active_familiar_index_value()
+	if active_index < 0 or active_index >= _get_owned_familiars_value().size():
+		_set_active_familiar_index_value(-1)
 
 
 func _sanitize_familiar_entry(raw_entry: Dictionary) -> Dictionary:
@@ -818,6 +1245,7 @@ func _sanitize_familiar_entry(raw_entry: Dictionary) -> Dictionary:
 		"exp": exp,
 		"nickname": String(raw_entry.get("nickname", "")),
 		"skill_ids": skill_ids,
+		"mode": _normalize_familiar_mode_string(String(raw_entry.get("mode", "attack"))),
 		"obtained_at": String(raw_entry.get("obtained_at", Time.get_date_string_from_system())),
 	}
 
@@ -836,6 +1264,7 @@ func _build_new_familiar_entry(familiar_id: String) -> Dictionary:
 			Array(familiar_data.get("default_skills", [])),
 			max(int(familiar_data.get("skill_slots", 0)), 0)
 		),
+		"mode": "attack",
 		"obtained_at": Time.get_date_string_from_system(),
 	}
 
@@ -1017,6 +1446,292 @@ func _append_unique_string(target: Array[String], value: String) -> void:
 	target.append(cleaned)
 
 
+func _coerce_familiar_roster(raw_value: Variant) -> Array[Dictionary]:
+	var roster: Array[Dictionary] = []
+	if raw_value is not Array:
+		return roster
+	for raw_entry in Array(raw_value):
+		if raw_entry is not Dictionary:
+			continue
+		roster.append(Dictionary(raw_entry).duplicate(true))
+	return roster
+
+
+func _coerce_string_array(raw_value: Variant) -> Array[String]:
+	var result: Array[String] = []
+	if raw_value is not Array:
+		return result
+	for raw_entry in Array(raw_value):
+		var value: String = String(raw_entry).strip_edges()
+		if value.is_empty():
+			continue
+		result.append(value)
+	return result
+
+
+func _coerce_active_quests(raw_value: Variant) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	if raw_value is not Array:
+		return result
+
+	var seen_ids: Array[String] = []
+	for raw_entry in Array(raw_value):
+		if raw_entry is not Dictionary:
+			continue
+		var entry: Dictionary = Dictionary(raw_entry)
+		var quest_id: String = String(entry.get("id", "")).strip_edges()
+		if quest_id.is_empty() or seen_ids.has(quest_id):
+			continue
+
+		var progress_values: Array[int] = []
+		for raw_progress in Array(entry.get("progress", [])):
+			progress_values.append(max(int(raw_progress), 0))
+
+		result.append({
+			"id": quest_id,
+			"progress": progress_values,
+		})
+		seen_ids.append(quest_id)
+	return result
+
+
+func _coerce_skill_proficiency_map(raw_value: Variant) -> Dictionary:
+	var result: Dictionary = {}
+	if raw_value is not Dictionary:
+		return result
+
+	for raw_key in Dictionary(raw_value).keys():
+		var skill_id: String = String(raw_key).strip_edges()
+		if skill_id.is_empty():
+			continue
+		result[skill_id] = max(int(Dictionary(raw_value).get(raw_key)), 0)
+	return result
+
+
+func _coerce_element_usage_map(raw_value: Variant) -> Dictionary:
+	var result: Dictionary = {}
+	if raw_value is not Dictionary:
+		return result
+
+	for raw_key in Dictionary(raw_value).keys():
+		var element: String = _normalize_title_element(String(raw_key))
+		if element == "none":
+			continue
+		result[element] = max(int(Dictionary(raw_value).get(raw_key, 0)), 0)
+	return result
+
+
+func _normalize_skill_proficiency() -> void:
+	if not _has_player_data_property("skill_proficiency"):
+		return
+	player_data.skill_proficiency = _coerce_skill_proficiency_map(player_data.get("skill_proficiency"))
+
+
+func _has_player_data_property(field_name: String) -> bool:
+	for raw_property in player_data.get_property_list():
+		if raw_property is not Dictionary:
+			continue
+		if String(Dictionary(raw_property).get("name", "")) == field_name:
+			return true
+	return false
+
+
+func _get_owned_familiars_value() -> Array:
+	if not _has_player_data_property("owned_familiars"):
+		return []
+	var value = player_data.get("owned_familiars")
+	if value is Array:
+		return Array(value)
+	return []
+
+
+func _set_owned_familiars(value: Array) -> void:
+	if not _has_player_data_property("owned_familiars"):
+		return
+	player_data.owned_familiars = _coerce_familiar_roster(value)
+
+
+func _get_active_familiar_index_value() -> int:
+	if not _has_player_data_property("active_familiar_index"):
+		return -1
+	return int(player_data.get("active_familiar_index"))
+
+
+func _set_active_familiar_index_value(value: int) -> void:
+	if not _has_player_data_property("active_familiar_index"):
+		return
+	player_data.active_familiar_index = value
+
+
+func _get_skill_proficiency_total(skill_id: String) -> int:
+	if skill_id.is_empty():
+		return 0
+	if not _has_player_data_property("skill_proficiency"):
+		return 0
+	return max(int(Dictionary(player_data.get("skill_proficiency")).get(skill_id, 0)), 0)
+
+
+func _normalize_familiar_mode_string(mode: String) -> String:
+	match mode.to_lower().strip_edges():
+		"defend":
+			return "defend"
+		"support":
+			return "support"
+		"standby":
+			return "standby"
+		_:
+			return "attack"
+
+
+func _normalize_title_element(element: String) -> String:
+	var normalized: String = element.to_lower().strip_edges()
+	if normalized.is_empty():
+		return "none"
+	match normalized:
+		"ice":
+			return "water"
+		"all":
+			return "all"
+		_:
+			return normalized
+
+
+func _is_title_condition_met(condition: Dictionary) -> bool:
+	var condition_type: String = String(condition.get("type", "")).strip_edges()
+	match condition_type:
+		"", "initial":
+			return true
+		"element_usage":
+			var element: String = _normalize_title_element(String(condition.get("element", "none")))
+			var required_count: int = max(int(condition.get("count", 0)), 0)
+			return int(player_data.skill_element_usage.get(element, 0)) >= required_count
+		"battle_victories":
+			return player_data.battle_victories >= max(int(condition.get("count", 0)), 0)
+		"skill_discovery_percent":
+			var total_skills: int = DataManager.get_all_skills().size()
+			if total_skills <= 0:
+				return false
+			var learned_count: int = 0
+			for raw_skill_id in player_data.learned_skill_ids:
+				if not DataManager.get_skill(String(raw_skill_id)).is_empty():
+					learned_count += 1
+			var percent: float = float(learned_count) * 100.0 / float(total_skills)
+			return percent >= float(condition.get("percent", 0))
+		"highest_floor":
+			return player_data.highest_floor >= max(int(condition.get("floor", 0)), 0)
+		"familiar_count":
+			return player_data.owned_familiars.size() >= max(int(condition.get("count", 0)), 0)
+		"has_titles":
+			for raw_title in Array(condition.get("titles", [])):
+				var title_id: String = String(raw_title).strip_edges()
+				if title_id.is_empty():
+					continue
+				if not player_data.titles_unlocked.has(title_id):
+					return false
+			return true
+		"level":
+			return player_data.level >= max(int(condition.get("level", 0)), 0)
+		"all_achievements":
+			return false
+		_:
+			return false
+
+
+func _skill_level_from_proficiency(proficiency: int) -> int:
+	if proficiency >= int(SKILL_LEVEL_THRESHOLDS[3]):
+		return 4
+	if proficiency >= int(SKILL_LEVEL_THRESHOLDS[2]):
+		return 3
+	if proficiency >= int(SKILL_LEVEL_THRESHOLDS[1]):
+		return 2
+	return 1
+
+
+func _collect_missing_skill_items(required_items: Array) -> Array[Dictionary]:
+	var missing: Array[Dictionary] = []
+	for raw_item in required_items:
+		if raw_item is not Dictionary:
+			continue
+		var required_item: Dictionary = raw_item
+		var item_id: String = String(required_item.get("id", ""))
+		var need: int = max(int(required_item.get("count", 0)), 0)
+		if item_id.is_empty() or need <= 0:
+			continue
+		var have: int = get_item_count(item_id)
+		if have >= need:
+			continue
+		var item_name: String = String(DataManager.get_item(item_id).get("name", item_id))
+		missing.append({
+			"id": item_id,
+			"name": item_name,
+			"need": need,
+			"have": have,
+		})
+	return missing
+
+
+func _build_skill_mutation_branches(skill_data: Dictionary, proficiency: int) -> Array[Dictionary]:
+	var branches: Array[Dictionary] = []
+	var mutations: Dictionary = Dictionary(skill_data.get("mutations", {}))
+	var mutation_keys: Array = mutations.keys()
+	mutation_keys.sort()
+
+	for raw_branch in mutation_keys:
+		var branch_id: String = String(raw_branch)
+		var branch_data: Dictionary = Dictionary(mutations.get(branch_id, {}))
+		if branch_data.is_empty():
+			continue
+
+		var required_items: Array = Array(branch_data.get("required_items", []))
+		var missing_items: Array[Dictionary] = _collect_missing_skill_items(required_items)
+		var required_proficiency: int = max(int(branch_data.get("required_proficiency", 0)), 0)
+		var target_id: String = String(branch_data.get("id", ""))
+		var target_data: Dictionary = DataManager.get_skill(target_id)
+		var ready: bool = (
+			_skill_level_from_proficiency(proficiency) >= SKILL_LEVEL_THRESHOLDS.size()
+			and proficiency >= required_proficiency
+			and missing_items.is_empty()
+			and not target_data.is_empty()
+		)
+		branches.append({
+			"branch": branch_id,
+			"id": target_id,
+			"name": String(branch_data.get("name", target_id)),
+			"required_proficiency": required_proficiency,
+			"proficiency": proficiency,
+			"meets_proficiency": proficiency >= required_proficiency,
+			"has_items": missing_items.is_empty(),
+			"missing": missing_items,
+			"required_items": required_items,
+			"target_found": not target_data.is_empty(),
+			"ready": ready,
+		})
+
+	return branches
+
+
+func _get_mutation_branch_result(can_result: Dictionary, branch: String) -> Dictionary:
+	for raw_branch in Array(can_result.get("branches", [])):
+		if raw_branch is not Dictionary:
+			continue
+		var branch_data: Dictionary = raw_branch
+		if String(branch_data.get("branch", "")) == branch:
+			return branch_data
+	return {}
+
+
+func _remove_skill_from_list(raw_skills: Array, skill_id: String) -> Array[String]:
+	var result: Array[String] = []
+	for raw_skill in raw_skills:
+		var candidate: String = String(raw_skill)
+		if candidate.is_empty() or candidate == skill_id:
+			continue
+		if result.has(candidate):
+			continue
+		result.append(candidate)
+	return result
+
+
 func _is_valid_familiar_index(index: int) -> bool:
 	return index >= 0 and index < player_data.owned_familiars.size()
 
@@ -1043,6 +1758,7 @@ func _check_level_up() -> void:
 		player_data.current_mp = get_max_mp()
 		player_level_up.emit(player_data.level)
 
+	check_title_unlocks()
 	_emit_resource_signals()
 
 

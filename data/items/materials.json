@@ -11,6 +11,17 @@
 		"available_from_floor": 1
 	},
 	{
+		"id": "mat_herb",
+		"name": "藥草",
+		"type": "material",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 4,
+		"description": "常見的藥用植物，可作為任務素材。",
+		"available_from_floor": 1
+	},
+	{
 		"id": "mat_magic_crystal",
 		"name": "魔力結晶",
 		"type": "material",
@@ -42,6 +53,17 @@
 		"sell_price": 15,
 		"description": "從冰霜精靈身上掉落的結晶",
 		"available_from_floor": 1
+	},
+	{
+		"id": "mat_burst_core",
+		"name": "爆裂核心",
+		"type": "material",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 20,
+		"description": "蘊含爆裂火焰力量的高階素材。",
+		"available_from_floor": 20
 	},
 	{
 		"id": "mat_enhance_stone",

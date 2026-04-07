@@ -52,7 +52,7 @@ layout_mode = 0
 offset_left = 400.0
 offset_top = 300.0
 offset_right = 640.0
-offset_bottom = 828.0
+offset_bottom = 888.0
 theme_override_constants/separation = 12
 
 [node name="InventoryButton" type="Button" parent="ActionContainer"]
@@ -79,6 +79,11 @@ text = "使魔小屋"
 custom_minimum_size = Vector2(240, 48)
 layout_mode = 2
 text = "圖書館"
+
+[node name="TavernButton" type="Button" parent="ActionContainer"]
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+text = "酒館"
 
 [node name="ExploreButton" type="Button" parent="ActionContainer"]
 custom_minimum_size = Vector2(240, 48)

@@ -171,9 +171,17 @@ static func calculate_damage(
 	var element_multi: float = 1.0
 	if damage_type != "physical":
 		element_multi = get_element_multiplier(skill_element, String(defender.element))
-	result["element_multiplier"] = element_multi
-	result["effectiveness_text"] = get_effectiveness_text(element_multi)
-	base_damage *= element_multi
+		result["element_multiplier"] = element_multi
+		result["effectiveness_text"] = get_effectiveness_text(element_multi)
+		base_damage *= element_multi
+		if String(attacker.id) == "player":
+			var title_bonuses: Dictionary = PlayerManager.get_title_bonuses()
+			var element_bonuses: Dictionary = Dictionary(title_bonuses.get("element_damage_bonus", {}))
+			var normalized_element: String = normalize_element(skill_element)
+			var title_bonus_percent: int = int(element_bonuses.get(normalized_element, 0))
+			title_bonus_percent += int(element_bonuses.get("all", 0))
+			if title_bonus_percent != 0:
+				base_damage *= 1.0 + float(title_bonus_percent) / 100.0
 
 	var env_mod: float = get_environment_modifier(skill_element, environment_element)
 	result["environment_mod"] = env_mod

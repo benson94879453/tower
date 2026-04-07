@@ -27,6 +27,7 @@ var crit: float = 5.0
 var skill_ids: Array[String] = []
 var skill_pp: Dictionary = {}
 var cooldowns: Dictionary = {}
+var cooldown_reduction: int = 0
 var sealed_skill_id: String = ""
 
 var familiar_mode: int = FamiliarMode.ATTACK
@@ -76,19 +77,28 @@ static func from_player() -> CombatantData:
 		PlayerManager.init_new_game()
 
 	var combatant = _new_combatant()
+	var title_bonuses: Dictionary = PlayerManager.get_title_bonuses()
+	var all_stats_percent: int = int(title_bonuses.get("all_stats_percent", 0))
+	var atk_bonus_percent: int = int(title_bonuses.get("atk_bonus_percent", 0))
+	var base_max_hp: int = PlayerManager.get_max_hp()
+	var base_max_mp: int = PlayerManager.get_max_mp()
+	var base_current_hp: int = clampi(PlayerManager.player_data.current_hp, 0, base_max_hp)
+	var base_current_mp: int = clampi(PlayerManager.player_data.current_mp, 0, base_max_mp)
 	combatant.id = "player"
 	combatant.display_name = PlayerManager.player_data.name
 	combatant.team = Team.PLAYER
 	combatant.element = "none"
-	combatant.max_hp = PlayerManager.get_max_hp()
-	combatant.current_hp = PlayerManager.player_data.current_hp
-	combatant.max_mp = PlayerManager.get_max_mp()
-	combatant.current_mp = PlayerManager.player_data.current_mp
-	combatant.matk = PlayerManager.get_matk()
-	combatant.mdef = PlayerManager.get_mdef()
-	combatant.patk = PlayerManager.get_patk()
-	combatant.pdef = PlayerManager.get_pdef()
-	combatant.speed = PlayerManager.get_speed()
+	combatant.max_hp = _apply_percent_bonus(base_max_hp, all_stats_percent)
+	combatant.current_hp = _scale_current_resource(base_current_hp, base_max_hp, combatant.max_hp)
+	combatant.max_mp = _apply_percent_bonus(base_max_mp, all_stats_percent)
+	combatant.current_mp = _scale_current_resource(base_current_mp, base_max_mp, combatant.max_mp)
+	combatant.matk = _apply_percent_bonus(PlayerManager.get_matk(), all_stats_percent)
+	combatant.mdef = _apply_percent_bonus(PlayerManager.get_mdef(), all_stats_percent)
+	combatant.patk = _apply_percent_bonus(PlayerManager.get_patk(), all_stats_percent)
+	combatant.pdef = _apply_percent_bonus(PlayerManager.get_pdef(), all_stats_percent)
+	combatant.speed = _apply_percent_bonus(PlayerManager.get_speed(), all_stats_percent)
+	combatant.matk = _apply_percent_bonus(combatant.matk, atk_bonus_percent)
+	combatant.patk = _apply_percent_bonus(combatant.patk, atk_bonus_percent)
 	combatant.hit = PlayerManager.get_hit()
 	combatant.dodge = PlayerManager.get_dodge()
 	combatant.crit = PlayerManager.get_crit()
@@ -135,7 +145,12 @@ static func from_enemy(enemy_id: String) -> CombatantData:
 	return combatant
 
 
-static func from_familiar(familiar_id: String, level: int = 1, skill_ids: Array = []) -> CombatantData:
+static func from_familiar(
+	familiar_id: String,
+	level: int = 1,
+	skill_ids: Array = [],
+	mode: String = "attack"
+) -> CombatantData:
 	var data := DataManager.get_familiar(familiar_id)
 	if data.is_empty():
 		push_error("Familiar not found: " + familiar_id)
@@ -166,7 +181,7 @@ static func from_familiar(familiar_id: String, level: int = 1, skill_ids: Array 
 	if active_skill_ids.is_empty():
 		active_skill_ids = Array(data.get("default_skills", []))
 	_append_skill_data(combatant, active_skill_ids, 10)
-	combatant.familiar_mode = FamiliarMode.ATTACK
+	combatant.familiar_mode = _familiar_mode_from_string(mode)
 	combatant.visual = data.get("visual", {}).duplicate(true) if data.get("visual", {}) is Dictionary else {}
 	combatant.is_alive = combatant.current_hp > 0
 	return combatant
@@ -181,6 +196,33 @@ static func _append_skill_data(combatant: CombatantData, raw_skills, default_pp:
 		combatant.skill_ids.append(skill_id)
 		var skill_data := DataManager.get_skill(skill_id)
 		combatant.skill_pp[skill_id] = int(skill_data.get("pp_max", default_pp))
+
+
+static func _familiar_mode_from_string(mode: String) -> int:
+	match mode.to_lower().strip_edges():
+		"defend":
+			return FamiliarMode.DEFEND
+		"support":
+			return FamiliarMode.SUPPORT
+		"standby":
+			return FamiliarMode.STANDBY
+		_:
+			return FamiliarMode.ATTACK
+
+
+static func _apply_percent_bonus(base_value: int, bonus_percent: int) -> int:
+	if bonus_percent == 0:
+		return base_value
+	return max(0, int(round(float(base_value) * (1.0 + float(bonus_percent) / 100.0))))
+
+
+static func _scale_current_resource(current_value: int, base_max: int, scaled_max: int) -> int:
+	if scaled_max <= 0:
+		return 0
+	if base_max <= 0:
+		return clampi(current_value, 0, scaled_max)
+	var ratio: float = float(clampi(current_value, 0, base_max)) / float(base_max)
+	return clampi(int(round(float(scaled_max) * ratio)), 0, scaled_max)
 
 
 static func _new_combatant() -> CombatantData:

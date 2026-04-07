@@ -1,0 +1,164 @@
+[
+  {
+    "id": "passive_fire_affinity",
+    "name": "\u706b\u7130\u89aa\u548c",
+    "type": "passive",
+    "rarity": "R",
+    "description": "\u706b\u7cfb\u6280\u80fd\u50b7\u5bb3+15%",
+    "passive_effects": [
+      {
+        "trigger": "on_deal_damage",
+        "condition": "skill_element == fire",
+        "effect": "damage_bonus_percent",
+        "value": 15
+      }
+    ],
+    "research_cost": {
+      "gold": 500,
+      "items": [
+        { "id": "mat_fire_crystal", "count": 2 }
+      ],
+      "prerequisite_skills": []
+    }
+  },
+  {
+    "id": "passive_frost_body",
+    "name": "\u51b0\u971c\u8b77\u9ad4",
+    "type": "passive",
+    "rarity": "SR",
+    "description": "\u53d7\u5230\u7269\u7406\u653b\u64ca\u664210%\u6a5f\u7387\u51cd\u7d50\u653b\u64ca\u8005",
+    "passive_effects": [
+      {
+        "trigger": "on_receive_damage",
+        "condition": "damage_type == physical",
+        "effect": "counter_status",
+        "status": "freeze",
+        "chance": 10,
+        "duration": 2
+      }
+    ],
+    "research_cost": {
+      "gold": 900,
+      "items": [
+        { "id": "mat_ice_crystal", "count": 4 }
+      ],
+      "prerequisite_skills": []
+    }
+  },
+  {
+    "id": "passive_mana_spring",
+    "name": "\u9b54\u529b\u6eff\u6cc9",
+    "type": "passive",
+    "rarity": "R",
+    "description": "\u6bcf\u56de\u5408\u56de\u5fa92%\u6700\u5927MP",
+    "passive_effects": [
+      {
+        "trigger": "on_turn_start",
+        "effect": "mp_regen_percent",
+        "value": 2
+      }
+    ],
+    "research_cost": {
+      "gold": 400,
+      "items": [],
+      "prerequisite_skills": []
+    }
+  },
+  {
+    "id": "passive_quick_cast",
+    "name": "\u5feb\u901f\u8a6d\u5531",
+    "type": "passive",
+    "rarity": "SR",
+    "description": "\u6240\u6709\u6280\u80fd\u51cd\u537b-1\u56de\u5408",
+    "passive_effects": [
+      {
+        "trigger": "on_battle_start",
+        "effect": "cooldown_reduction",
+        "value": 1
+      }
+    ],
+    "research_cost": {
+      "gold": 1000,
+      "items": [],
+      "prerequisite_skills": []
+    }
+  },
+  {
+    "id": "passive_life_drain",
+    "name": "\u751f\u547d\u6c4a\u53d6",
+    "type": "passive",
+    "rarity": "R",
+    "description": "\u9020\u6210\u50b7\u5bb3\u76848%\u8f49\u70baHP\u56de\u5fa9",
+    "passive_effects": [
+      {
+        "trigger": "on_deal_damage",
+        "effect": "lifesteal_percent",
+        "value": 8
+      }
+    ],
+    "research_cost": {
+      "gold": 600,
+      "items": [],
+      "prerequisite_skills": []
+    }
+  },
+  {
+    "id": "passive_element_master",
+    "name": "\u5143\u7d20\u5927\u5e2b",
+    "type": "passive",
+    "rarity": "SSR",
+    "description": "\u5c6c\u6027\u76f8\u524b\u6548\u679c\u7d55\u4f73\u6642\u50b7\u5bb3\u984d\u5916+25%",
+    "passive_effects": [
+      {
+        "trigger": "on_deal_damage",
+        "condition": "element_multiplier >= 2.0",
+        "effect": "damage_bonus_percent",
+        "value": 25
+      }
+    ],
+    "research_cost": {
+      "gold": 1800,
+      "items": [],
+      "prerequisite_skills": []
+    }
+  },
+  {
+    "id": "passive_familiar_resonance",
+    "name": "\u4f7f\u9b54\u5171\u9cf4",
+    "type": "passive",
+    "rarity": "R",
+    "description": "\u4f7f\u9b54\u653b\u64ca\u529b+20%",
+    "passive_effects": [
+      {
+        "trigger": "on_battle_start",
+        "effect": "familiar_stat_bonus",
+        "stat": "matk",
+        "value_percent": 20
+      }
+    ],
+    "research_cost": {
+      "gold": 700,
+      "items": [],
+      "prerequisite_skills": []
+    }
+  },
+  {
+    "id": "passive_lucky_star",
+    "name": "\u5e78\u904b\u661f",
+    "type": "passive",
+    "rarity": "R",
+    "description": "\u7a00\u6709\u6389\u843d\u7387+10%",
+    "passive_effects": [
+      {
+        "trigger": "on_battle_reward",
+        "effect": "drop_rate_bonus",
+        "value": 10
+      }
+    ],
+    "research_cost": {
+      "gold": 800,
+      "items": [],
+      "prerequisite_skills": []
+    }
+  }
+]

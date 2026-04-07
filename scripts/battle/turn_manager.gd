@@ -2,7 +2,9 @@ class_name TurnManager
 extends RefCounted
 
 const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
+const AccessoryProcessorClass = preload("res://scripts/battle/accessory_processor.gd")
 const BattleAIClass = preload("res://scripts/battle/battle_ai.gd")
+const PassiveProcessorClass = preload("res://scripts/battle/passive_processor.gd")
 const SkillExecutorClass = preload("res://scripts/battle/skill_executor.gd")
 const StatusProcessorClass = preload("res://scripts/battle/status_processor.gd")
 const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
@@ -47,6 +49,25 @@ func execute_turn() -> void:
 			continue
 
 		combatant_turn_started.emit(actor)
+		if actor.team == CombatantDataClass.Team.PLAYER:
+			var turn_passive_logs: Array[Dictionary] = PassiveProcessorClass.on_turn_start(actor)
+			for raw_log in turn_passive_logs:
+				var log_entry: Dictionary = raw_log
+				_battle_manager.battle_ui.add_log(
+					String(log_entry.get("text", "")),
+					log_entry.get("color", Color.WHITE)
+				)
+			var turn_accessory_logs: Array[Dictionary] = AccessoryProcessorClass.on_turn_start(actor, _battle_manager.familiar)
+			for raw_log in turn_accessory_logs:
+				var log_entry: Dictionary = raw_log
+				_battle_manager.battle_ui.add_log(
+					String(log_entry.get("text", "")),
+					log_entry.get("color", Color.WHITE)
+				)
+			_update_display_for(actor)
+			if _battle_manager.familiar != null:
+				_update_display_for(_battle_manager.familiar)
+
 		var all_allies: Array = _get_friendly_targets_for(actor)
 		var all_enemies: Array = _get_hostile_targets_for(actor)
 		var status_check: Dictionary = StatusProcessorClass.check_before_action(actor, all_allies, all_enemies)
@@ -219,6 +240,18 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 		if effect_target != null:
 			_update_display_for(effect_target)
 
+	if actor.team == CombatantDataClass.Team.PLAYER and not skill_id.is_empty():
+		var killed_any: bool = false
+		for result in results:
+			if result is Dictionary and bool(Dictionary(result).get("killed", false)):
+				killed_any = true
+				break
+		var rng := RandomNumberGenerator.new()
+		rng.randomize()
+		var gain: int = rng.randi_range(1, 3) + (1 if killed_any else 0)
+		PlayerManager.add_skill_proficiency(skill_id, gain)
+		PlayerManager.record_skill_element_usage(skill_element)
+
 	_update_display_for(actor)
 
 
@@ -346,30 +379,149 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 		return
 
 	if not bool(result.get("is_hit", false)):
-		_battle_manager.battle_ui.add_log("%s 的 %s 沒有命中 %s！" % [actor.display_name, skill_name, target.display_name])
+		_battle_manager.battle_ui.add_log("%s used %s but missed %s!" % [actor.display_name, skill_name, target.display_name])
 		return
 
-	var damage: int = int(result.get("damage", 0))
+	var dealt_damage: int = int(result.get("damage", 0))
+	var shield_absorbed: int = int(result.get("shield_absorbed", 0))
+	if shield_absorbed > 0:
+		dealt_damage = max(dealt_damage - shield_absorbed, 0)
+
+	var element_multiplier: float = float(result.get("element_multiplier", 1.0))
+	var damage_type: String = String(result.get("damage_type", "magic"))
+	var attacker_status_changed: bool = false
+
+	if actor.team == CombatantDataClass.Team.PLAYER and target.team != CombatantDataClass.Team.PLAYER:
+		var passive_result: Dictionary = PassiveProcessorClass.on_deal_damage(
+			actor,
+			target,
+			dealt_damage,
+			element,
+			element_multiplier
+		)
+		for raw_log_entry in Array(passive_result.get("logs", [])):
+			var log_entry: Dictionary = raw_log_entry
+			_battle_manager.battle_ui.add_log(
+				String(log_entry.get("text", "")),
+				log_entry.get("color", Color.WHITE)
+			)
+
+		var bonus_damage: int = max(int(passive_result.get("bonus_damage", 0)), 0)
+		if bonus_damage > 0:
+			dealt_damage += bonus_damage
+			target.current_hp = clampi(target.current_hp - bonus_damage, 0, target.max_hp)
+			if target.current_hp <= 0:
+				target.is_alive = false
+
+		var heal_actor: int = max(int(passive_result.get("heal_actor", 0)), 0)
+		if heal_actor > 0:
+			actor.current_hp = clampi(actor.current_hp + heal_actor, 0, actor.max_hp)
+
+		var accessory_result: Dictionary = AccessoryProcessorClass.on_deal_damage(
+			actor,
+			target,
+			dealt_damage,
+			element,
+			element_multiplier,
+			damage_type
+		)
+		for raw_log_entry in Array(accessory_result.get("logs", [])):
+			var log_entry: Dictionary = raw_log_entry
+			_battle_manager.battle_ui.add_log(
+				String(log_entry.get("text", "")),
+				log_entry.get("color", Color.WHITE)
+			)
+
+		var accessory_bonus_damage: int = max(int(accessory_result.get("bonus_damage", 0)), 0)
+		if accessory_bonus_damage > 0:
+			dealt_damage += accessory_bonus_damage
+			target.current_hp = clampi(target.current_hp - accessory_bonus_damage, 0, target.max_hp)
+			if target.current_hp <= 0:
+				target.is_alive = false
+
+		var accessory_heal_actor: int = max(int(accessory_result.get("heal_actor", 0)), 0)
+		if accessory_heal_actor > 0:
+			actor.current_hp = clampi(actor.current_hp + accessory_heal_actor, 0, actor.max_hp)
+
+		for raw_status in Array(accessory_result.get("apply_status", [])):
+			if raw_status is not Dictionary:
+				continue
+			var status_entry: Dictionary = Dictionary(raw_status)
+			var status_target = status_entry.get("target", target)
+			if _apply_status_to_combatant(status_target, status_entry) and status_target != null:
+				_update_display_for(status_target)
+
+	if target.team == CombatantDataClass.Team.PLAYER and actor.team != CombatantDataClass.Team.PLAYER:
+		var receive_result: Dictionary = PassiveProcessorClass.on_receive_damage(
+			actor,
+			target,
+			dealt_damage,
+			element,
+			damage_type
+		)
+		for raw_status in Array(receive_result.get("counter_status", [])):
+			if raw_status is not Dictionary:
+				continue
+			if _apply_status_to_combatant(actor, Dictionary(raw_status)):
+				attacker_status_changed = true
+		for raw_log_entry in Array(receive_result.get("logs", [])):
+			var log_entry: Dictionary = raw_log_entry
+			_battle_manager.battle_ui.add_log(
+				String(log_entry.get("text", "")),
+				log_entry.get("color", Color.WHITE)
+			)
+
+		var accessory_receive_result: Dictionary = AccessoryProcessorClass.on_receive_damage(
+			actor,
+			target,
+			dealt_damage,
+			element,
+			damage_type
+		)
+		for raw_status in Array(accessory_receive_result.get("counter_status", [])):
+			if raw_status is not Dictionary:
+				continue
+			if _apply_status_to_combatant(actor, Dictionary(raw_status)):
+				attacker_status_changed = true
+		for raw_log_entry in Array(accessory_receive_result.get("logs", [])):
+			var log_entry: Dictionary = raw_log_entry
+			_battle_manager.battle_ui.add_log(
+				String(log_entry.get("text", "")),
+				log_entry.get("color", Color.WHITE)
+			)
+
+		if int(accessory_receive_result.get("revive_hp", 0)) > 0:
+			result["killed"] = false
+
+	if attacker_status_changed:
+		_update_display_for(actor)
+
 	var is_crit: bool = bool(result.get("is_crit", false))
-	var log_text: String = "%s 使用了 %s，對 %s 造成 %d 點傷害！" % [
+	var log_text: String = "%s used %s on %s for %d damage" % [
 		actor.display_name,
 		skill_name,
 		target.display_name,
-		damage,
+		dealt_damage,
 	]
 	if is_crit:
-		log_text += "（暴擊！）"
+		log_text += ", crit!"
 
-	var shield_absorbed: int = int(result.get("shield_absorbed", 0))
 	if shield_absorbed > 0:
-		log_text += "（護盾吸收了 %d 點）" % shield_absorbed
+		log_text += ", shield absorbed %d" % shield_absorbed
 
 	var effectiveness: String = String(result.get("effectiveness_text", ""))
 	if not effectiveness.is_empty():
 		log_text += " " + effectiveness
 
+	result["damage"] = dealt_damage + shield_absorbed
+	result["killed"] = target.current_hp <= 0
+	if bool(result.get("killed", false)):
+		target.is_alive = false
+	else:
+		target.is_alive = true
+
 	_battle_manager.battle_ui.add_element_log(log_text, element)
-	_battle_manager.damage_dealt.emit(target, damage, element, is_crit)
+	_battle_manager.damage_dealt.emit(target, dealt_damage + shield_absorbed, element, is_crit)
 	_battle_manager.combatant_hp_changed.emit(target)
 
 	if bool(result.get("is_hit", false)) and not skill_id.is_empty():
@@ -378,7 +530,37 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 
 	if bool(result.get("killed", false)):
 		_battle_manager.combatant_defeated.emit(target)
-		_battle_manager.battle_ui.add_log("%s 被擊倒了！" % target.display_name)
+		_battle_manager.battle_ui.add_log("%s was defeated!" % target.display_name)
+
+	return
+
+
+func _apply_counter_status(attacker, status_result: Dictionary) -> void:
+	_apply_status_to_combatant(attacker, status_result)
+
+
+func _apply_status_to_combatant(combatant, status_result: Dictionary) -> bool:
+	if combatant == null or not combatant.is_alive:
+		return false
+
+	var status_id: String = String(status_result.get("status_id", status_result.get("status", ""))).strip_edges()
+	if status_id.is_empty():
+		return false
+
+	var duration: int = max(int(status_result.get("duration", 0)), 0)
+	if duration <= 0:
+		return false
+
+	for existing in combatant.status_effects:
+		if String(existing.get("id", "")) == status_id:
+			existing["turns"] = max(int(existing.get("turns", 0)), duration)
+			return true
+
+	combatant.status_effects.append({
+		"id": status_id,
+		"turns": duration,
+	})
+	return true
 
 
 func _handle_heal_result(actor, result: Dictionary, skill_name: String, element: String) -> void:

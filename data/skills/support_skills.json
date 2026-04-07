@@ -1,70 +1,92 @@
 [
-	{
-		"id": "skill_heal",
-		"name": "治癒術",
-		"element": "light",
-		"type": "heal_single",
-		"rarity": "N",
-		"base_power": 0,
-		"mp_cost": 15,
-		"pp_max": 8,
-		"hit_rate": 100,
-		"priority": 1,
-		"cooldown": 0,
-		"effects": [
-			{"type": "heal", "target": "single_ally", "heal_type": "matk_scale", "value": 150}
-		],
-		"description": "回復單一目標HP，回復量受魔攻影響"
-	},
-	{
-		"id": "skill_group_heal",
-		"name": "群體治癒",
-		"element": "light",
-		"type": "heal_all",
-		"rarity": "R",
-		"base_power": 0,
-		"mp_cost": 30,
-		"pp_max": 5,
-		"hit_rate": 100,
-		"priority": 1,
-		"cooldown": 1,
-		"effects": [
-			{"type": "heal", "target": "all_allies", "heal_type": "matk_scale", "value": 80}
-		],
-		"description": "回復全體隊友HP，冷卻1回合"
-	},
-	{
-		"id": "skill_magic_shield",
-		"name": "魔法護盾",
-		"element": "none",
-		"type": "buff_self",
-		"rarity": "N",
-		"base_power": 0,
-		"mp_cost": 20,
-		"pp_max": 5,
-		"hit_rate": 100,
-		"priority": 2,
-		"cooldown": 2,
-		"effects": [
-			{"type": "shield", "target": "self", "value": 50}
-		],
-		"description": "為自己施加50點護盾，冷卻2回合"
-	},
-	{
-		"id": "skill_power_up",
-		"name": "力量增幅",
-		"element": "none",
-		"type": "buff_self",
-		"rarity": "N",
-		"base_power": 0,
-		"mp_cost": 10,
-		"pp_max": 5,
-		"hit_rate": 100,
-		"priority": 0,
-		"cooldown": 0,
-		"effects": [
-			{"type": "buff", "target": "self", "stat": "matk", "value": 10, "duration": 3}
-		],
-		"description": "提升自身魔攻3回合"
-	}
+  {
+    "id": "skill_heal",
+    "name": "\u6cbb\u7642\u8853",
+    "element": "light",
+    "type": "heal_single",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 15,
+    "pp_max": 8,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 0,
+    "effects": [
+      { "type": "heal", "target": "single_ally", "heal_type": "matk_scale", "value": 150 }
+    ],
+    "research_cost": {
+      "gold": 300,
+      "items": [],
+      "prerequisite_skills": []
+    },
+    "description": "\u56de\u5fa9\u55ae\u4e00\u6211\u65b9\u76ee\u6a19\u7684 HP\u3002"
+  },
+  {
+    "id": "skill_group_heal",
+    "name": "\u7fa4\u9ad4\u6cbb\u7642",
+    "element": "light",
+    "type": "heal_all",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 30,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 1,
+    "effects": [
+      { "type": "heal", "target": "all_allies", "heal_type": "matk_scale", "value": 80 }
+    ],
+    "research_cost": {
+      "gold": 800,
+      "items": [],
+      "prerequisite_skills": [
+        "skill_heal"
+      ]
+    },
+    "description": "\u56de\u5fa9\u5168\u9ad4\u6211\u65b9\u6210\u54e1\u7684 HP\u3002"
+  },
+  {
+    "id": "skill_magic_shield",
+    "name": "\u9b54\u6cd5\u8b77\u76fe",
+    "element": "none",
+    "type": "buff_self",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 20,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 2,
+    "cooldown": 2,
+    "effects": [
+      { "type": "shield", "target": "self", "value": 50 }
+    ],
+    "research_cost": {
+      "gold": 500,
+      "items": [],
+      "prerequisite_skills": []
+    },
+    "description": "\u70ba\u81ea\u8eab\u65bd\u52a0\u8b77\u76fe\uff0c\u5438\u6536 50 \u9ede\u50b7\u5bb3\u3002"
+  },
+  {
+    "id": "skill_power_up",
+    "name": "\u9b54\u529b\u5f37\u5316",
+    "element": "none",
+    "type": "buff_self",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 10,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      { "type": "buff", "target": "self", "stat": "matk", "value": 10, "duration": 3 }
+    ],
+    "research_cost": {
+      "gold": 200,
+      "items": [],
+      "prerequisite_skills": []
+    },
+    "description": "\u63d0\u5347\u81ea\u8eab\u9b54\u653b 3 \u56de\u5408\u3002"
+  }
 ]

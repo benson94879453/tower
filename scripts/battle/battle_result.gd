@@ -1,6 +1,9 @@
 class_name BattleResult
 extends RefCounted
 
+const AccessoryProcessorClass = preload("res://scripts/battle/accessory_processor.gd")
+const PassiveProcessorClass = preload("res://scripts/battle/passive_processor.gd")
+
 
 static func calculate_victory_rewards(
 	enemies: Array,
@@ -13,6 +16,7 @@ static func calculate_victory_rewards(
 	var total_gold: int = 0
 	var dropped_items: Array = []
 	var learned_skills: Array[String] = []
+	var drop_entries: Array[Dictionary] = []
 
 	var enemy_count: int = enemies.size()
 	var count_mod: float = 1.0 + float(max(enemy_count - 1, 0)) * 0.1
@@ -22,6 +26,10 @@ static func calculate_victory_rewards(
 	for enemy in enemies:
 		raw_exp += int(enemy.base_exp)
 	total_exp = max(1, int(float(raw_exp) * count_mod * floor_mod))
+	var title_bonuses: Dictionary = PlayerManager.get_title_bonuses()
+	var exp_bonus_percent: int = int(title_bonuses.get("exp_bonus_percent", 0))
+	if exp_bonus_percent != 0:
+		total_exp = max(1, int(round(float(total_exp) * (1.0 + float(exp_bonus_percent) / 100.0))))
 
 	for enemy in enemies:
 		var base_gold: int = int(enemy.base_gold)
@@ -36,11 +44,13 @@ static func calculate_victory_rewards(
 			var rate: float = float(drop.get("rate", 0.0))
 			if drop_id.begins_with("core_"):
 				rate = _get_familiar_core_drop_rate(rate, floor_number, is_boss_battle, is_elite_battle)
-			if randf() < rate:
-				dropped_items.append({
-					"id": drop_id,
-					"source": enemy.display_name,
-				})
+			var item_data: Dictionary = DataManager.get_item(drop_id)
+			drop_entries.append({
+				"id": drop_id,
+				"source": enemy.display_name,
+				"rate": rate,
+				"rarity": String(item_data.get("rarity", "")),
+			})
 
 	var already_learned: Array[String] = []
 	if PlayerManager.player_data != null:
@@ -56,15 +66,37 @@ static func calculate_victory_rewards(
 			already_learned.append(skill_id)
 
 	var familiar_exp: int = max(1, int(float(total_exp) * 0.5))
-
-	return {
+	var rewards: Dictionary = {
 		"exp": total_exp,
 		"gold": total_gold,
 		"dropped_items": dropped_items,
 		"learned_skills": learned_skills,
 		"familiar_exp": familiar_exp,
 		"level_before": int(PlayerManager.player_data.level) if PlayerManager.player_data != null else 1,
+		"drop_entries": drop_entries,
+		"drop_rate_bonus": int(title_bonuses.get("drop_rate_bonus", 0)),
 	}
+
+	PassiveProcessorClass.on_battle_reward(rewards)
+	AccessoryProcessorClass.on_battle_reward(rewards)
+
+	var drop_rate_bonus: int = max(int(rewards.get("drop_rate_bonus", 0)), 0)
+	for raw_drop in Array(rewards.get("drop_entries", [])):
+		if raw_drop is not Dictionary:
+			continue
+		var drop_entry: Dictionary = raw_drop
+		var drop_id: String = String(drop_entry.get("id", ""))
+		var rate: float = float(drop_entry.get("rate", 0.0))
+		var rarity: String = String(drop_entry.get("rarity", "")).to_upper()
+		if drop_rate_bonus > 0 and (rarity != "" and rarity != "N" or drop_id.begins_with("core_")):
+			rate = clampf(rate + float(drop_rate_bonus) / 100.0, 0.0, 1.0)
+		if randf() < rate:
+			dropped_items.append({
+				"id": drop_id,
+				"source": String(drop_entry.get("source", "")),
+			})
+
+	return rewards
 
 
 static func _get_familiar_core_drop_rate(

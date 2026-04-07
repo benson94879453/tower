@@ -1,0 +1,113 @@
+[
+	{
+		"id": "bounty_kill_fire_sprite_5",
+		"name": "消滅火焰精靈",
+		"type": "bounty",
+		"description": "在熔岩區域消滅 5 隻火焰精靈。",
+		"zone": 1,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_fire_sprite", "count": 5 }
+		],
+		"rewards": {
+			"gold": 300,
+			"exp": 150,
+			"items": [
+				{ "id": "mat_fire_crystal", "count": 2 }
+			]
+		},
+		"min_floor": 10,
+		"max_floor": 20,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_ice_sprite_5",
+		"name": "消滅冰霜精靈",
+		"type": "bounty",
+		"description": "在冰霜區域消滅 5 隻冰霜精靈。",
+		"zone": 1,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_ice_sprite", "count": 5 }
+		],
+		"rewards": {
+			"gold": 300,
+			"exp": 150,
+			"items": [
+				{ "id": "mat_ice_crystal", "count": 2 }
+			]
+		},
+		"min_floor": 10,
+		"max_floor": 20,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_collect_fire_crystal_3",
+		"name": "收集火焰結晶",
+		"type": "bounty",
+		"description": "收集 3 顆火焰結晶交給酒館櫃檯。",
+		"zone": 1,
+		"objectives": [
+			{ "type": "collect", "item_id": "mat_fire_crystal", "count": 3 }
+		],
+		"rewards": {
+			"gold": 200,
+			"exp": 100
+		},
+		"min_floor": 1,
+		"max_floor": 10,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_collect_ice_crystal_3",
+		"name": "收集冰霜結晶",
+		"type": "bounty",
+		"description": "收集 3 顆冰霜結晶交給酒館櫃檯。",
+		"zone": 1,
+		"objectives": [
+			{ "type": "collect", "item_id": "mat_ice_crystal", "count": 3 }
+		],
+		"rewards": {
+			"gold": 200,
+			"exp": 100
+		},
+		"min_floor": 1,
+		"max_floor": 10,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_reach_floor_5",
+		"name": "深入探索 5F",
+		"type": "bounty",
+		"description": "前往 5F 並帶回最新的探索情報。",
+		"zone": 1,
+		"objectives": [
+			{ "type": "reach_floor", "floor": 5, "count": 1 }
+		],
+		"rewards": {
+			"gold": 500,
+			"exp": 200
+		},
+		"min_floor": 1,
+		"max_floor": 10,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_boss_10",
+		"name": "挑戰 10F Boss",
+		"type": "bounty",
+		"description": "擊敗 10F 的守關 Boss，向酒館證明你的實力。",
+		"zone": 1,
+		"objectives": [
+			{ "type": "kill_boss", "floor": 10, "count": 1 }
+		],
+		"rewards": {
+			"gold": 1000,
+			"exp": 500,
+			"items": [
+				{ "id": "acc_collector_book", "count": 1 }
+			]
+		},
+		"min_floor": 1,
+		"max_floor": 10,
+		"repeatable": true
+	}
+]

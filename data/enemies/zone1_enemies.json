@@ -17,6 +17,7 @@
 		"skills": ["skill_spark", "skill_flame_shot"],
 		"drops": [
 			{"id": "mat_fire_crystal", "rate": 0.30},
+			{"id": "mat_herb", "rate": 0.15},
 			{"id": "item_hp_potion_s", "rate": 0.20},
 			{"id": "scroll_spark", "rate": 0.05},
 			{"id": "core_fire_imp", "rate": 0.01}
@@ -49,6 +50,7 @@
 		"skills": ["skill_ice_shard", "skill_frost_armor"],
 		"drops": [
 			{"id": "mat_ice_crystal", "rate": 0.35},
+			{"id": "mat_herb", "rate": 0.25},
 			{"id": "item_mp_potion_s", "rate": 0.15},
 			{"id": "core_ice_guard", "rate": 0.01}
 		],

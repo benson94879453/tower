@@ -46,8 +46,8 @@ func save_game(slot: int) -> void:
 			"unlocked_teleports": player_snapshot.get("unlocked_teleports", []).duplicate(),
 			"defeated_bosses": player_snapshot.get("defeated_bosses", []).duplicate(),
 			"main_quest_chapter": 0,
-			"completed_quests": [],
-			"active_quests": [],
+			"completed_quests": Array(player_snapshot.get("completed_quests", [])).duplicate(true),
+			"active_quests": Array(player_snapshot.get("active_quests", [])).duplicate(true),
 			"achievements": {},
 		},
 		"settings": {
@@ -82,6 +82,15 @@ func load_game(slot: int) -> void:
 		save_failed.emit("Failed to parse save file for slot %d." % slot)
 		return
 
+	var player_section: Dictionary = Dictionary(parsed.get("player", {}))
+	var progress_section: Dictionary = Dictionary(parsed.get("progress", {}))
+	if not player_section.is_empty():
+		if not player_section.has("active_quests") and progress_section.has("active_quests"):
+			player_section["active_quests"] = Array(progress_section.get("active_quests", [])).duplicate(true)
+		if not player_section.has("completed_quests") and progress_section.has("completed_quests"):
+			player_section["completed_quests"] = Array(progress_section.get("completed_quests", [])).duplicate(true)
+		parsed["player"] = player_section
+
 	PlayerManager.load_from_save(parsed)
 	var familiar_data = parsed.get("familiars", {})
 	if familiar_data is Dictionary:
@@ -92,6 +101,8 @@ func load_game(slot: int) -> void:
 		PlayerManager.inventory.load_from_dict(inventory_data)
 		if PlayerManager.player_data != null:
 			PlayerManager.player_data.inventory_data = PlayerManager.inventory.to_save_dict()
+	if QuestManager != null:
+		QuestManager.on_item_changed()
 
 	var settings = parsed.get("settings", {})
 	if settings is Dictionary:

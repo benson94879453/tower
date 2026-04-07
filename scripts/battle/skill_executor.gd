@@ -1,6 +1,7 @@
 class_name SkillExecutor
 extends RefCounted
 
+const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
 const DamageCalculatorClass = preload("res://scripts/battle/damage_calculator.gd")
 const StatusProcessorClass = preload("res://scripts/battle/status_processor.gd")
 
@@ -29,8 +30,44 @@ static func execute_skill(
 		skill_data = DamageCalculatorClass.get_basic_attack_data()
 		using_basic_attack = true
 
-	var skill_name: String = String(skill_data.get("name", "普通攻擊"))
-	var skill_element: String = String(skill_data.get("element", "none"))
+	var resolved_skill_data: Dictionary = skill_data.duplicate(true)
+	var scaled_power: int = -1
+	if not using_basic_attack and actor != null and int(actor.team) == CombatantDataClass.Team.PLAYER:
+		var skill_level: int = PlayerManager.get_skill_level(skill_id)
+		if skill_level >= 2:
+			var scaling: Dictionary = Dictionary(skill_data.get("level_scaling", {}))
+			var overlay_key: String = str(skill_level)
+			var overlay: Dictionary = {}
+			if scaling.has(overlay_key) and scaling[overlay_key] is Dictionary:
+				overlay = Dictionary(scaling[overlay_key])
+			elif scaling.has("max") and scaling["max"] is Dictionary:
+				overlay = Dictionary(scaling["max"])
+
+			if not overlay.is_empty():
+				if overlay.has("power"):
+					scaled_power = int(overlay.get("power", resolved_skill_data.get("base_power", 0)))
+					resolved_skill_data["base_power"] = scaled_power
+				if overlay.has("mp_cost"):
+					resolved_skill_data["mp_cost"] = int(overlay.get("mp_cost", resolved_skill_data.get("mp_cost", 0)))
+				var override_effects: Array = Array(overlay.get("effects_override", []))
+				if not override_effects.is_empty():
+					resolved_skill_data["effects"] = override_effects.duplicate(true)
+				elif scaled_power >= 0:
+					var scaled_effects: Array = []
+					for raw_effect in Array(resolved_skill_data.get("effects", [])):
+						if raw_effect is not Dictionary:
+							scaled_effects.append(raw_effect)
+							continue
+
+						var effect_copy: Dictionary = Dictionary(raw_effect).duplicate(true)
+						if String(effect_copy.get("type", "")) == "damage":
+							effect_copy["power"] = scaled_power
+						scaled_effects.append(effect_copy)
+
+					resolved_skill_data["effects"] = scaled_effects
+
+	var skill_name: String = String(resolved_skill_data.get("name", "普通攻擊"))
+	var skill_element: String = String(resolved_skill_data.get("element", "none"))
 	output["skill_name"] = skill_name
 	output["skill_element"] = skill_element
 
@@ -43,7 +80,7 @@ static func execute_skill(
 			output["fail_reason"] = "on_cooldown"
 			return output
 
-	var mp_cost: int = int(skill_data.get("mp_cost", 0))
+	var mp_cost: int = int(resolved_skill_data.get("mp_cost", 0))
 	if actor.current_mp < mp_cost:
 		output["fail_reason"] = "no_mp"
 		return output
@@ -57,13 +94,15 @@ static func execute_skill(
 
 	actor.current_mp -= mp_cost
 
-	var cooldown: int = int(skill_data.get("cooldown", 0))
+	var cooldown: int = int(resolved_skill_data.get("cooldown", 0))
 	if cooldown > 0 and not using_basic_attack:
-		actor.cooldowns[skill_id] = cooldown
+		var reduced_cooldown: int = max(cooldown - max(int(actor.cooldown_reduction), 0), 0)
+		if reduced_cooldown > 0:
+			actor.cooldowns[skill_id] = reduced_cooldown
 
-	var effects: Array = Array(skill_data.get("effects", []))
+	var effects: Array = Array(resolved_skill_data.get("effects", []))
 	if effects.is_empty():
-		var power: int = int(skill_data.get("base_power", 0))
+		var power: int = int(resolved_skill_data.get("base_power", 0))
 		if power > 0 and primary_target != null:
 			effects = [{"type": "damage", "target": "single_enemy", "power": power}]
 
@@ -83,7 +122,7 @@ static func execute_skill(
 					output["results"].append(_apply_damage(
 						actor,
 						target,
-						skill_data,
+						resolved_skill_data,
 						effect_dict,
 						environment_element
 					))
@@ -200,6 +239,8 @@ static func _apply_damage(
 	result["is_hit"] = bool(calc_result.get("is_hit", false))
 	result["is_crit"] = bool(calc_result.get("is_crit", false))
 	result["effectiveness_text"] = String(calc_result.get("effectiveness_text", ""))
+	result["element_multiplier"] = float(calc_result.get("element_multiplier", 1.0))
+	result["damage_type"] = damage_type
 	if not bool(result.get("is_hit", false)):
 		return result
 
