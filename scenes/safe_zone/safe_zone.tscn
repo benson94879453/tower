@@ -22,112 +22,256 @@ mouse_filter = 2
 color = Color(0.101961, 0.101961, 0.180392, 1)
 
 [node name="ZoneLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = 24.0
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 0.0
 offset_top = 16.0
-offset_right = 360.0
-offset_bottom = 52.0
-theme_override_font_sizes/font_size = 28
+offset_right = 0.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 32
 text = "1F - 黎明之城"
+horizontal_alignment = 1
 
-[node name="StatusPanel" type="PanelContainer" parent="."]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 60.0
-offset_right = 324.0
-offset_bottom = 292.0
-
-[node name="StatusLabel" type="RichTextLabel" parent="StatusPanel"]
+[node name="MainLayout" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+offset_left = 24.0
+offset_top = 72.0
+offset_right = -24.0
+offset_bottom = -24.0
+theme_override_constants/separation = 24
+
+[node name="LeftPanel" type="VBoxContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.35
+theme_override_constants/separation = 16
+
+[node name="StatusPanel" type="PanelContainer" parent="MainLayout/LeftPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StatusContent" type="VBoxContainer" parent="MainLayout/LeftPanel/StatusPanel"]
+layout_mode = 2
+theme_override_constants/separation = 10
+offset_left = 16.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = -16.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="PlayerNameLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Lv.1 艾倫"
+
+[node name="Sep1" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+
+[node name="HPRow" type="HBoxContainer" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="HPLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 0)
+text = "HP"
+
+[node name="HPBar" type="ProgressBar" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow"]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+show_percentage = false
+max_value = 100.0
+value = 100.0
+
+[node name="HPValue" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(80, 0)
+text = "100/100"
+horizontal_alignment = 2
+
+[node name="MPRow" type="HBoxContainer" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MPLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(32, 0)
+text = "MP"
+
+[node name="MPBar" type="ProgressBar" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow"]
+custom_minimum_size = Vector2(0, 22)
+layout_mode = 2
+size_flags_horizontal = 3
+show_percentage = false
+max_value = 60.0
+value = 60.0
+
+[node name="MPValue" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(80, 0)
+text = "60/60"
+horizontal_alignment = 2
+
+[node name="Sep2" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+
+[node name="GoldLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+text = "金幣: 500"
+
+[node name="TitleStatusLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+text = "稱號: 見習法師"
+
+[node name="FamiliarLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+text = "使魔: 無"
+
+[node name="FloorLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+text = "最高樓層: 1F"
+
+[node name="Sep3" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+
+[node name="EquipSummary" type="RichTextLabel" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 60)
 bbcode_enabled = true
 scroll_active = false
+fit_content = true
 
-[node name="ActionContainer" type="VBoxContainer" parent="."]
-layout_mode = 0
-offset_left = 400.0
-offset_top = 300.0
-offset_right = 640.0
-offset_bottom = 888.0
-theme_override_constants/separation = 12
+[node name="RightPanel" type="VBoxContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.65
+theme_override_constants/separation = 20
+alignment = 1
 
-[node name="InventoryButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="FacilityLabel" type="Label" parent="MainLayout/RightPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
+text = "— 設施 —"
+horizontal_alignment = 1
+
+[node name="FacilityGrid" type="GridContainer" parent="MainLayout/RightPanel"]
+layout_mode = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+columns = 3
+
+[node name="InventoryButton" type="Button" parent="MainLayout/RightPanel/FacilityGrid"]
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 text = "背包"
 
-[node name="ShopButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="ShopButton" type="Button" parent="MainLayout/RightPanel/FacilityGrid"]
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 text = "商店"
 
-[node name="ForgeButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="ForgeButton" type="Button" parent="MainLayout/RightPanel/FacilityGrid"]
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 text = "鍛造"
 
-[node name="FamiliarButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="FamiliarButton" type="Button" parent="MainLayout/RightPanel/FacilityGrid"]
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 text = "使魔小屋"
 
-[node name="LibraryButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="LibraryButton" type="Button" parent="MainLayout/RightPanel/FacilityGrid"]
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 text = "圖書館"
 
-[node name="TavernButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="TavernButton" type="Button" parent="MainLayout/RightPanel/FacilityGrid"]
+custom_minimum_size = Vector2(180, 52)
 layout_mode = 2
 text = "酒館"
 
-[node name="ExploreButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="ActionLabel" type="Label" parent="MainLayout/RightPanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
+text = "— 行動 —"
+horizontal_alignment = 1
+
+[node name="ActionRow" type="HBoxContainer" parent="MainLayout/RightPanel"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="ExploreButton" type="Button" parent="MainLayout/RightPanel/ActionRow"]
+custom_minimum_size = Vector2(220, 56)
 layout_mode = 2
 text = "探索 2F"
 
-[node name="TeleportButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="TeleportButton" type="Button" parent="MainLayout/RightPanel/ActionRow"]
+custom_minimum_size = Vector2(220, 56)
 layout_mode = 2
 text = "傳送"
 
-[node name="RestButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="SystemRow" type="HBoxContainer" parent="MainLayout/RightPanel"]
+layout_mode = 2
+alignment = 1
+theme_override_constants/separation = 12
+
+[node name="RestButton" type="Button" parent="MainLayout/RightPanel/SystemRow"]
+custom_minimum_size = Vector2(220, 52)
 layout_mode = 2
 text = "休息（全回復）"
 
-[node name="SaveButton" type="Button" parent="ActionContainer"]
-custom_minimum_size = Vector2(240, 48)
+[node name="SaveButton" type="Button" parent="MainLayout/RightPanel/SystemRow"]
+custom_minimum_size = Vector2(220, 52)
 layout_mode = 2
 text = "存檔"
 
 [node name="TeleportPanel" type="PanelContainer" parent="."]
 visible = false
-layout_mode = 0
-offset_left = 312.0
-offset_top = 124.0
-offset_right = 712.0
-offset_bottom = 424.0
-
-[node name="Content" type="VBoxContainer" parent="TeleportPanel"]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 16.0
-offset_top = 16.0
-offset_right = -16.0
-offset_bottom = -16.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -180.0
+offset_right = 200.0
+offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Content" type="VBoxContainer" parent="TeleportPanel"]
+layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TeleportList" type="VBoxContainer" parent="TeleportPanel/Content"]
+[node name="TeleportTitle" type="Label" parent="TeleportPanel/Content"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "選擇目的地"
+horizontal_alignment = 1
+
+[node name="Sep" type="HSeparator" parent="TeleportPanel/Content"]
+layout_mode = 2
+
+[node name="TeleportScroll" type="ScrollContainer" parent="TeleportPanel/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 200)
+horizontal_scroll_mode = 0
+
+[node name="TeleportList" type="VBoxContainer" parent="TeleportPanel/Content/TeleportScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
 [node name="CloseButton" type="Button" parent="TeleportPanel/Content"]

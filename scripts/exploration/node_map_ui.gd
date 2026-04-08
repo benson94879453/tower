@@ -17,10 +17,17 @@ var _reachable_ids: Array = []
 var _node_positions: Dictionary = {}
 var _hovered_node_id: int = -1
 var _interaction_locked: bool = false
+var _breath_time: float = 0.0
 
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
+
+
+func _process(delta: float) -> void:
+	if not _reachable_ids.is_empty():
+		_breath_time += delta * 2.0
+		queue_redraw()
 
 
 func update_map(floor_data: Dictionary, current_id: int, reachable_ids: Array) -> void:
@@ -78,11 +85,30 @@ func _calculate_positions() -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, size), ThemeConstantsClass.BG_DARK)
+	_draw_background_grid()
 
 	var nodes: Array = Array(_floor_data.get("nodes", []))
 	if nodes.is_empty():
 		return
 
+	_draw_connections(nodes)
+	_draw_nodes(nodes)
+
+
+func _draw_background_grid() -> void:
+	var grid_color := Color(1, 1, 1, 0.03)
+	var spacing: float = 60.0
+	var x: float = 0.0
+	while x < size.x:
+		draw_line(Vector2(x, 0), Vector2(x, size.y), grid_color, 1.0)
+		x += spacing
+	var y: float = 0.0
+	while y < size.y:
+		draw_line(Vector2(0, y), Vector2(size.x, y), grid_color, 1.0)
+		y += spacing
+
+
+func _draw_connections(nodes: Array) -> void:
 	for raw_node in nodes:
 		var node: Dictionary = raw_node
 		var from_id: int = int(node.get("id", -1))
@@ -95,13 +121,31 @@ func _draw() -> void:
 			if not _node_positions.has(connection_id):
 				continue
 			var to_pos: Vector2 = _node_positions[connection_id]
-			var line_color: Color = Color(1, 1, 1, 0.15)
-			if from_id == _current_node_id and _reachable_ids.has(connection_id):
-				line_color = Color.GOLD
-			elif bool(node.get("visited", false)):
-				line_color = Color(1, 1, 1, 0.5)
-			draw_line(from_pos, to_pos, line_color, 2.0, true)
 
+			var line_color: Color = Color(1, 1, 1, 0.12)
+			var line_width: float = 1.5
+			if from_id == _current_node_id and _reachable_ids.has(connection_id):
+				var breath_alpha: float = 0.6 + 0.4 * sin(_breath_time)
+				line_color = Color(1.0, 0.84, 0.0, breath_alpha)
+				line_width = 2.5
+			elif bool(node.get("visited", false)):
+				line_color = Color(1, 1, 1, 0.35)
+
+			var mid := (from_pos + to_pos) / 2.0
+			var offset := Vector2(0, -15.0) if abs(from_pos.x - to_pos.x) > 20.0 else Vector2.ZERO
+			var curve_mid := mid + offset
+
+			var points: PackedVector2Array = []
+			var segments: int = 12
+			for i in range(segments + 1):
+				var t: float = float(i) / float(segments)
+				var p: Vector2 = (1.0 - t) * (1.0 - t) * from_pos + 2.0 * (1.0 - t) * t * curve_mid + t * t * to_pos
+				points.append(p)
+			if points.size() >= 2:
+				draw_polyline(points, line_color, line_width, true)
+
+
+func _draw_nodes(nodes: Array) -> void:
 	for raw_node in nodes:
 		var node: Dictionary = raw_node
 		var node_id: int = int(node.get("id", -1))
@@ -114,23 +158,28 @@ func _draw() -> void:
 		var fill_color: Color = _get_node_color(node_type)
 		var border_color: Color = Color.WHITE
 
-		if node_id == _current_node_id:
+		var is_current: bool = node_id == _current_node_id
+		var is_reachable: bool = _reachable_ids.has(node_id)
+		var is_hovered: bool = node_id == _hovered_node_id and is_reachable
+
+		if is_current:
 			border_color = Color.GOLD
-			draw_circle(node_pos, NODE_RADIUS + 4.0, Color(1, 0.84, 0, 0.3))
-		elif _reachable_ids.has(node_id):
+			draw_circle(node_pos, NODE_RADIUS + 6.0, Color(1, 0.84, 0, 0.25))
+		elif is_reachable:
+			var breath_alpha: float = 0.15 + 0.15 * sin(_breath_time)
 			border_color = Color.GREEN
+			draw_circle(node_pos, NODE_RADIUS + 4.0, Color(0, 1, 0, breath_alpha))
 		elif visited:
 			fill_color = fill_color.darkened(0.5)
-			border_color = Color(1, 1, 1, 0.4)
+			border_color = Color(1, 1, 1, 0.35)
 		else:
 			fill_color = fill_color.darkened(0.3)
-			border_color = Color(1, 1, 1, 0.2)
+			border_color = Color(1, 1, 1, 0.15)
 
-		if node_id == _hovered_node_id and _reachable_ids.has(node_id):
-			draw_circle(node_pos, NODE_RADIUS + 6.0, Color(0, 1, 0, 0.25))
+		if is_hovered:
+			draw_circle(node_pos, NODE_RADIUS + 8.0, Color(0, 1, 0, 0.2))
 
-		draw_circle(node_pos, NODE_RADIUS, fill_color)
-		draw_arc(node_pos, NODE_RADIUS, 0.0, TAU, 32, border_color, 2.0, true)
+		_draw_node_shape(node_pos, node_type, fill_color, border_color, is_current)
 
 		var icon: String = FloorGeneratorClass.get_node_icon(node_type)
 		var font: Font = ThemeDB.fallback_font
@@ -148,6 +197,65 @@ func _draw() -> void:
 				font_size,
 				ThemeConstantsClass.TEXT_PRIMARY
 			)
+
+
+func _draw_node_shape(pos: Vector2, node_type: String, fill: Color, border: Color, is_current: bool) -> void:
+	var r: float = NODE_RADIUS
+	if is_current:
+		r += 2.0
+
+	match node_type:
+		"battle", "elite":
+			var scale_factor: float = 1.2 if node_type == "elite" else 1.0
+			var sr: float = r * scale_factor
+			var points := PackedVector2Array([
+				pos + Vector2(0, -sr),
+				pos + Vector2(sr * 0.866, sr * 0.5),
+				pos + Vector2(-sr * 0.866, sr * 0.5),
+			])
+			draw_colored_polygon(points, fill)
+			draw_polyline(points + PackedVector2Array([points[0]]), border, 2.0, true)
+		"boss":
+			var points := _pentagon_points(pos, r * 1.15)
+			draw_colored_polygon(points, fill)
+			draw_polyline(points + PackedVector2Array([points[0]]), border, 2.5, true)
+		"chest":
+			var points := _hexagon_points(pos, r)
+			draw_colored_polygon(points, fill)
+			draw_polyline(points + PackedVector2Array([points[0]]), border, 2.0, true)
+		"merchant":
+			var points := PackedVector2Array([
+				pos + Vector2(0, -r),
+				pos + Vector2(r, 0),
+				pos + Vector2(0, r),
+				pos + Vector2(-r, 0),
+			])
+			draw_colored_polygon(points, fill)
+			draw_polyline(points + PackedVector2Array([points[0]]), border, 2.0, true)
+		"rest":
+			var half := r * 0.75
+			var rect := Rect2(pos - Vector2(half, half), Vector2(half * 2, half * 2))
+			draw_rect(rect, fill)
+			draw_rect(rect, border, false, 2.0)
+		_:
+			draw_circle(pos, r, fill)
+			draw_arc(pos, r, 0.0, TAU, 32, border, 2.0, true)
+
+
+func _pentagon_points(center: Vector2, radius: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for i in range(5):
+		var angle: float = -PI / 2.0 + float(i) * TAU / 5.0
+		points.append(center + Vector2(cos(angle), sin(angle)) * radius)
+	return points
+
+
+func _hexagon_points(center: Vector2, radius: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for i in range(6):
+		var angle: float = float(i) * TAU / 6.0
+		points.append(center + Vector2(cos(angle), sin(angle)) * radius)
+	return points
 
 
 func _get_node_color(node_type: String) -> Color:

@@ -64,6 +64,7 @@ func _build_ui() -> void:
 	root.add_child(left_panel)
 
 	var header := HBoxContainer.new()
+	header.add_theme_constant_override("separation", 8)
 	left_panel.add_child(header)
 
 	_title_label = Label.new()
@@ -77,6 +78,8 @@ func _build_ui() -> void:
 	_close_button.custom_minimum_size = Vector2(36, 36)
 	_close_button.pressed.connect(func(): panel_closed.emit())
 	header.add_child(_close_button)
+
+	left_panel.add_child(HSeparator.new())
 
 	_category_container = HBoxContainer.new()
 	_category_container.add_theme_constant_override("separation", 4)
@@ -125,12 +128,18 @@ func _build_ui() -> void:
 	detail_root.offset_bottom = -12.0
 	_detail_panel.add_child(detail_root)
 
+	var detail_title := Label.new()
+	detail_title.text = "道具資訊"
+	detail_title.add_theme_font_size_override("font_size", ThemeConstantsClass.FONT_SIZE_NORMAL)
+	detail_title.add_theme_color_override("font_color", ThemeConstantsClass.TEXT_SECONDARY)
+	detail_root.add_child(detail_title)
+
+	detail_root.add_child(HSeparator.new())
+
 	_detail_name = Label.new()
 	_detail_name.text = ""
 	_detail_name.add_theme_font_size_override("font_size", ThemeConstantsClass.FONT_SIZE_LARGE)
 	detail_root.add_child(_detail_name)
-
-	detail_root.add_child(HSeparator.new())
 
 	_detail_desc = RichTextLabel.new()
 	_detail_desc.bbcode_enabled = true
@@ -186,7 +195,7 @@ func _refresh_item_list() -> void:
 		var rarity: String = String(item_data.get("rarity", "N"))
 		var row := Button.new()
 		row.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		row.custom_minimum_size.y = 36.0
+		row.custom_minimum_size.y = 38.0
 
 		if category == "equipment":
 			var enhance: int = int(entry.get("enhance", 0))
@@ -197,6 +206,9 @@ func _refresh_item_list() -> void:
 		row.add_theme_color_override("font_color", ThemeConstantsClass.get_rarity_border(rarity))
 		if _is_equipped(item_id):
 			row.text += "  [E]"
+
+		var row_style: StyleBoxFlat = ThemeConstantsClass.create_list_item_bg(shown_count)
+		row.add_theme_stylebox_override("normal", row_style)
 
 		var bound_item_id: String = item_id
 		row.pressed.connect(_on_item_selected.bind(bound_item_id, equipment_index))
