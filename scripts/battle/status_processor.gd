@@ -24,13 +24,13 @@ const STAT_MOD_MAP := {
 
 
 static func check_before_action(actor, all_allies: Array, _all_enemies: Array) -> Dictionary:
+	var logs: Array = []
 	var result: Dictionary = {
 		"can_act": true,
 		"reason": "",
 		"redirect_target": null,
-		"logs": [],
+		"logs": logs,
 	}
-	var logs: Array = result["logs"]
 
 	if actor.has_status("freeze"):
 		result["can_act"] = false
@@ -174,8 +174,8 @@ static func on_damage_received(target, damage_element: String) -> Array[Dictiona
 
 
 static func check_reflect(target, _skill_element: String, damage_type: String) -> Dictionary:
-	var result: Dictionary = {"reflected": false, "logs": []}
-	var logs: Array = result["logs"]
+	var logs: Array = []
+	var result: Dictionary = {"reflected": false, "logs": logs}
 	if damage_type == "physical":
 		return result
 	if not target.has_status("reflect"):
@@ -191,8 +191,8 @@ static func check_reflect(target, _skill_element: String, damage_type: String) -
 
 
 static func check_stealth_dodge(target) -> Dictionary:
-	var result: Dictionary = {"dodged": false, "logs": []}
-	var logs: Array = result["logs"]
+	var logs: Array = []
+	var result: Dictionary = {"dodged": false, "logs": logs}
 	if not target.has_status("stealth"):
 		return result
 

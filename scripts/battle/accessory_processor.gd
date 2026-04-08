@@ -142,14 +142,14 @@ static func on_turn_start(actor, familiar) -> Array[Dictionary]:
 
 
 static func on_deal_damage(actor, target, damage: int, skill_element: String, element_multiplier: float, damage_type: String = "") -> Dictionary:
+	var logs: Array[Dictionary] = []
+	var apply_status: Array[Dictionary] = []
 	var result: Dictionary = {
 		"bonus_damage": 0,
 		"heal_actor": 0,
-		"apply_status": [],
-		"logs": [],
+		"apply_status": apply_status,
+		"logs": logs,
 	}
-	var logs: Array[Dictionary] = result["logs"]
-	var apply_status: Array[Dictionary] = result["apply_status"]
 
 	if actor == null or target == null:
 		return result
@@ -215,13 +215,13 @@ static func on_deal_damage(actor, target, damage: int, skill_element: String, el
 
 
 static func on_receive_damage(attacker, target, damage: int, skill_element: String, damage_type: String) -> Dictionary:
+	var logs: Array[Dictionary] = []
+	var counter_status: Array[Dictionary] = []
 	var result: Dictionary = {
 		"revive_hp": 0,
-		"counter_status": [],
-		"logs": [],
+		"counter_status": counter_status,
+		"logs": logs,
 	}
-	var logs: Array[Dictionary] = result["logs"]
-	var counter_status: Array[Dictionary] = result["counter_status"]
 
 	if attacker == null or target == null:
 		return result
