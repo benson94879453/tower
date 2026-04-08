@@ -70,6 +70,21 @@ static func build_theme() -> Theme:
 	)
 	theme.set_stylebox("fill", "ProgressBar", progress_fill)
 
+	# HP ProgressBar Variation
+	var hp_fill := _create_stylebox(ThemeConstantsClass.HP_COLOR, Color.TRANSPARENT, 0, 4)
+	theme.set_type_variation("ProgressBarHP", "ProgressBar")
+	theme.set_stylebox("fill", "ProgressBarHP", hp_fill)
+
+	# MP ProgressBar Variation
+	var mp_fill := _create_stylebox(ThemeConstantsClass.MP_COLOR, Color.TRANSPARENT, 0, 4)
+	theme.set_type_variation("ProgressBarMP", "ProgressBar")
+	theme.set_stylebox("fill", "ProgressBarMP", mp_fill)
+
+	# EXP ProgressBar Variation
+	var exp_fill := _create_stylebox(ThemeConstantsClass.EXP_COLOR, Color.TRANSPARENT, 0, 4)
+	theme.set_type_variation("ProgressBarEXP", "ProgressBar")
+	theme.set_stylebox("fill", "ProgressBarEXP", exp_fill)
+
 	var popup_panel := _create_stylebox(
 		ThemeConstantsClass.BG_MID,
 		ThemeConstantsClass.PANEL_BG,
@@ -77,6 +92,25 @@ static func build_theme() -> Theme:
 		6
 	)
 	theme.set_stylebox("panel", "PopupMenu", popup_panel)
+
+	# Combatant Panel Variations
+	var combatant_panel := _create_stylebox(
+		ThemeConstantsClass.PANEL_BG.darkened(0.2),
+		ThemeConstantsClass.ACCENT,
+		2,
+		8
+	)
+	theme.set_type_variation("CombatantPanel", "PanelContainer")
+	theme.set_stylebox("panel", "CombatantPanel", combatant_panel)
+
+	var enemy_panel := _create_stylebox(
+		ThemeConstantsClass.BG_DARK,
+		ThemeConstantsClass.TEXT_SECONDARY,
+		1,
+		8
+	)
+	theme.set_type_variation("EnemyPanel", "PanelContainer")
+	theme.set_stylebox("panel", "EnemyPanel", enemy_panel)
 
 	theme.set_color("font_color", "Button", ThemeConstantsClass.TEXT_PRIMARY)
 	theme.set_color("font_hover_color", "Button", Color.WHITE)
@@ -94,9 +128,7 @@ static func build_theme() -> Theme:
 
 
 static func ensure_theme_resource(theme_path: String = DEFAULT_THEME_PATH) -> Error:
-	if ResourceLoader.exists(theme_path, "Theme"):
-		return OK
-
+	# Always save during development to ensure theme changes are applied
 	return save_theme_resource(theme_path)
 
 

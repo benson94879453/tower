@@ -30,12 +30,12 @@ signal damage_dealt(target, amount: int, element: String, is_crit: bool)
 var battle_state: int = BattleState.INACTIVE
 var turn_number: int = 0
 
-var player
-var familiar
-var enemies: Array = []
-var all_combatants: Array = []
-var turn_order: Array = []
-var turn_manager
+var player: CombatantData
+var familiar: CombatantData
+var enemies: Array[CombatantData] = []
+var all_combatants: Array[CombatantData] = []
+var turn_order: Array[CombatantData] = []
+var turn_manager: TurnManager
 var _received_enemy_skill_ids: Array[String] = []
 
 var is_boss_battle := false
@@ -102,22 +102,26 @@ func start_battle(enemy_ids: Array, config: Dictionary = {}) -> void:
 	var passive_logs: Array[Dictionary] = PassiveProcessor.on_battle_start(player, familiar)
 	var accessory_logs: Array[Dictionary] = AccessoryProcessor.on_battle_start(player, familiar)
 	battle_ui.refresh_all_displays()
+	await delay(0.6)
 	for raw_log in passive_logs:
 		var log_entry: Dictionary = raw_log
 		battle_ui.add_log(
 			String(log_entry.get("text", "")),
 			log_entry.get("color", Color.WHITE)
 		)
+		await delay(0.2)
 	for raw_log in accessory_logs:
 		var log_entry: Dictionary = raw_log
 		battle_ui.add_log(
 			String(log_entry.get("text", "")),
 			log_entry.get("color", Color.WHITE)
 		)
+		await delay(0.2)
 
 	battle_started.emit()
 	turn_number = 1
 	turn_started.emit(turn_number)
+	await delay(0.5)
 	_run_battle_loop()
 
 
@@ -136,13 +140,13 @@ func end_battle(result: String) -> void:
 		PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
 		PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
 
+	battle_ui.set_player_input_enabled(false)
 	match result:
 		"victory":
-			_process_victory()
+			await _process_victory()
 		"defeat":
-			_process_defeat()
+			await _process_defeat()
 
-	battle_ui.set_player_input_enabled(false)
 	battle_ended.emit(result)
 
 
@@ -206,8 +210,8 @@ func on_player_flee() -> void:
 		}
 
 
-func get_alive_enemies() -> Array:
-	var alive: Array = []
+func get_alive_enemies() -> Array[CombatantData]:
+	var alive: Array[CombatantData] = []
 	for enemy in enemies:
 		if enemy.is_alive:
 			alive.append(enemy)
@@ -215,8 +219,8 @@ func get_alive_enemies() -> Array:
 	return alive
 
 
-func get_alive_allies() -> Array:
-	var alive: Array = []
+func get_alive_allies() -> Array[CombatantData]:
+	var alive: Array[CombatantData] = []
 	if player != null and player.is_alive:
 		alive.append(player)
 	if familiar != null and familiar.is_alive:
@@ -234,6 +238,13 @@ func record_enemy_skill_hit(skill_id: String) -> void:
 		return
 	if not _received_enemy_skill_ids.has(skill_id):
 		_received_enemy_skill_ids.append(skill_id)
+
+
+func set_turn_order_snapshot(order: Array) -> void:
+	turn_order.clear()
+	for combatant in order:
+		if combatant is CombatantData:
+			turn_order.append(combatant)
 
 
 func _change_state(new_state: int) -> void:
@@ -256,6 +267,7 @@ func _run_battle_loop() -> void:
 		and battle_state != BattleState.FLEEING \
 		and battle_state != BattleState.INACTIVE:
 		battle_ui.add_log("--- 第 %d 回合 ---" % turn_number, Color.YELLOW)
+		await delay(0.4)
 		await turn_manager.execute_turn()
 
 		if battle_state == BattleState.VICTORY \
@@ -297,10 +309,14 @@ func _process_victory() -> void:
 	if familiar != null and familiar_exp > 0 and PlayerManager.player_data != null:
 		PlayerManager.train_familiar(PlayerManager.player_data.active_familiar_index, familiar_exp)
 	PlayerManager.check_title_unlocks()
-	battle_ui.show_victory_result(rewards, level_result)
+	await battle_ui.show_victory_result(rewards, level_result)
 
 
 func _process_defeat() -> void:
 	var penalty: Dictionary = BattleResult.calculate_defeat_penalty()
 	BattleResult.apply_defeat_penalty(penalty)
-	battle_ui.show_defeat_result(penalty)
+	await battle_ui.show_defeat_result(penalty)
+
+
+func delay(seconds: float) -> void:
+	await get_tree().create_timer(seconds).timeout

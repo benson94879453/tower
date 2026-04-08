@@ -41,6 +41,7 @@ var _tavern_panel = null
 
 
 func _ready() -> void:
+	_apply_theme_variations()
 	inventory_button.pressed.connect(_on_inventory_pressed)
 	shop_button.pressed.connect(_on_shop_pressed)
 	forge_button.pressed.connect(_on_forge_pressed)
@@ -53,6 +54,11 @@ func _ready() -> void:
 	save_button.pressed.connect(_request_save)
 	teleport_close_button.pressed.connect(func(): teleport_panel.visible = false)
 	teleport_panel.visible = false
+
+
+func _apply_theme_variations() -> void:
+	$StatusPanel.theme_type_variation = "CombatantPanel"
+	teleport_panel.theme_type_variation = "CombatantPanel"
 
 
 func setup(safe_floor: int) -> void:

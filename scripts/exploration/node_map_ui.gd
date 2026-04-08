@@ -3,13 +3,14 @@ extends Control
 
 const FloorGeneratorClass = preload("res://scripts/exploration/floor_generator.gd")
 const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
+const DrawShapeClass = preload("res://scripts/ui/draw_shape.gd")
 
 signal node_clicked(node_id: int)
 
 const NODE_RADIUS: float = 24.0
-const ROW_SPACING: float = 100.0
-const COL_SPACING: float = 140.0
-const MAP_MARGIN := Vector2(80, 60)
+const ROW_SPACING: float = 120.0
+const COL_SPACING: float = 160.0
+const MAP_MARGIN := Vector2(100, 80)
 
 var _floor_data: Dictionary = {}
 var _current_node_id: int = -1
@@ -113,24 +114,26 @@ func _draw() -> void:
 		var visited: bool = bool(node.get("visited", false))
 		var fill_color: Color = _get_node_color(node_type)
 		var border_color: Color = Color.WHITE
+		var outline_width: float = 2.0
 
 		if node_id == _current_node_id:
-			border_color = Color.GOLD
-			draw_circle(node_pos, NODE_RADIUS + 4.0, Color(1, 0.84, 0, 0.3))
+			border_color = ThemeConstantsClass.ACCENT
+			outline_width = 3.0
+			DrawShapeClass.draw_glow(self, _get_node_shape(node_pos, node_type, NODE_RADIUS + 4.0), node_pos, ThemeConstantsClass.ACCENT, 8.0)
 		elif _reachable_ids.has(node_id):
-			border_color = Color.GREEN
+			border_color = Color.WHITE
+			outline_width = 2.0
+			if node_id == _hovered_node_id:
+				DrawShapeClass.draw_glow(self, _get_node_shape(node_pos, node_type, NODE_RADIUS + 2.0), node_pos, Color.WHITE, 6.0)
 		elif visited:
-			fill_color = fill_color.darkened(0.5)
-			border_color = Color(1, 1, 1, 0.4)
+			fill_color = fill_color.darkened(0.6)
+			border_color = Color(1, 1, 1, 0.3)
 		else:
-			fill_color = fill_color.darkened(0.3)
-			border_color = Color(1, 1, 1, 0.2)
+			fill_color = fill_color.darkened(0.4)
+			border_color = Color(1, 1, 1, 0.1)
 
-		if node_id == _hovered_node_id and _reachable_ids.has(node_id):
-			draw_circle(node_pos, NODE_RADIUS + 6.0, Color(0, 1, 0, 0.25))
-
-		draw_circle(node_pos, NODE_RADIUS, fill_color)
-		draw_arc(node_pos, NODE_RADIUS, 0.0, TAU, 32, border_color, 2.0, true)
+		var shape_points := _get_node_shape(node_pos, node_type, NODE_RADIUS)
+		DrawShapeClass.draw_outlined_polygon(self, shape_points, fill_color, border_color, outline_width)
 
 		var icon: String = FloorGeneratorClass.get_node_icon(node_type)
 		var font: Font = ThemeDB.fallback_font
@@ -150,28 +153,48 @@ func _draw() -> void:
 			)
 
 
+func _get_node_shape(center: Vector2, node_type: String, radius: float) -> PackedVector2Array:
+	match node_type:
+		"battle":
+			return DrawShapeClass.get_regular_polygon(center, radius, 3)
+		"elite":
+			return DrawShapeClass.get_regular_polygon(center, radius, 6)
+		"event":
+			return DrawShapeClass.get_circle(center, radius)
+		"chest":
+			return DrawShapeClass.get_regular_polygon(center, radius, 4, 45.0)
+		"merchant":
+			return DrawShapeClass.get_diamond(center, radius * 1.2, radius * 1.6)
+		"altar":
+			return DrawShapeClass.get_star(center, radius, radius * 0.5, 5)
+		"entrance", "exit":
+			return DrawShapeClass.get_regular_polygon(center, radius, 5)
+		"rest":
+			return DrawShapeClass.get_regular_polygon(center, radius, 8)
+		_:
+			return DrawShapeClass.get_circle(center, radius)
+
+
 func _get_node_color(node_type: String) -> Color:
 	match node_type:
-		"entrance":
-			return Color("#336699")
-		"exit":
+		"entrance", "exit":
 			return Color("#336699")
 		"boss":
-			return Color("#CC2222")
+			return ThemeConstantsClass.get_element_color("fire")
 		"battle":
-			return Color("#CC4444")
+			return ThemeConstantsClass.get_element_color("fire")
 		"elite":
-			return Color("#FF6600")
+			return ThemeConstantsClass.get_element_color("thunder")
 		"event":
-			return Color("#6666CC")
+			return ThemeConstantsClass.get_element_color("dark")
 		"chest":
 			return Color("#CCAA33")
 		"merchant":
-			return Color("#33AA66")
+			return ThemeConstantsClass.get_element_color("wind")
 		"rest":
-			return Color("#33AAAA")
+			return ThemeConstantsClass.get_element_color("water")
 		"altar":
-			return Color("#AA33CC")
+			return ThemeConstantsClass.get_element_color("light")
 		_:
 			return Color("#666666")
 

@@ -38,6 +38,8 @@ func setup(mode: int) -> void:
 	_selected_item_id = ""
 	_selected_equipment_index = -1
 	_current_filter = "all"
+	
+	theme_type_variation = "CombatantPanel"
 
 	for child in get_children():
 		child.queue_free()
@@ -110,6 +112,7 @@ func _build_ui() -> void:
 	_scroll_container.add_child(_item_list_container)
 
 	_detail_panel = PanelContainer.new()
+	_detail_panel.theme_type_variation = "EnemyPanel"
 	_detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_detail_panel.size_flags_stretch_ratio = 0.8
 	_detail_panel.custom_minimum_size.x = 220.0

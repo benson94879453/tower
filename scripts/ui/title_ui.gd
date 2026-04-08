@@ -11,8 +11,11 @@ signal quit_requested
 @onready var quit_button: Button = $MenuContainer/QuitButton
 @onready var save_info_label: Label = $SaveInfoLabel
 
+const CombatantVisualClass = preload("res://scripts/ui/combatant_visual.gd")
+
 
 func _ready() -> void:
+	_add_title_visual()
 	new_game_button.pressed.connect(_request_new_game)
 	load_game_button.pressed.connect(func(): _try_load_game())
 	quit_button.pressed.connect(_request_quit)
@@ -50,3 +53,15 @@ func _request_quit() -> void:
 			GameManager.quit_game()
 		return
 	quit_requested.emit()
+
+
+func _add_title_visual() -> void:
+	var visual := CombatantVisualClass.new()
+	visual.name = "TitleVisual"
+	visual.custom_minimum_size = Vector2(160, 160)
+	visual.is_player = true
+	visual.element = "light"
+	# Position it above title or centered
+	visual.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+	visual.position = Vector2(1920/2.0 - 80, 80) # Rough estimate for 1080p
+	add_child(visual)

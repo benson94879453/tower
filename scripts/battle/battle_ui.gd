@@ -33,6 +33,8 @@ signal back_pressed
 @onready var familiar_hp_label: Label = $AllyArea/FamiliarPanel/Content/FamiliarHPLabel
 @onready var familiar_mode_label: Label = $AllyArea/FamiliarPanel/Content/FamiliarMode
 
+const CombatantVisualClass = preload("res://scripts/ui/combatant_visual.gd")
+
 var _battle_manager
 var _player
 var _familiar
@@ -40,11 +42,17 @@ var _enemies: Array = []
 var _pending_skill_id: String = ""
 var _player_status_label: Label
 var _familiar_status_label: Label
+var _bar_tweens_enabled := false
+
+var _player_visual: CombatantVisualClass
+var _familiar_visual: CombatantVisualClass
 
 
 func _ready() -> void:
 	_battle_manager = get_parent()
 	_ensure_status_labels()
+	_ensure_visuals()
+	_apply_theme_variations()
 	_hide_all_subpanels()
 
 	$ActionMenu/SkillButton.pressed.connect(_on_skill_button)
@@ -62,7 +70,37 @@ func _ready() -> void:
 	$FamiliarCmdPanel/Content/BackButton.pressed.connect(_show_action_menu)
 
 
-func setup_battle(player_data, familiar_data, enemy_list: Array) -> void:
+func _ensure_visuals() -> void:
+	var player_content := $AllyArea/PlayerPanel/Content as VBoxContainer
+	_player_visual = player_content.get_node_or_null("PlayerVisual") as CombatantVisualClass
+	if _player_visual == null:
+		_player_visual = CombatantVisualClass.new()
+		_player_visual.name = "PlayerVisual"
+		_player_visual.custom_minimum_size = Vector2(80, 80)
+		_player_visual.is_player = true
+		player_content.add_child(_player_visual)
+		player_content.move_child(_player_visual, 0)
+
+	var familiar_content := $AllyArea/FamiliarPanel/Content as VBoxContainer
+	_familiar_visual = familiar_content.get_node_or_null("FamiliarVisual") as CombatantVisualClass
+	if _familiar_visual == null:
+		_familiar_visual = CombatantVisualClass.new()
+		_familiar_visual.name = "FamiliarVisual"
+		_familiar_visual.custom_minimum_size = Vector2(64, 64)
+		familiar_content.add_child(_familiar_visual)
+		familiar_content.move_child(_familiar_visual, 0)
+
+
+func _apply_theme_variations() -> void:
+	player_panel.theme_type_variation = "CombatantPanel"
+	familiar_panel_display.theme_type_variation = "CombatantPanel"
+	player_hp_bar.theme_type_variation = "ProgressBarHP"
+	player_mp_bar.theme_type_variation = "ProgressBarMP"
+	familiar_hp_bar.theme_type_variation = "ProgressBarHP"
+
+
+func setup_battle(player_data: CombatantData, familiar_data: CombatantData, enemy_list: Array[CombatantData]) -> void:
+	_bar_tweens_enabled = false
 	_player = player_data
 	_familiar = familiar_data
 	_enemies = enemy_list
@@ -74,6 +112,34 @@ func setup_battle(player_data, familiar_data, enemy_list: Array) -> void:
 	_generate_enemy_panels()
 	set_player_input_enabled(false)
 	add_log("戰鬥開始！")
+	_bar_tweens_enabled = true
+
+
+func _tween_bar(bar: ProgressBar, new_value: float, duration: float = 0.4) -> void:
+	if bar == null:
+		return
+
+	if not _bar_tweens_enabled:
+		bar.value = new_value
+		return
+
+	var existing_tween = bar.get_meta("_value_tween") if bar.has_meta("_value_tween") else null
+	if existing_tween is Tween:
+		existing_tween.kill()
+
+	var tween := create_tween()
+	bar.set_meta("_value_tween", tween)
+	tween.tween_property(bar, "value", new_value, duration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+
+func _show_panel(panel: Control) -> void:
+	if panel == null:
+		return
+
+	panel.modulate.a = 0.0
+	panel.visible = true
+	var tween := create_tween()
+	tween.tween_property(panel, "modulate:a", 1.0, 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
 
 
 func _update_player_display() -> void:
@@ -81,14 +147,17 @@ func _update_player_display() -> void:
 		return
 
 	player_name_label.text = _player.display_name
-	player_level_label.text = "Lv.%d" % PlayerManager.player_data.level
+	player_level_label.text = "Lv.%d" % int(PlayerManager.player_data.level if PlayerManager.player_data != null else 1)
 	player_hp_bar.max_value = _player.max_hp
-	player_hp_bar.value = _player.current_hp
+	_tween_bar(player_hp_bar, float(_player.current_hp))
 	player_hp_label.text = "%d/%d" % [_player.current_hp, _player.max_hp]
 	player_mp_bar.max_value = _player.max_mp
-	player_mp_bar.value = _player.current_mp
+	_tween_bar(player_mp_bar, float(_player.current_mp))
 	player_mp_label.text = "%d/%d" % [_player.current_mp, _player.max_mp]
 	_set_status_label(_player_status_label, _player)
+	
+	if _player_visual != null:
+		_player_visual.element = _player.element
 
 
 func _update_familiar_display() -> void:
@@ -99,11 +168,15 @@ func _update_familiar_display() -> void:
 	familiar_panel_display.visible = true
 	familiar_name_label.text = _familiar.display_name
 	familiar_hp_bar.max_value = _familiar.max_hp
-	familiar_hp_bar.value = _familiar.current_hp
+	_tween_bar(familiar_hp_bar, float(_familiar.current_hp))
 	familiar_hp_label.text = "%d/%d" % [_familiar.current_hp, _familiar.max_hp]
-	var mode_names := ["攻擊模式", "防禦模式", "輔助模式", "待命"]
+	var mode_names := ["攻擊模式", "防禦模式", "支援模式", "待命"]
 	familiar_mode_label.text = mode_names[_familiar.familiar_mode]
 	_set_status_label(_familiar_status_label, _familiar)
+	
+	if _familiar_visual != null:
+		_familiar_visual.element = _familiar.element
+		_familiar_visual.visual = _familiar.visual
 
 
 func _generate_enemy_panels() -> void:
@@ -114,37 +187,51 @@ func _generate_enemy_panels() -> void:
 		enemy_container.add_child(_create_enemy_panel(enemy))
 
 
-func _create_enemy_panel(enemy) -> PanelContainer:
+func _create_enemy_panel(enemy: CombatantData) -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(160, 120)
+	panel.custom_minimum_size = Vector2(180, 160)
+	panel.theme_type_variation = "EnemyPanel"
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var vbox := VBoxContainer.new()
 	vbox.name = "Content"
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_theme_constant_override("separation", 4)
 	panel.add_child(vbox)
+
+	var visual := CombatantVisualClass.new()
+	visual.name = "Visual"
+	visual.custom_minimum_size = Vector2(64, 64)
+	visual.element = enemy.element
+	visual.visual = enemy.visual
+	vbox.add_child(visual)
 
 	var name_label := Label.new()
 	name_label.text = enemy.display_name
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.add_theme_font_size_override("font_size", ThemeConstants.FONT_SIZE_NORMAL)
 	vbox.add_child(name_label)
 
 	var enemy_data := DataManager.get_enemy(enemy.id)
 	var level_label := Label.new()
 	level_label.text = "Lv.%d" % int(enemy_data.get("level", 1))
 	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	level_label.add_theme_font_size_override("font_size", ThemeConstants.FONT_SIZE_SMALL)
+	level_label.modulate = ThemeConstants.TEXT_SECONDARY
 	vbox.add_child(level_label)
 
 	var hp_bar := ProgressBar.new()
+	hp_bar.theme_type_variation = "ProgressBarHP"
 	hp_bar.max_value = enemy.max_hp
 	hp_bar.value = enemy.current_hp
-	hp_bar.custom_minimum_size.y = 16
+	hp_bar.custom_minimum_size.y = 8
 	hp_bar.show_percentage = false
 	vbox.add_child(hp_bar)
 
 	var hp_label := Label.new()
 	hp_label.text = "%d/%d" % [enemy.current_hp, enemy.max_hp]
 	hp_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hp_label.add_theme_font_size_override("font_size", ThemeConstants.FONT_SIZE_SMALL)
 	vbox.add_child(hp_label)
 
 	var status_label := Label.new()
@@ -152,6 +239,7 @@ func _create_enemy_panel(enemy) -> PanelContainer:
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status_label.visible = false
 	status_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
+	status_label.add_theme_font_size_override("font_size", ThemeConstants.FONT_SIZE_SMALL)
 	vbox.add_child(status_label)
 
 	name_label.add_theme_color_override("font_color", ThemeConstants.get_element_color(enemy.element))
@@ -176,12 +264,22 @@ func update_enemy_display(enemy) -> void:
 			var hp_label := panel.get_meta("hp_label", null) as Label
 			var status_label := panel.get_meta("status_label", null) as Label
 			if hp_bar != null:
-				hp_bar.value = enemy.current_hp
+				_tween_bar(hp_bar, float(enemy.current_hp))
 			if hp_label != null:
 				hp_label.text = "%d/%d" % [enemy.current_hp, enemy.max_hp]
 			if status_label != null:
 				_set_status_label(status_label, enemy)
-			panel.modulate.a = 0.4 if not enemy.is_alive else 1.0
+
+			var existing_fade_tween = panel.get_meta("_fade_tween") if panel.has_meta("_fade_tween") else null
+			if existing_fade_tween is Tween:
+				existing_fade_tween.kill()
+
+			if not enemy.is_alive:
+				var fade_tween := create_tween()
+				panel.set_meta("_fade_tween", fade_tween)
+				fade_tween.tween_property(panel, "modulate:a", 0.4, 0.3).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+			else:
+				panel.modulate.a = 1.0
 			break
 
 
@@ -202,7 +300,7 @@ func _hide_all_subpanels() -> void:
 
 func _show_action_menu() -> void:
 	_hide_all_subpanels()
-	action_menu.visible = true
+	_show_panel(action_menu)
 	_pending_skill_id = ""
 	back_pressed.emit()
 
@@ -211,24 +309,24 @@ func _on_skill_button() -> void:
 	action_menu.visible = false
 	_hide_all_subpanels()
 	_populate_skill_list()
-	skill_panel.visible = true
+	_show_panel(skill_panel)
 
 
 func _on_item_button() -> void:
 	action_menu.visible = false
 	_hide_all_subpanels()
 	_populate_item_list()
-	item_panel.visible = true
+	_show_panel(item_panel)
 
 
 func _on_familiar_button() -> void:
 	if _familiar == null:
-		add_log("沒有攜帶使魔！")
+		add_log("目前沒有使魔可以指揮。")
 		return
 
 	action_menu.visible = false
 	_hide_all_subpanels()
-	familiar_cmd_panel.visible = true
+	_show_panel(familiar_cmd_panel)
 
 
 func _on_flee_button() -> void:
@@ -306,7 +404,7 @@ func _populate_item_list() -> void:
 		child.queue_free()
 
 	var placeholder := Label.new()
-	placeholder.text = "（道具系統尚未實作）"
+	placeholder.text = "道具功能尚未完成。"
 	item_list.add_child(placeholder)
 
 
@@ -353,14 +451,19 @@ func add_element_log(text: String, element: String) -> void:
 
 
 func show_waiting_indicator(actor_name: String) -> void:
-	add_log("等待 %s 行動..." % actor_name, Color.GRAY)
+	add_log("等待 %s 的指令..." % actor_name, Color.GRAY)
 
 
 func show_victory_result(rewards: Dictionary, level_result: Dictionary) -> void:
+	await _battle_manager.delay(0.8)
 	add_log("", Color.WHITE)
-	add_log("══════ 戰鬥勝利！ ══════", Color.GOLD)
+	add_log("========== 勝利！ ==========", Color.GOLD)
+	await _battle_manager.delay(0.6)
+
 	add_log("獲得 EXP: %d" % int(rewards.get("exp", 0)), Color("#44CC44"))
+	await _battle_manager.delay(0.3)
 	add_log("獲得 Gold: %d" % int(rewards.get("gold", 0)), Color.YELLOW)
+	await _battle_manager.delay(0.3)
 
 	var drops: Array = Array(rewards.get("dropped_items", []))
 	if not drops.is_empty():
@@ -372,40 +475,55 @@ func show_victory_result(rewards: Dictionary, level_result: Dictionary) -> void:
 			var item_id: String = String(drop.get("id", ""))
 			var item_data: Dictionary = DataManager.get_item(item_id)
 			var item_name: String = String(item_data.get("name", item_id))
-			add_log("  ★ %s（來自 %s）" % [item_name, String(drop.get("source", ""))], Color("#AAAAFF"))
+			add_log("  獲得 %s（來源：%s）" % [item_name, String(drop.get("source", ""))], Color("#AAAAFF"))
+			await _battle_manager.delay(0.2)
 
 	var skills: Array = Array(rewards.get("learned_skills", []))
 	if not skills.is_empty():
-		add_log("--- 技能領悟！ ---", Color("#FF88FF"))
+		add_log("--- 新技能 ---", Color("#FF88FF"))
 		for raw_skill_id in skills:
 			var skill_id: String = String(raw_skill_id)
 			var skill_data: Dictionary = DataManager.get_skill(skill_id)
 			var skill_name: String = String(skill_data.get("name", skill_id))
-			add_log("  ✦ 領悟了 %s！" % skill_name, Color("#FF88FF"))
+			add_log("  學會了 %s" % skill_name, Color("#FF88FF"))
+			await _battle_manager.delay(0.3)
 
 	if bool(level_result.get("leveled_up", false)):
-		add_log("🎉 升級！Lv.%d → Lv.%d" % [
+		add_log("等級提升！Lv.%d -> Lv.%d" % [
 			int(level_result.get("old_level", 1)),
 			int(level_result.get("new_level", 1)),
 		], Color("#FFD700"))
+		await _battle_manager.delay(0.6)
 
-	add_log("══════════════════════", Color.GOLD)
+	add_log("==========================", Color.GOLD)
+	await _battle_manager.delay(1.5)
 
 
 func show_defeat_result(penalty: Dictionary) -> void:
+	await _battle_manager.delay(1.0)
 	add_log("", Color.WHITE)
-	add_log("══════ 戰鬥失敗… ══════", Color.RED)
+	add_log("========== 戰敗... ==========", Color.RED)
+	await _battle_manager.delay(0.6)
+
 	var gold_lost: int = int(penalty.get("gold_lost", 0))
 	if gold_lost > 0:
-		add_log("失去 %d 金幣" % gold_lost, Color("#FF6666"))
-	add_log("HP/MP 已完全回復", Color("#44CC44"))
-	add_log("══════════════════════", Color.RED)
+		add_log("損失金幣 %d" % gold_lost, Color("#FF6666"))
+		await _battle_manager.delay(0.3)
+
+	add_log("HP / MP 已回復至安全狀態。", Color("#44CC44"))
+	await _battle_manager.delay(0.3)
+	add_log("============================", Color.RED)
+	await _battle_manager.delay(2.0)
 
 
 func set_player_input_enabled(enabled: bool) -> void:
-	action_menu.visible = enabled
-	if not enabled:
+	if enabled:
 		_hide_all_subpanels()
+		_show_panel(action_menu)
+		return
+
+	action_menu.visible = false
+	_hide_all_subpanels()
 
 
 func _set_enemy_panels_targetable(enabled: bool) -> void:
@@ -466,27 +584,27 @@ func _get_status_text(combatant) -> String:
 		return ""
 
 	var status_names: Dictionary = {
-		"burn": "🔥燃燒",
-		"poison": "☠中毒",
-		"heavy_poison": "☠猛毒",
-		"freeze": "❄凍結",
-		"paralyze": "⚡麻痺",
-		"sleep": "💤睡眠",
-		"confuse": "💫混亂",
-		"charm": "💕魅惑",
-		"atk_down": "⬇攻↓",
-		"def_down": "⬇防↓",
-		"speed_down": "⬇速↓",
-		"hit_down": "⬇命↓",
-		"seal": "🔒封印",
-		"curse": "💀詛咒",
-		"atk_up": "⬆攻↑",
-		"def_up": "⬆防↑",
-		"speed_up": "⬆速↑",
-		"regen": "💚再生",
-		"mp_regen": "💙回魔",
-		"reflect": "🪞反射",
-		"stealth": "👻隱身",
+		"burn": "灼燒",
+		"poison": "中毒",
+		"heavy_poison": "劇毒",
+		"freeze": "冰凍",
+		"paralyze": "麻痺",
+		"sleep": "睡眠",
+		"confuse": "混亂",
+		"charm": "魅惑",
+		"atk_down": "攻擊下降",
+		"def_down": "防禦下降",
+		"speed_down": "速度下降",
+		"hit_down": "命中下降",
+		"seal": "封印",
+		"curse": "詛咒",
+		"atk_up": "攻擊上升",
+		"def_up": "防禦上升",
+		"speed_up": "速度上升",
+		"regen": "再生",
+		"mp_regen": "魔力回復",
+		"reflect": "反射",
+		"stealth": "隱匿",
 	}
 	var parts: Array[String] = []
 	for effect in combatant.status_effects:

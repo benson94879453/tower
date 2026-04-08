@@ -9,7 +9,7 @@ signal all_actions_resolved
 signal victory_detected
 signal defeat_detected
 
-var _battle_manager
+var _battle_manager: BattleManager
 
 var _turn_order: Array = []
 var _current_actor_index: int = -1
@@ -26,7 +26,8 @@ func determine_turn_order() -> Array:
 
 	alive.sort_custom(func(a, b): return _compare_speed(a, b))
 	_turn_order = alive
-	_battle_manager.turn_order = _turn_order.duplicate()
+	if _battle_manager != null:
+		_battle_manager.set_turn_order_snapshot(_turn_order)
 	turn_order_determined.emit(_turn_order)
 	return _turn_order
 
@@ -43,20 +44,8 @@ func execute_turn() -> void:
 
 		combatant_turn_started.emit(actor)
 		if actor.team == CombatantData.Team.PLAYER:
-			var turn_passive_logs: Array[Dictionary] = PassiveProcessor.on_turn_start(actor)
-			for raw_log in turn_passive_logs:
-				var log_entry: Dictionary = raw_log
-				_battle_manager.battle_ui.add_log(
-					String(log_entry.get("text", "")),
-					log_entry.get("color", Color.WHITE)
-				)
-			var turn_accessory_logs: Array[Dictionary] = AccessoryProcessor.on_turn_start(actor, _battle_manager.familiar)
-			for raw_log in turn_accessory_logs:
-				var log_entry: Dictionary = raw_log
-				_battle_manager.battle_ui.add_log(
-					String(log_entry.get("text", "")),
-					log_entry.get("color", Color.WHITE)
-				)
+			_add_log_entries(PassiveProcessor.on_turn_start(actor))
+			_add_log_entries(AccessoryProcessor.on_turn_start(actor, _battle_manager.familiar))
 			_update_display_for(actor)
 			if _battle_manager.familiar != null:
 				_update_display_for(_battle_manager.familiar)
@@ -64,16 +53,11 @@ func execute_turn() -> void:
 		var all_allies: Array = _get_friendly_targets_for(actor)
 		var all_enemies: Array = _get_hostile_targets_for(actor)
 		var status_check: Dictionary = StatusProcessor.check_before_action(actor, all_allies, all_enemies)
-		for raw_log_entry in Array(status_check.get("logs", [])):
-			var log_entry: Dictionary = raw_log_entry
-			_battle_manager.battle_ui.add_log(
-				String(log_entry.get("text", "")),
-				log_entry.get("color", Color.WHITE)
-			)
+		_add_log_entries(Array(status_check.get("logs", [])))
 
 		if not bool(status_check.get("can_act", true)):
 			combatant_turn_ended.emit(actor)
-			await _battle_manager.get_tree().process_frame
+			await _battle_manager.delay(0.3)
 			continue
 
 		var redirect_target = status_check.get("redirect_target", null)
@@ -82,42 +66,44 @@ func execute_turn() -> void:
 			CombatantData.Team.PLAYER:
 				if redirect_target != null:
 					_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
-					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
+					await _resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
 				else:
 					await _execute_player_turn(actor)
 			CombatantData.Team.FAMILIAR:
 				_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
 				if redirect_target != null:
-					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
+					await _resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
 				else:
-					_execute_familiar_turn(actor)
+					await _execute_familiar_turn(actor)
 			CombatantData.Team.ENEMY:
 				_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
 				if redirect_target != null:
-					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
+					await _resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
 				else:
-					_execute_enemy_turn(actor)
+					await _execute_enemy_turn(actor)
 
 		combatant_turn_ended.emit(actor)
 
 		if _battle_manager.battle_state == _battle_manager.BattleState.FLEEING:
 			return
 
-		if _check_battle_end():
+		if await _check_battle_end():
 			return
 
-		await _battle_manager.get_tree().process_frame
+		if _has_remaining_actors_after(index):
+			await _battle_manager.delay(0.6)
 
-	_end_of_turn_phase()
-	if _check_battle_end():
+	await _end_of_turn_phase()
+	if await _check_battle_end():
 		return
 	all_actions_resolved.emit()
 
 
 func _execute_player_turn(actor) -> void:
 	_battle_manager._change_state(_battle_manager.BattleState.PLAYER_TURN)
-	_battle_manager.battle_ui.set_player_input_enabled(true)
 	_battle_manager.battle_ui.show_waiting_indicator(actor.display_name)
+	await _battle_manager.delay(0.3)
+	_battle_manager.battle_ui.set_player_input_enabled(true)
 
 	player_action.clear()
 	while player_action.is_empty():
@@ -128,16 +114,17 @@ func _execute_player_turn(actor) -> void:
 
 	_battle_manager.battle_ui.set_player_input_enabled(false)
 	_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
-	_resolve_action(actor, action)
+	await _resolve_action(actor, action)
 
 
 func _execute_familiar_turn(actor) -> void:
 	if not actor.is_alive:
 		return
 
-	_battle_manager.battle_ui.add_log("輪到 %s 行動" % actor.display_name)
+	_battle_manager.battle_ui.add_log("輪到 %s 行動。" % actor.display_name, Color.CYAN)
+	await _battle_manager.delay(0.3)
 	var action: Dictionary = _get_familiar_action(actor)
-	_resolve_action(actor, action)
+	await _resolve_action(actor, action)
 
 
 func _execute_enemy_turn(actor) -> void:
@@ -145,28 +132,38 @@ func _execute_enemy_turn(actor) -> void:
 		return
 
 	_battle_manager.battle_ui.add_log(
-		"輪到 %s 行動" % actor.display_name,
+		"輪到 %s 行動。" % actor.display_name,
 		ThemeConstants.get_element_color(actor.element)
 	)
+	await _battle_manager.delay(0.3)
 	var action: Dictionary = _get_enemy_action(actor)
-	_resolve_action(actor, action)
+	await _resolve_action(actor, action)
 
 
 func _resolve_action(actor, action: Dictionary) -> void:
 	var action_type: String = String(action.get("type", ""))
 	_pending_actions.append(action.duplicate())
 
+	if action_type.is_empty():
+		_battle_manager.action_executed.emit({
+			"actor": actor,
+			"type": action_type,
+			"target": action.get("target", null),
+			"result": "skipped",
+		})
+		return
+
 	match action_type:
 		"skill":
-			_resolve_skill_action(actor, action)
+			await _resolve_skill_action(actor, action)
 		"item":
-			_resolve_item_action(actor, action)
+			await _resolve_item_action(actor, action)
 		"flee":
-			_resolve_flee_action(actor)
+			await _resolve_flee_action(actor)
 		"defend":
-			_resolve_defend_action(actor)
+			await _resolve_defend_action(actor)
 		_:
-			_battle_manager.battle_ui.add_log("%s 什麼都沒做" % actor.display_name)
+			_battle_manager.battle_ui.add_log("%s 的行動沒有被處理。" % actor.display_name)
 
 	_battle_manager.action_executed.emit({
 		"actor": actor,
@@ -199,15 +196,21 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 	if not bool(exec_result.get("success", false)):
 		match String(exec_result.get("fail_reason", "")):
 			"no_mp":
-				_battle_manager.battle_ui.add_log("%s MP 不足！" % actor.display_name)
+				_battle_manager.battle_ui.add_log("%s 的 MP 不足。" % actor.display_name)
 			"no_pp":
-				_battle_manager.battle_ui.add_log("%s 已無法使用 %s！" % [actor.display_name, skill_name])
+				_battle_manager.battle_ui.add_log("%s 的 %s 次數不足。" % [actor.display_name, skill_name])
 			"on_cooldown":
-				_battle_manager.battle_ui.add_log("%s 的 %s 仍在冷卻中！" % [actor.display_name, skill_name])
+				_battle_manager.battle_ui.add_log("%s 的 %s 還在冷卻中。" % [actor.display_name, skill_name])
 			"sealed":
-				_battle_manager.battle_ui.add_log("%s 的 %s 被封印了！" % [actor.display_name, skill_name])
+				_battle_manager.battle_ui.add_log("%s 因封印無法使用 %s。" % [actor.display_name, skill_name])
+			_:
+				_battle_manager.battle_ui.add_log("%s 無法使用 %s。" % [actor.display_name, skill_name])
 		_update_display_for(actor)
+		await _battle_manager.delay(0.3)
 		return
+
+	_battle_manager.battle_ui.add_element_log("%s 使用了 %s！" % [actor.display_name, skill_name], skill_element)
+	await _battle_manager.delay(0.4)
 
 	var results: Array = Array(exec_result.get("results", []))
 	for result in results:
@@ -215,26 +218,20 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 			continue
 
 		var result_dict: Dictionary = result
-		var effect_type: String = String(result_dict.get("effect_type", ""))
-		var effect_target = result_dict.get("target", null)
-
-		match effect_type:
+		match String(result_dict.get("effect_type", "")):
 			"damage":
-				_handle_damage_result(actor, result_dict, skill_name, skill_element, skill_id)
+				await _handle_damage_result(actor, result_dict, skill_name, skill_element, skill_id)
 			"heal":
-				_handle_heal_result(actor, result_dict, skill_name, skill_element)
+				await _handle_heal_result(actor, result_dict, skill_name, skill_element)
 			"status":
-				_handle_status_result(actor, result_dict, skill_name, skill_element)
+				await _handle_status_result(actor, result_dict, skill_name, skill_element)
 			"buff":
-				_handle_buff_result(actor, result_dict, skill_name, skill_element)
+				await _handle_buff_result(actor, result_dict, skill_name, skill_element)
 			"shield":
-				_handle_shield_result(actor, result_dict, skill_name, skill_element)
-
-		if effect_target != null:
-			_update_display_for(effect_target)
+				await _handle_shield_result(actor, result_dict, skill_name, skill_element)
 
 	if actor.team == CombatantData.Team.PLAYER and not skill_id.is_empty():
-		var killed_any: bool = false
+		var killed_any := false
 		for result in results:
 			if result is Dictionary and bool(Dictionary(result).get("killed", false)):
 				killed_any = true
@@ -249,12 +246,14 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 
 
 func _resolve_item_action(actor, _action: Dictionary) -> void:
-	_battle_manager.battle_ui.add_log("%s 使用了道具（尚未實作）" % actor.display_name)
+	_battle_manager.battle_ui.add_log("%s 想使用道具，但功能尚未完成。" % actor.display_name)
+	await _battle_manager.delay(0.3)
 
 
 func _resolve_flee_action(actor) -> void:
 	if _battle_manager.is_boss_battle:
-		_battle_manager.battle_ui.add_log("無法從 Boss 戰逃跑！")
+		_battle_manager.battle_ui.add_log("Boss 戰中無法逃跑！")
+		await _battle_manager.delay(0.5)
 		return
 
 	var flee_chance := 0.4
@@ -269,10 +268,12 @@ func _resolve_flee_action(actor) -> void:
 		flee_chance -= 0.1
 
 	if randf() < flee_chance:
-		_battle_manager.battle_ui.add_log("成功逃跑！")
-		_battle_manager.end_battle("flee")
+		_battle_manager.battle_ui.add_log("成功逃離戰鬥！")
+		await _battle_manager.delay(0.5)
+		await _battle_manager.end_battle("flee")
 	else:
 		_battle_manager.battle_ui.add_log("逃跑失敗！")
+		await _battle_manager.delay(0.5)
 
 
 func _resolve_defend_action(actor) -> void:
@@ -282,7 +283,8 @@ func _resolve_defend_action(actor) -> void:
 		"turns": 1,
 		"source": "defend_action",
 	})
-	_battle_manager.battle_ui.add_log("%s 選擇防禦" % actor.display_name)
+	_battle_manager.battle_ui.add_log("%s 採取防禦姿態。" % actor.display_name)
+	await _battle_manager.delay(0.3)
 
 
 func _get_enemy_action(actor) -> Dictionary:
@@ -298,7 +300,7 @@ func _get_familiar_action(actor) -> Dictionary:
 		CombatantData.FamiliarMode.DEFEND:
 			return {"type": "defend"}
 		CombatantData.FamiliarMode.STANDBY:
-			_battle_manager.battle_ui.add_log("%s 待命中" % actor.display_name)
+			_battle_manager.battle_ui.add_log("%s 正在待命。" % actor.display_name)
 			return {}
 		_:
 			var hostile: Array = _get_hostile_targets_for(actor)
@@ -316,13 +318,13 @@ func _check_battle_end() -> bool:
 	if alive_enemies.is_empty():
 		victory_detected.emit()
 		_battle_manager.battle_ui.add_log("戰鬥勝利！", Color.GOLD)
-		_battle_manager.end_battle("victory")
+		await _battle_manager.end_battle("victory")
 		return true
 
 	if _battle_manager.player != null and not _battle_manager.player.is_alive:
 		defeat_detected.emit()
 		_battle_manager.battle_ui.add_log("戰鬥失敗...", Color.RED)
-		_battle_manager.end_battle("defeat")
+		await _battle_manager.end_battle("defeat")
 		return true
 
 	return false
@@ -335,7 +337,7 @@ func _end_of_turn_phase() -> void:
 
 		var status_results: Array = StatusProcessor.process_end_of_turn(combatant)
 		for raw_result in status_results:
-			_handle_status_tick_result(raw_result)
+			await _handle_status_tick_result(raw_result)
 
 		if not combatant.is_alive:
 			continue
@@ -361,18 +363,19 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 		return
 
 	var extra_logs: Array = Array(result.get("extra_logs", []))
-	for raw_log_entry in extra_logs:
-		var log_entry: Dictionary = raw_log_entry
-		_battle_manager.battle_ui.add_log(
-			String(log_entry.get("text", "")),
-			log_entry.get("color", Color.WHITE)
-		)
+	_add_log_entries(extra_logs)
 
 	if not bool(result.get("is_hit", false)) and not extra_logs.is_empty():
+		await _battle_manager.delay(0.35)
 		return
 
 	if not bool(result.get("is_hit", false)):
-		_battle_manager.battle_ui.add_log("%s used %s but missed %s!" % [actor.display_name, skill_name, target.display_name])
+		_battle_manager.battle_ui.add_log("%s 使用 %s 但沒有命中 %s！" % [
+			actor.display_name,
+			skill_name,
+			target.display_name,
+		])
+		await _battle_manager.delay(0.35)
 		return
 
 	var dealt_damage: int = int(result.get("damage", 0))
@@ -382,7 +385,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 
 	var element_multiplier: float = float(result.get("element_multiplier", 1.0))
 	var damage_type: String = String(result.get("damage_type", "magic"))
-	var attacker_status_changed: bool = false
+	var attacker_status_changed := false
 
 	if actor.team == CombatantData.Team.PLAYER and target.team != CombatantData.Team.PLAYER:
 		var passive_result: Dictionary = PassiveProcessor.on_deal_damage(
@@ -392,12 +395,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 			element,
 			element_multiplier
 		)
-		for raw_log_entry in Array(passive_result.get("logs", [])):
-			var log_entry: Dictionary = raw_log_entry
-			_battle_manager.battle_ui.add_log(
-				String(log_entry.get("text", "")),
-				log_entry.get("color", Color.WHITE)
-			)
+		_add_log_entries(Array(passive_result.get("logs", [])))
 
 		var bonus_damage: int = max(int(passive_result.get("bonus_damage", 0)), 0)
 		if bonus_damage > 0:
@@ -418,12 +416,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 			element_multiplier,
 			damage_type
 		)
-		for raw_log_entry in Array(accessory_result.get("logs", [])):
-			var log_entry: Dictionary = raw_log_entry
-			_battle_manager.battle_ui.add_log(
-				String(log_entry.get("text", "")),
-				log_entry.get("color", Color.WHITE)
-			)
+		_add_log_entries(Array(accessory_result.get("logs", [])))
 
 		var accessory_bonus_damage: int = max(int(accessory_result.get("bonus_damage", 0)), 0)
 		if accessory_bonus_damage > 0:
@@ -457,12 +450,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 				continue
 			if _apply_status_to_combatant(actor, Dictionary(raw_status)):
 				attacker_status_changed = true
-		for raw_log_entry in Array(receive_result.get("logs", [])):
-			var log_entry: Dictionary = raw_log_entry
-			_battle_manager.battle_ui.add_log(
-				String(log_entry.get("text", "")),
-				log_entry.get("color", Color.WHITE)
-			)
+		_add_log_entries(Array(receive_result.get("logs", [])))
 
 		var accessory_receive_result: Dictionary = AccessoryProcessor.on_receive_damage(
 			actor,
@@ -476,12 +464,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 				continue
 			if _apply_status_to_combatant(actor, Dictionary(raw_status)):
 				attacker_status_changed = true
-		for raw_log_entry in Array(accessory_receive_result.get("logs", [])):
-			var log_entry: Dictionary = raw_log_entry
-			_battle_manager.battle_ui.add_log(
-				String(log_entry.get("text", "")),
-				log_entry.get("color", Color.WHITE)
-			)
+		_add_log_entries(Array(accessory_receive_result.get("logs", [])))
 
 		if int(accessory_receive_result.get("revive_hp", 0)) > 0:
 			result["killed"] = false
@@ -490,17 +473,17 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 		_update_display_for(actor)
 
 	var is_crit: bool = bool(result.get("is_crit", false))
-	var log_text: String = "%s used %s on %s for %d damage" % [
+	var log_text: String = "%s 使用 %s 對 %s 造成 %d 點傷害" % [
 		actor.display_name,
 		skill_name,
 		target.display_name,
 		dealt_damage,
 	]
 	if is_crit:
-		log_text += ", crit!"
+		log_text += "，爆擊！"
 
 	if shield_absorbed > 0:
-		log_text += ", shield absorbed %d" % shield_absorbed
+		log_text += "（護盾吸收 %d）" % shield_absorbed
 
 	var effectiveness: String = String(result.get("effectiveness_text", ""))
 	if not effectiveness.is_empty():
@@ -508,24 +491,23 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 
 	result["damage"] = dealt_damage + shield_absorbed
 	result["killed"] = target.current_hp <= 0
-	if bool(result.get("killed", false)):
-		target.is_alive = false
-	else:
-		target.is_alive = true
+	target.is_alive = not bool(result.get("killed", false))
 
 	_battle_manager.battle_ui.add_element_log(log_text, element)
 	_battle_manager.damage_dealt.emit(target, dealt_damage + shield_absorbed, element, is_crit)
 	_battle_manager.combatant_hp_changed.emit(target)
+	_update_display_for(target)
 
 	if bool(result.get("is_hit", false)) and not skill_id.is_empty():
 		if target.team == CombatantData.Team.PLAYER and actor.team == CombatantData.Team.ENEMY:
 			_battle_manager.record_enemy_skill_hit(skill_id)
 
+	await _battle_manager.delay(0.35)
+
 	if bool(result.get("killed", false)):
 		_battle_manager.combatant_defeated.emit(target)
-		_battle_manager.battle_ui.add_log("%s was defeated!" % target.display_name)
-
-	return
+		_battle_manager.battle_ui.add_log("%s 被擊敗了！" % target.display_name)
+		await _battle_manager.delay(0.5)
 
 
 func _apply_counter_status(attacker, status_result: Dictionary) -> void:
@@ -565,7 +547,7 @@ func _handle_heal_result(actor, result: Dictionary, skill_name: String, element:
 	if bool(result.get("cursed", false)) or heal < 0:
 		var reversed_damage: int = abs(heal)
 		_battle_manager.battle_ui.add_element_log(
-			"%s 使用了 %s，但 %s 的詛咒使回復反轉，受到 %d 點傷害！" % [
+			"%s 使用 %s，但 %s 因詛咒效果反而受到了 %d 點傷害。" % [
 				actor.display_name,
 				skill_name,
 				target.display_name,
@@ -574,16 +556,21 @@ func _handle_heal_result(actor, result: Dictionary, skill_name: String, element:
 			element
 		)
 		_battle_manager.combatant_hp_changed.emit(target)
+		_update_display_for(target)
+		await _battle_manager.delay(0.35)
 		if bool(result.get("killed", false)):
 			_battle_manager.combatant_defeated.emit(target)
-			_battle_manager.battle_ui.add_log("%s 被擊倒了！" % target.display_name)
+			_battle_manager.battle_ui.add_log("%s 倒下了！" % target.display_name)
+			await _battle_manager.delay(0.5)
 		return
 
 	_battle_manager.battle_ui.add_element_log(
-		"%s 使用了 %s，%s 回復了 %d HP！" % [actor.display_name, skill_name, target.display_name, heal],
+		"%s 使用 %s，讓 %s 回復 %d HP。" % [actor.display_name, skill_name, target.display_name, heal],
 		element
 	)
 	_battle_manager.combatant_hp_changed.emit(target)
+	_update_display_for(target)
+	await _battle_manager.delay(0.35)
 
 
 func _handle_status_result(actor, result: Dictionary, _skill_name: String, element: String) -> void:
@@ -594,9 +581,11 @@ func _handle_status_result(actor, result: Dictionary, _skill_name: String, eleme
 	var status_id: String = String(result.get("status_id", ""))
 	if bool(result.get("applied", false)):
 		_battle_manager.battle_ui.add_element_log(
-			"%s 對 %s 施加了 %s！" % [actor.display_name, target.display_name, _get_status_display_name(status_id)],
+			"%s 對 %s 施加了 %s。" % [actor.display_name, target.display_name, _get_status_display_name(status_id)],
 			element
 		)
+	_update_display_for(target)
+	await _battle_manager.delay(0.35)
 
 
 func _handle_buff_result(actor, result: Dictionary, skill_name: String, element: String) -> void:
@@ -608,7 +597,7 @@ func _handle_buff_result(actor, result: Dictionary, skill_name: String, element:
 	var value: int = int(result.get("value", 0))
 	var verb: String = "提升" if value > 0 else "降低"
 	_battle_manager.battle_ui.add_element_log(
-		"%s 使用了 %s，%s 的 %s %s了！" % [
+		"%s 使用 %s，讓 %s 的%s%s。" % [
 			actor.display_name,
 			skill_name,
 			target.display_name,
@@ -617,6 +606,8 @@ func _handle_buff_result(actor, result: Dictionary, skill_name: String, element:
 		],
 		element
 	)
+	_update_display_for(target)
+	await _battle_manager.delay(0.35)
 
 
 func _handle_shield_result(actor, result: Dictionary, skill_name: String, element: String) -> void:
@@ -626,7 +617,7 @@ func _handle_shield_result(actor, result: Dictionary, skill_name: String, elemen
 
 	var shield_val: int = int(result.get("shield_value", 0))
 	_battle_manager.battle_ui.add_element_log(
-		"%s 使用了 %s，%s 獲得了 %d 點護盾！" % [
+		"%s 使用 %s，為 %s 賦予 %d 點護盾。" % [
 			actor.display_name,
 			skill_name,
 			target.display_name,
@@ -634,6 +625,8 @@ func _handle_shield_result(actor, result: Dictionary, skill_name: String, elemen
 		],
 		element
 	)
+	_update_display_for(target)
+	await _battle_manager.delay(0.35)
 
 
 func _handle_status_tick_result(result: Dictionary) -> void:
@@ -644,11 +637,13 @@ func _handle_status_tick_result(result: Dictionary) -> void:
 	var status_id: String = String(result.get("status_id", ""))
 	var value: int = int(result.get("value", 0))
 	var result_type: String = String(result.get("type", ""))
+	var did_show_result := false
 
 	match result_type:
 		"dot_damage":
+			did_show_result = true
 			_battle_manager.battle_ui.add_log(
-				"%s 受到 %s 的傷害，損失 %d HP！" % [
+				"%s 因 %s 受到 %d 點傷害。" % [
 					combatant.display_name,
 					_get_status_display_name(status_id),
 					value,
@@ -659,34 +654,42 @@ func _handle_status_tick_result(result: Dictionary) -> void:
 			_update_display_for(combatant)
 			if bool(result.get("killed", false)):
 				_battle_manager.combatant_defeated.emit(combatant)
-				_battle_manager.battle_ui.add_log(
-					"%s 被 %s 擊倒了！" % [combatant.display_name, _get_status_display_name(status_id)]
-				)
+				_battle_manager.battle_ui.add_log("%s 因 %s 而倒下。" % [
+					combatant.display_name,
+					_get_status_display_name(status_id),
+				])
 		"regen":
+			did_show_result = true
 			_battle_manager.battle_ui.add_log(
-				"%s 的再生效果回復了 %d HP" % [combatant.display_name, value],
+				"%s 的再生效果回復了 %d HP。" % [combatant.display_name, value],
 				Color("#44CC44")
 			)
 			_battle_manager.combatant_hp_changed.emit(combatant)
 			_update_display_for(combatant)
 		"mp_regen":
+			did_show_result = true
 			_battle_manager.battle_ui.add_log(
-				"%s 的魔力再生回復了 %d MP" % [combatant.display_name, value],
+				"%s 的魔力回復了 %d MP。" % [combatant.display_name, value],
 				Color("#1E90FF")
 			)
 			_update_display_for(combatant)
 		"status_expired":
+			did_show_result = true
 			_battle_manager.battle_ui.add_log(
-				"%s 的 %s 狀態解除了" % [combatant.display_name, _get_status_display_name(status_id)],
+				"%s 的 %s 效果消失了。" % [combatant.display_name, _get_status_display_name(status_id)],
 				Color("#D3D3D3")
 			)
 			_update_display_for(combatant)
 		"seal_released":
+			did_show_result = true
 			_battle_manager.battle_ui.add_log(
-				"%s 的技能封印解除了" % combatant.display_name,
+				"%s 的封印解除。" % combatant.display_name,
 				Color("#D3D3D3")
 			)
 			_update_display_for(combatant)
+
+	if did_show_result:
+		await _battle_manager.delay(0.25)
 
 
 func _get_target_groups_for(actor) -> Dictionary:
@@ -733,12 +736,31 @@ func _update_display_for(combatant) -> void:
 		_battle_manager.battle_ui.update_enemy_display(combatant)
 
 
+func _add_log_entries(entries: Array) -> void:
+	for raw_log_entry in entries:
+		if raw_log_entry is not Dictionary:
+			continue
+		var log_entry: Dictionary = raw_log_entry
+		_battle_manager.battle_ui.add_log(
+			String(log_entry.get("text", "")),
+			log_entry.get("color", Color.WHITE)
+		)
+
+
+func _has_remaining_actors_after(index: int) -> bool:
+	for next_index in range(index + 1, _turn_order.size()):
+		var combatant = _turn_order[next_index]
+		if combatant != null and combatant.is_alive:
+			return true
+	return false
+
+
 static func _get_status_display_name(status_id: String) -> String:
 	var names: Dictionary = {
-		"burn": "燃燒",
+		"burn": "灼燒",
 		"poison": "中毒",
-		"heavy_poison": "猛毒",
-		"freeze": "凍結",
+		"heavy_poison": "劇毒",
+		"freeze": "冰凍",
 		"paralyze": "麻痺",
 		"sleep": "睡眠",
 		"confuse": "混亂",
@@ -749,13 +771,13 @@ static func _get_status_display_name(status_id: String) -> String:
 		"hit_down": "命中下降",
 		"seal": "封印",
 		"curse": "詛咒",
-		"atk_up": "攻擊提升",
-		"def_up": "防禦提升",
-		"speed_up": "速度提升",
+		"atk_up": "攻擊上升",
+		"def_up": "防禦上升",
+		"speed_up": "速度上升",
 		"regen": "再生",
-		"mp_regen": "魔力再生",
+		"mp_regen": "魔力回復",
 		"reflect": "反射",
-		"stealth": "隱身",
+		"stealth": "隱匿",
 	}
 	return String(names.get(status_id, status_id))
 
@@ -776,13 +798,13 @@ static func _get_status_color(status_id: String) -> Color:
 
 static func _get_stat_display_name(stat: String) -> String:
 	var names: Dictionary = {
-		"matk": "魔攻",
-		"mdef": "魔防",
-		"patk": "物攻",
-		"pdef": "物防",
+		"matk": "魔法攻擊",
+		"mdef": "魔法防禦",
+		"patk": "物理攻擊",
+		"pdef": "物理防禦",
 		"speed": "速度",
 		"hit": "命中",
-		"crit": "暴擊率",
+		"crit": "暴擊",
 	}
 	return String(names.get(stat, stat))
 

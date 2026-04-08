@@ -26,6 +26,7 @@ func change_scene(scene_path: String, transition: String = "fade") -> void:
 
 	var transition_effect := _get_transition_effect()
 	await _play_transition_out(transition_effect, transition)
+	await get_tree().create_timer(0.3).timeout
 
 	if is_instance_valid(_current_scene):
 		var previous_scene := _current_scene
@@ -82,7 +83,7 @@ func _play_transition_out(transition_effect: ColorRect, transition: String) -> v
 
 	transition_effect.modulate.a = 0.0
 	var tween := create_tween()
-	tween.tween_property(transition_effect, "modulate:a", 1.0, 0.2)
+	tween.tween_property(transition_effect, "modulate:a", 1.0, 0.5).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
 	await tween.finished
 
 
@@ -92,5 +93,5 @@ func _play_transition_in(transition_effect: ColorRect, transition: String) -> vo
 
 	transition_effect.modulate.a = 1.0
 	var tween := create_tween()
-	tween.tween_property(transition_effect, "modulate:a", 0.0, 0.2)
+	tween.tween_property(transition_effect, "modulate:a", 0.0, 0.4).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	await tween.finished
