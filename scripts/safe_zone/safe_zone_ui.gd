@@ -24,16 +24,17 @@ var _library_panel = null
 var _tavern_panel = null
 
 @onready var zone_label: Label = $ZoneLabel
-@onready var player_name_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/PlayerNameLabel
-@onready var hp_bar: ProgressBar = $MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow/HPBar
-@onready var hp_value: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow/HPValue
-@onready var mp_bar: ProgressBar = $MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow/MPBar
-@onready var mp_value: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow/MPValue
-@onready var gold_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/GoldLabel
-@onready var title_status_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/TitleStatusLabel
-@onready var familiar_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/FamiliarLabel
-@onready var floor_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/FloorLabel
-@onready var equip_summary: RichTextLabel = $MainLayout/LeftPanel/StatusPanel/StatusContent/EquipSummary
+@onready var status_panel: PanelContainer = $MainLayout/LeftPanel/StatusPanel
+@onready var player_name_label: Label = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/PlayerNameLabel
+@onready var hp_bar: ProgressBar = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/HPRow/HPBar
+@onready var hp_value: Label = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/HPRow/HPValue
+@onready var mp_bar: ProgressBar = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/MPRow/MPBar
+@onready var mp_value: Label = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/MPRow/MPValue
+@onready var gold_label: Label = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/GoldLabel
+@onready var title_status_label: Label = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/TitleStatusLabel
+@onready var familiar_label: Label = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/FamiliarLabel
+@onready var floor_label: Label = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/FloorLabel
+@onready var equip_summary: RichTextLabel = $MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/EquipSummary
 @onready var inventory_button: Button = $MainLayout/RightPanel/FacilityGrid/InventoryButton
 @onready var shop_button: Button = $MainLayout/RightPanel/FacilityGrid/ShopButton
 @onready var forge_button: Button = $MainLayout/RightPanel/FacilityGrid/ForgeButton
@@ -45,8 +46,8 @@ var _tavern_panel = null
 @onready var rest_button: Button = $MainLayout/RightPanel/SystemRow/RestButton
 @onready var save_button: Button = $MainLayout/RightPanel/SystemRow/SaveButton
 @onready var teleport_panel: PanelContainer = $TeleportPanel
-@onready var teleport_list: VBoxContainer = $TeleportPanel/Content/TeleportScroll/TeleportList
-@onready var teleport_close_button: Button = $TeleportPanel/Content/CloseButton
+@onready var teleport_list: VBoxContainer = $TeleportPanel/Padding/Content/TeleportScroll/TeleportList
+@onready var teleport_close_button: Button = $TeleportPanel/Padding/Content/CloseButton
 
 
 func _ready() -> void:
@@ -102,7 +103,7 @@ func _style_hp_mp_bars() -> void:
 
 
 func _apply_theme_variations() -> void:
-	$StatusPanel.theme_type_variation = "CombatantPanel"
+	status_panel.theme_type_variation = "CombatantPanel"
 	teleport_panel.theme_type_variation = "CombatantPanel"
 
 

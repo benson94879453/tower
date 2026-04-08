@@ -54,35 +54,35 @@ theme_override_constants/separation = 16
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="StatusContent" type="VBoxContainer" parent="MainLayout/LeftPanel/StatusPanel"]
+[node name="Padding" type="MarginContainer" parent="MainLayout/LeftPanel/StatusPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="StatusContent" type="VBoxContainer" parent="MainLayout/LeftPanel/StatusPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 10
-offset_left = 16.0
-offset_top = 16.0
-offset_right = -16.0
-offset_bottom = -16.0
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
 
-[node name="PlayerNameLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="PlayerNameLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Lv.1 艾倫"
 
-[node name="Sep1" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="Sep1" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 
-[node name="HPRow" type="HBoxContainer" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="HPRow" type="HBoxContainer" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="HPLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow"]
+[node name="HPLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/HPRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(32, 0)
 text = "HP"
 
-[node name="HPBar" type="ProgressBar" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow"]
+[node name="HPBar" type="ProgressBar" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/HPRow"]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -90,22 +90,22 @@ show_percentage = false
 max_value = 100.0
 value = 100.0
 
-[node name="HPValue" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow"]
+[node name="HPValue" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/HPRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(80, 0)
 text = "100/100"
 horizontal_alignment = 2
 
-[node name="MPRow" type="HBoxContainer" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="MPRow" type="HBoxContainer" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="MPLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow"]
+[node name="MPLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/MPRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(32, 0)
 text = "MP"
 
-[node name="MPBar" type="ProgressBar" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow"]
+[node name="MPBar" type="ProgressBar" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/MPRow"]
 custom_minimum_size = Vector2(0, 22)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -113,35 +113,35 @@ show_percentage = false
 max_value = 60.0
 value = 60.0
 
-[node name="MPValue" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow"]
+[node name="MPValue" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent/MPRow"]
 layout_mode = 2
 custom_minimum_size = Vector2(80, 0)
 text = "60/60"
 horizontal_alignment = 2
 
-[node name="Sep2" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="Sep2" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 
-[node name="GoldLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="GoldLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 text = "金幣: 500"
 
-[node name="TitleStatusLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="TitleStatusLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 text = "稱號: 見習法師"
 
-[node name="FamiliarLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="FamiliarLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 text = "使魔: 無"
 
-[node name="FloorLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="FloorLabel" type="Label" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 text = "最高樓層: 1F"
 
-[node name="Sep3" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="Sep3" type="HSeparator" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 
-[node name="EquipSummary" type="RichTextLabel" parent="MainLayout/LeftPanel/StatusPanel/StatusContent"]
+[node name="EquipSummary" type="RichTextLabel" parent="MainLayout/LeftPanel/StatusPanel/Padding/StatusContent"]
 layout_mode = 2
 custom_minimum_size = Vector2(0, 60)
 bbcode_enabled = true
@@ -250,31 +250,38 @@ offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Content" type="VBoxContainer" parent="TeleportPanel"]
+[node name="Padding" type="MarginContainer" parent="TeleportPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="TeleportPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="TeleportTitle" type="Label" parent="TeleportPanel/Content"]
+[node name="TeleportTitle" type="Label" parent="TeleportPanel/Padding/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "選擇目的地"
 horizontal_alignment = 1
 
-[node name="Sep" type="HSeparator" parent="TeleportPanel/Content"]
+[node name="Sep" type="HSeparator" parent="TeleportPanel/Padding/Content"]
 layout_mode = 2
 
-[node name="TeleportScroll" type="ScrollContainer" parent="TeleportPanel/Content"]
+[node name="TeleportScroll" type="ScrollContainer" parent="TeleportPanel/Padding/Content"]
 layout_mode = 2
 size_flags_vertical = 3
 custom_minimum_size = Vector2(0, 200)
 horizontal_scroll_mode = 0
 
-[node name="TeleportList" type="VBoxContainer" parent="TeleportPanel/Content/TeleportScroll"]
+[node name="TeleportList" type="VBoxContainer" parent="TeleportPanel/Padding/Content/TeleportScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="CloseButton" type="Button" parent="TeleportPanel/Content"]
+[node name="CloseButton" type="Button" parent="TeleportPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "取消"

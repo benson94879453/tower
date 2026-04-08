@@ -64,45 +64,52 @@ custom_minimum_size = Vector2(420, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/PlayerPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/AllyArea/PlayerPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/PlayerPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="HeaderRow" type="HBoxContainer" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+[node name="HeaderRow" type="HBoxContainer" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="PlayerName" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content/HeaderRow"]
+[node name="PlayerName" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
 text = "玩家"
 
-[node name="PlayerLevel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content/HeaderRow"]
+[node name="PlayerLevel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content/HeaderRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
 text = "Lv.1"
 
-[node name="PlayerHPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+[node name="PlayerHPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 show_percentage = false
 max_value = 100.0
 value = 100.0
 
-[node name="PlayerHPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+[node name="PlayerHPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "HP: 100/100"
 
-[node name="PlayerMPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+[node name="PlayerMPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 show_percentage = false
 max_value = 60.0
 value = 60.0
 
-[node name="PlayerMPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Content"]
+[node name="PlayerMPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "MP: 60/60"
@@ -112,33 +119,40 @@ custom_minimum_size = Vector2(360, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/FamiliarPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/AllyArea/FamiliarPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/FamiliarPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="HeaderRow" type="HBoxContainer" parent="BattleUI/AllyArea/FamiliarPanel/Content"]
+[node name="HeaderRow" type="HBoxContainer" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="FamiliarName" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Content/HeaderRow"]
+[node name="FamiliarName" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content/HeaderRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 20
 text = "使魔"
 
-[node name="FamiliarMode" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Content/HeaderRow"]
+[node name="FamiliarMode" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content/HeaderRow"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
 text = "攻擊模式"
 
-[node name="FamiliarHPBar" type="ProgressBar" parent="BattleUI/AllyArea/FamiliarPanel/Content"]
+[node name="FamiliarHPBar" type="ProgressBar" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 show_percentage = false
 max_value = 100.0
 value = 100.0
 
-[node name="FamiliarHPLabel" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Content"]
+[node name="FamiliarHPLabel" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "HP: 100/100"
@@ -190,64 +204,78 @@ offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
 
-[node name="Content" type="HBoxContainer" parent="BattleUI/SkillPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/SkillPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="HBoxContainer" parent="BattleUI/SkillPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="SkillListContainer" type="VBoxContainer" parent="BattleUI/SkillPanel/Content"]
+[node name="SkillListContainer" type="VBoxContainer" parent="BattleUI/SkillPanel/Padding/Content"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 1.2
 theme_override_constants/separation = 8
 
-[node name="SkillListTitle" type="Label" parent="BattleUI/SkillPanel/Content/SkillListContainer"]
+[node name="SkillListTitle" type="Label" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "技能列表"
 
-[node name="SkillSep" type="HSeparator" parent="BattleUI/SkillPanel/Content/SkillListContainer"]
+[node name="SkillSep" type="HSeparator" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer"]
 layout_mode = 2
 
-[node name="SkillScroll" type="ScrollContainer" parent="BattleUI/SkillPanel/Content/SkillListContainer"]
+[node name="SkillScroll" type="ScrollContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 
-[node name="SkillList" type="VBoxContainer" parent="BattleUI/SkillPanel/Content/SkillListContainer/SkillScroll"]
+[node name="SkillList" type="VBoxContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer/SkillScroll"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
-[node name="BackButton" type="Button" parent="BattleUI/SkillPanel/Content/SkillListContainer"]
+[node name="BackButton" type="Button" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "返回"
 
-[node name="SkillPreviewPanel" type="PanelContainer" parent="BattleUI/SkillPanel/Content"]
+[node name="SkillPreviewPanel" type="PanelContainer" parent="BattleUI/SkillPanel/Padding/Content"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 0.8
 
-[node name="PreviewContent" type="VBoxContainer" parent="BattleUI/SkillPanel/Content/SkillPreviewPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PreviewContent" type="VBoxContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="PreviewTitle" type="Label" parent="BattleUI/SkillPanel/Content/SkillPreviewPanel/PreviewContent"]
+[node name="PreviewTitle" type="Label" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "技能資訊"
 
-[node name="PreviewSep" type="HSeparator" parent="BattleUI/SkillPanel/Content/SkillPreviewPanel/PreviewContent"]
+[node name="PreviewSep" type="HSeparator" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent"]
 layout_mode = 2
 
-[node name="PreviewDesc" type="RichTextLabel" parent="BattleUI/SkillPanel/Content/SkillPreviewPanel/PreviewContent"]
+[node name="PreviewDesc" type="RichTextLabel" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent"]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 scroll_active = false
 fit_content = true
 
-[node name="PreviewHint" type="Label" parent="BattleUI/SkillPanel/Content/SkillPreviewPanel/PreviewContent"]
+[node name="PreviewHint" type="Label" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
@@ -267,16 +295,23 @@ offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
 
-[node name="Content" type="VBoxContainer" parent="BattleUI/ItemPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/ItemPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/ItemPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="ItemList" type="VBoxContainer" parent="BattleUI/ItemPanel/Content"]
+[node name="ItemList" type="VBoxContainer" parent="BattleUI/ItemPanel/Padding/Content"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 8
 
-[node name="BackButton" type="Button" parent="BattleUI/ItemPanel/Content"]
+[node name="BackButton" type="Button" parent="BattleUI/ItemPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "返回"
@@ -294,31 +329,38 @@ offset_top = 0.0
 offset_right = 0.0
 offset_bottom = 0.0
 
-[node name="Content" type="VBoxContainer" parent="BattleUI/FamiliarCmdPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/FamiliarCmdPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/FamiliarCmdPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="AttackModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+[node name="AttackModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "攻擊"
 
-[node name="DefendModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+[node name="DefendModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "防禦"
 
-[node name="SupportModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+[node name="SupportModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "輔助"
 
-[node name="StandbyModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+[node name="StandbyModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "待命"
 
-[node name="BackButton" type="Button" parent="BattleUI/FamiliarCmdPanel/Content"]
+[node name="BackButton" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content"]
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 text = "返回"
@@ -346,21 +388,28 @@ offset_top = 8.0
 offset_right = -8.0
 offset_bottom = 0.0
 
-[node name="TurnOrderContent" type="VBoxContainer" parent="BattleUI/TurnOrderPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/TurnOrderPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TurnOrderContent" type="VBoxContainer" parent="BattleUI/TurnOrderPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="TurnOrderTitle" type="Label" parent="BattleUI/TurnOrderPanel/TurnOrderContent"]
+[node name="TurnOrderTitle" type="Label" parent="BattleUI/TurnOrderPanel/Padding/TurnOrderContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
 text = "行動順序"
 horizontal_alignment = 1
 
-[node name="TurnOrderSep" type="HSeparator" parent="BattleUI/TurnOrderPanel/TurnOrderContent"]
+[node name="TurnOrderSep" type="HSeparator" parent="BattleUI/TurnOrderPanel/Padding/TurnOrderContent"]
 layout_mode = 2
 
-[node name="TurnOrderDisplay" type="VBoxContainer" parent="BattleUI/TurnOrderPanel/TurnOrderContent"]
+[node name="TurnOrderDisplay" type="VBoxContainer" parent="BattleUI/TurnOrderPanel/Padding/TurnOrderContent"]
 layout_mode = 2
 theme_override_constants/separation = 2
 
@@ -375,17 +424,24 @@ offset_top = 0.0
 offset_right = 0.0
 offset_bottom = -8.0
 
-[node name="BattleLogContent" type="VBoxContainer" parent="BattleUI/BattleLogPanel"]
+[node name="Padding" type="MarginContainer" parent="BattleUI/BattleLogPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BattleLogContent" type="VBoxContainer" parent="BattleUI/BattleLogPanel/Padding"]
 layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="LogTitle" type="Label" parent="BattleUI/BattleLogPanel/BattleLogContent"]
+[node name="LogTitle" type="Label" parent="BattleUI/BattleLogPanel/Padding/BattleLogContent"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
 text = "戰鬥紀錄"
 
-[node name="BattleLog" type="RichTextLabel" parent="BattleUI/BattleLogPanel/BattleLogContent"]
+[node name="BattleLog" type="RichTextLabel" parent="BattleUI/BattleLogPanel/Padding/BattleLogContent"]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true

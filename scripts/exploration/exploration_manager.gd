@@ -25,7 +25,7 @@ var _merchant_stock: Array = []
 
 @onready var node_map_ui = $NodeMapUI
 @onready var floor_info_label: Label = $TopBar/FloorInfoLabel
-@onready var action_log: RichTextLabel = $ActionLogPanel/ActionLog
+@onready var action_log: RichTextLabel = $ActionLogPanel/Padding/ActionLog
 @onready var inventory_button: Button = $TopBar/InventoryButton
 @onready var return_button: Button = $TopBar/ReturnButton
 

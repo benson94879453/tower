@@ -18,23 +18,23 @@ signal back_pressed
 @onready var item_panel: PanelContainer = $ItemPanel
 @onready var familiar_cmd_panel: PanelContainer = $FamiliarCmdPanel
 @onready var target_selector: Control = $TargetSelector
-@onready var turn_order_display: VBoxContainer = $TurnOrderPanel/TurnOrderContent/TurnOrderDisplay
-@onready var battle_log: RichTextLabel = $BattleLogPanel/BattleLogContent/BattleLog
-@onready var skill_preview_title: Label = $SkillPanel/Content/SkillPreviewPanel/PreviewContent/PreviewTitle
-@onready var skill_preview_desc: RichTextLabel = $SkillPanel/Content/SkillPreviewPanel/PreviewContent/PreviewDesc
-@onready var skill_preview_hint: Label = $SkillPanel/Content/SkillPreviewPanel/PreviewContent/PreviewHint
+@onready var turn_order_display: VBoxContainer = $TurnOrderPanel/Padding/TurnOrderContent/TurnOrderDisplay
+@onready var battle_log: RichTextLabel = $BattleLogPanel/Padding/BattleLogContent/BattleLog
+@onready var skill_preview_title: Label = $SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent/PreviewTitle
+@onready var skill_preview_desc: RichTextLabel = $SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent/PreviewDesc
+@onready var skill_preview_hint: Label = $SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent/PreviewHint
 
-@onready var player_name_label: Label = $AllyArea/PlayerPanel/Content/HeaderRow/PlayerName
-@onready var player_level_label: Label = $AllyArea/PlayerPanel/Content/HeaderRow/PlayerLevel
-@onready var player_hp_bar: ProgressBar = $AllyArea/PlayerPanel/Content/PlayerHPBar
-@onready var player_hp_label: Label = $AllyArea/PlayerPanel/Content/PlayerHPLabel
-@onready var player_mp_bar: ProgressBar = $AllyArea/PlayerPanel/Content/PlayerMPBar
-@onready var player_mp_label: Label = $AllyArea/PlayerPanel/Content/PlayerMPLabel
+@onready var player_name_label: Label = $AllyArea/PlayerPanel/Padding/Content/HeaderRow/PlayerName
+@onready var player_level_label: Label = $AllyArea/PlayerPanel/Padding/Content/HeaderRow/PlayerLevel
+@onready var player_hp_bar: ProgressBar = $AllyArea/PlayerPanel/Padding/Content/PlayerHPBar
+@onready var player_hp_label: Label = $AllyArea/PlayerPanel/Padding/Content/PlayerHPLabel
+@onready var player_mp_bar: ProgressBar = $AllyArea/PlayerPanel/Padding/Content/PlayerMPBar
+@onready var player_mp_label: Label = $AllyArea/PlayerPanel/Padding/Content/PlayerMPLabel
 
-@onready var familiar_name_label: Label = $AllyArea/FamiliarPanel/Content/HeaderRow/FamiliarName
-@onready var familiar_hp_bar: ProgressBar = $AllyArea/FamiliarPanel/Content/FamiliarHPBar
-@onready var familiar_hp_label: Label = $AllyArea/FamiliarPanel/Content/FamiliarHPLabel
-@onready var familiar_mode_label: Label = $AllyArea/FamiliarPanel/Content/HeaderRow/FamiliarMode
+@onready var familiar_name_label: Label = $AllyArea/FamiliarPanel/Padding/Content/HeaderRow/FamiliarName
+@onready var familiar_hp_bar: ProgressBar = $AllyArea/FamiliarPanel/Padding/Content/FamiliarHPBar
+@onready var familiar_hp_label: Label = $AllyArea/FamiliarPanel/Padding/Content/FamiliarHPLabel
+@onready var familiar_mode_label: Label = $AllyArea/FamiliarPanel/Padding/Content/HeaderRow/FamiliarMode
 
 var _battle_manager
 var _player
@@ -56,14 +56,14 @@ func _ready() -> void:
 	$ActionMenu/FamiliarButton.pressed.connect(_on_familiar_button)
 	$ActionMenu/FleeButton.pressed.connect(_on_flee_button)
 
-	$FamiliarCmdPanel/Content/AttackModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.ATTACK))
-	$FamiliarCmdPanel/Content/DefendModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.DEFEND))
-	$FamiliarCmdPanel/Content/SupportModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.SUPPORT))
-	$FamiliarCmdPanel/Content/StandbyModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.STANDBY))
+	$FamiliarCmdPanel/Padding/Content/AttackModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.ATTACK))
+	$FamiliarCmdPanel/Padding/Content/DefendModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.DEFEND))
+	$FamiliarCmdPanel/Padding/Content/SupportModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.SUPPORT))
+	$FamiliarCmdPanel/Padding/Content/StandbyModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.STANDBY))
 
-	$SkillPanel/Content/SkillListContainer/BackButton.pressed.connect(_show_action_menu)
-	$ItemPanel/Content/BackButton.pressed.connect(_show_action_menu)
-	$FamiliarCmdPanel/Content/BackButton.pressed.connect(_show_action_menu)
+	$SkillPanel/Padding/Content/SkillListContainer/BackButton.pressed.connect(_show_action_menu)
+	$ItemPanel/Padding/Content/BackButton.pressed.connect(_show_action_menu)
+	$FamiliarCmdPanel/Padding/Content/BackButton.pressed.connect(_show_action_menu)
 
 
 func _style_progress_bars() -> void:
@@ -303,7 +303,7 @@ func _on_familiar_mode(mode: int) -> void:
 
 
 func _populate_skill_list() -> void:
-	var skill_list: VBoxContainer = $SkillPanel/Content/SkillListContainer/SkillScroll/SkillList
+	var skill_list: VBoxContainer = $SkillPanel/Padding/Content/SkillListContainer/SkillScroll/SkillList
 	for child in skill_list.get_children():
 		child.queue_free()
 
@@ -535,7 +535,7 @@ func _on_skill_chosen(skill_id: String) -> void:
 
 
 func _populate_item_list() -> void:
-	var item_list: VBoxContainer = $ItemPanel/Content/ItemList
+	var item_list: VBoxContainer = $ItemPanel/Padding/Content/ItemList
 	for child in item_list.get_children():
 		child.queue_free()
 
@@ -664,7 +664,7 @@ func _set_enemy_panels_targetable(enabled: bool) -> void:
 
 
 func _ensure_status_labels() -> void:
-	var player_content := $AllyArea/PlayerPanel/Content as VBoxContainer
+	var player_content := $AllyArea/PlayerPanel/Padding/Content as VBoxContainer
 	_player_status_label = player_content.get_node_or_null("PlayerStatusLabel") as Label
 	if _player_status_label == null:
 		_player_status_label = Label.new()
@@ -676,7 +676,7 @@ func _ensure_status_labels() -> void:
 		_player_status_label.add_theme_font_size_override("font_size", 13)
 		player_content.add_child(_player_status_label)
 
-	var familiar_content := $AllyArea/FamiliarPanel/Content as VBoxContainer
+	var familiar_content := $AllyArea/FamiliarPanel/Padding/Content as VBoxContainer
 	_familiar_status_label = familiar_content.get_node_or_null("FamiliarStatusLabel") as Label
 	if _familiar_status_label == null:
 		_familiar_status_label = Label.new()
