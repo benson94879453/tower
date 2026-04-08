@@ -5,11 +5,11 @@ signal new_game_requested
 signal load_game_requested(slot: int)
 signal quit_requested
 
-@onready var title_label: Label = $TitleLabel
-@onready var new_game_button: Button = $MenuContainer/NewGameButton
-@onready var load_game_button: Button = $MenuContainer/LoadGameButton
-@onready var quit_button: Button = $MenuContainer/QuitButton
-@onready var save_info_label: Label = $SaveInfoLabel
+@onready var title_label: Label = $CenterContainer/TitleLabel
+@onready var new_game_button: Button = $CenterContainer/MenuContainer/NewGameButton
+@onready var load_game_button: Button = $CenterContainer/MenuContainer/LoadGameButton
+@onready var quit_button: Button = $CenterContainer/MenuContainer/QuitButton
+@onready var save_info_label: Label = $CenterContainer/SaveInfoLabel
 
 const CombatantVisualClass = preload("res://scripts/ui/combatant_visual.gd")
 

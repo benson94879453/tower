@@ -61,3 +61,67 @@ static func get_rarity_border(rarity: String) -> Color:
 static func get_rarity_bg(rarity: String) -> Color:
 	var palette: Dictionary = RARITY_COLORS.get(rarity, RARITY_COLORS["N"])
 	return palette.get("bg", RARITY_COLORS["N"]["bg"])
+
+
+static func create_bar_style(fill_color: Color, bg_color: Color, radius: int = 4) -> Array:
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = fill_color
+	fill.corner_radius_top_left = radius
+	fill.corner_radius_top_right = radius
+	fill.corner_radius_bottom_right = radius
+	fill.corner_radius_bottom_left = radius
+
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = bg_color
+	bg.corner_radius_top_left = radius
+	bg.corner_radius_top_right = radius
+	bg.corner_radius_bottom_right = radius
+	bg.corner_radius_bottom_left = radius
+
+	return [fill, bg]
+
+
+static func apply_bar_style(bar: ProgressBar, fill_color: Color, bg_color: Color) -> void:
+	var styles: Array = create_bar_style(fill_color, bg_color)
+	bar.add_theme_stylebox_override("fill", styles[0])
+	bar.add_theme_stylebox_override("background", styles[1])
+
+
+static func create_panel_style(
+	bg_color: Color = PANEL_BG,
+	border_color: Color = ACCENT,
+	border_width: int = 2,
+	radius: int = PANEL_CORNER_RADIUS,
+	margin: float = 0.0
+) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = bg_color
+	style.border_width_left = border_width
+	style.border_width_top = border_width
+	style.border_width_right = border_width
+	style.border_width_bottom = border_width
+	style.border_color = border_color
+	style.corner_radius_top_left = radius
+	style.corner_radius_top_right = radius
+	style.corner_radius_bottom_right = radius
+	style.corner_radius_bottom_left = radius
+	if margin > 0.0:
+		style.content_margin_left = margin
+		style.content_margin_top = margin
+		style.content_margin_right = margin
+		style.content_margin_bottom = margin
+	return style
+
+
+static func create_list_item_bg(index: int) -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = BG_MID if index % 2 == 0 else BG_DARK
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_right = 4
+	style.corner_radius_bottom_left = 4
+	style.content_margin_left = 8.0
+	style.content_margin_top = 4.0
+	style.content_margin_right = 8.0
+	style.content_margin_bottom = 4.0
+	return style

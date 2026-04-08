@@ -24,10 +24,10 @@ var _current_event_options: Array = []
 var _merchant_stock: Array = []
 
 @onready var node_map_ui = $NodeMapUI
-@onready var floor_info_label: Label = $FloorInfoLabel
-@onready var action_log: RichTextLabel = $ActionLog
-@onready var inventory_button: Button = $InventoryButton
-@onready var return_button: Button = $ReturnButton
+@onready var floor_info_label: Label = $TopBar/FloorInfoLabel
+@onready var action_log: RichTextLabel = $ActionLogPanel/ActionLog
+@onready var inventory_button: Button = $TopBar/InventoryButton
+@onready var return_button: Button = $TopBar/ReturnButton
 
 
 func _ready() -> void:

@@ -24,19 +24,28 @@ var _library_panel = null
 var _tavern_panel = null
 
 @onready var zone_label: Label = $ZoneLabel
-@onready var status_label: RichTextLabel = $StatusPanel/StatusLabel
-@onready var inventory_button: Button = $ActionContainer/InventoryButton
-@onready var shop_button: Button = $ActionContainer/ShopButton
-@onready var forge_button: Button = $ActionContainer/ForgeButton
-@onready var familiar_button: Button = $ActionContainer/FamiliarButton
-@onready var library_button: Button = $ActionContainer/LibraryButton
-@onready var tavern_button: Button = $ActionContainer/TavernButton
-@onready var explore_button: Button = $ActionContainer/ExploreButton
-@onready var teleport_button: Button = $ActionContainer/TeleportButton
-@onready var rest_button: Button = $ActionContainer/RestButton
-@onready var save_button: Button = $ActionContainer/SaveButton
+@onready var player_name_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/PlayerNameLabel
+@onready var hp_bar: ProgressBar = $MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow/HPBar
+@onready var hp_value: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/HPRow/HPValue
+@onready var mp_bar: ProgressBar = $MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow/MPBar
+@onready var mp_value: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/MPRow/MPValue
+@onready var gold_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/GoldLabel
+@onready var title_status_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/TitleStatusLabel
+@onready var familiar_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/FamiliarLabel
+@onready var floor_label: Label = $MainLayout/LeftPanel/StatusPanel/StatusContent/FloorLabel
+@onready var equip_summary: RichTextLabel = $MainLayout/LeftPanel/StatusPanel/StatusContent/EquipSummary
+@onready var inventory_button: Button = $MainLayout/RightPanel/FacilityGrid/InventoryButton
+@onready var shop_button: Button = $MainLayout/RightPanel/FacilityGrid/ShopButton
+@onready var forge_button: Button = $MainLayout/RightPanel/FacilityGrid/ForgeButton
+@onready var familiar_button: Button = $MainLayout/RightPanel/FacilityGrid/FamiliarButton
+@onready var library_button: Button = $MainLayout/RightPanel/FacilityGrid/LibraryButton
+@onready var tavern_button: Button = $MainLayout/RightPanel/FacilityGrid/TavernButton
+@onready var explore_button: Button = $MainLayout/RightPanel/ActionRow/ExploreButton
+@onready var teleport_button: Button = $MainLayout/RightPanel/ActionRow/TeleportButton
+@onready var rest_button: Button = $MainLayout/RightPanel/SystemRow/RestButton
+@onready var save_button: Button = $MainLayout/RightPanel/SystemRow/SaveButton
 @onready var teleport_panel: PanelContainer = $TeleportPanel
-@onready var teleport_list: VBoxContainer = $TeleportPanel/Content/TeleportList
+@onready var teleport_list: VBoxContainer = $TeleportPanel/Content/TeleportScroll/TeleportList
 @onready var teleport_close_button: Button = $TeleportPanel/Content/CloseButton
 
 
@@ -54,6 +63,42 @@ func _ready() -> void:
 	save_button.pressed.connect(_request_save)
 	teleport_close_button.pressed.connect(func(): teleport_panel.visible = false)
 	teleport_panel.visible = false
+
+	_style_hp_mp_bars()
+
+
+func _style_hp_mp_bars() -> void:
+	var hp_fill := StyleBoxFlat.new()
+	hp_fill.bg_color = ThemeConstantsClass.HP_COLOR
+	hp_fill.corner_radius_top_left = 4
+	hp_fill.corner_radius_top_right = 4
+	hp_fill.corner_radius_bottom_right = 4
+	hp_fill.corner_radius_bottom_left = 4
+	hp_bar.add_theme_stylebox_override("fill", hp_fill)
+
+	var hp_bg := StyleBoxFlat.new()
+	hp_bg.bg_color = ThemeConstantsClass.HP_BG_COLOR
+	hp_bg.corner_radius_top_left = 4
+	hp_bg.corner_radius_top_right = 4
+	hp_bg.corner_radius_bottom_right = 4
+	hp_bg.corner_radius_bottom_left = 4
+	hp_bar.add_theme_stylebox_override("background", hp_bg)
+
+	var mp_fill := StyleBoxFlat.new()
+	mp_fill.bg_color = ThemeConstantsClass.MP_COLOR
+	mp_fill.corner_radius_top_left = 4
+	mp_fill.corner_radius_top_right = 4
+	mp_fill.corner_radius_bottom_right = 4
+	mp_fill.corner_radius_bottom_left = 4
+	mp_bar.add_theme_stylebox_override("fill", mp_fill)
+
+	var mp_bg := StyleBoxFlat.new()
+	mp_bg.bg_color = ThemeConstantsClass.MP_BG_COLOR
+	mp_bg.corner_radius_top_left = 4
+	mp_bg.corner_radius_top_right = 4
+	mp_bg.corner_radius_bottom_right = 4
+	mp_bg.corner_radius_bottom_left = 4
+	mp_bar.add_theme_stylebox_override("background", mp_bg)
 
 
 func _apply_theme_variations() -> void:
@@ -89,16 +134,49 @@ func _update_status() -> void:
 		return
 
 	var pd = PlayerManager.player_data
-	status_label.clear()
-	status_label.push_color(ThemeConstantsClass.TEXT_PRIMARY)
-	status_label.append_text("Lv.%d  %s\n" % [pd.level, pd.name])
-	status_label.append_text("HP: %d/%d\n" % [pd.current_hp, PlayerManager.get_max_hp()])
-	status_label.append_text("MP: %d/%d\n" % [pd.current_mp, PlayerManager.get_max_mp()])
-	status_label.append_text("金幣: %d\n" % pd.gold)
-	status_label.append_text("稱號: %s\n" % String(pd.title))
-	status_label.append_text("使魔: %s\n" % _get_active_familiar_status())
-	status_label.append_text("最高樓層: %dF" % pd.highest_floor)
-	status_label.pop()
+
+	player_name_label.text = "Lv.%d  %s" % [pd.level, pd.name]
+
+	var max_hp: int = PlayerManager.get_max_hp()
+	var max_mp: int = PlayerManager.get_max_mp()
+	hp_bar.max_value = max_hp
+	hp_bar.value = pd.current_hp
+	hp_value.text = "%d/%d" % [pd.current_hp, max_hp]
+	mp_bar.max_value = max_mp
+	mp_bar.value = pd.current_mp
+	mp_value.text = "%d/%d" % [pd.current_mp, max_mp]
+
+	gold_label.text = "金幣: %d" % pd.gold
+	title_status_label.text = "稱號: %s" % String(pd.title)
+	familiar_label.text = "使魔: %s" % _get_active_familiar_status()
+	floor_label.text = "最高樓層: %dF" % pd.highest_floor
+
+	_update_equip_summary()
+
+
+func _update_equip_summary() -> void:
+	equip_summary.clear()
+	var pd = PlayerManager.player_data
+	if pd == null:
+		return
+
+	equip_summary.push_color(ThemeConstantsClass.TEXT_SECONDARY)
+	equip_summary.push_font_size(ThemeConstantsClass.FONT_SIZE_SMALL)
+
+	var weapon_name: String = "無"
+	if not pd.weapon_id.is_empty():
+		var w_data: Dictionary = DataManager.get_item(pd.weapon_id)
+		weapon_name = String(w_data.get("name", pd.weapon_id))
+	equip_summary.append_text("武器: %s\n" % weapon_name)
+
+	var armor_name: String = "無"
+	if not pd.armor_id.is_empty():
+		var a_data: Dictionary = DataManager.get_item(pd.armor_id)
+		armor_name = String(a_data.get("name", pd.armor_id))
+	equip_summary.append_text("防具: %s" % armor_name)
+
+	equip_summary.pop()
+	equip_summary.pop()
 
 
 func _on_explore_pressed() -> void:
@@ -281,6 +359,7 @@ func _request_rest() -> void:
 			PlayerManager.player_data.current_mp = PlayerManager.get_max_mp()
 			PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
 			PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
+		_update_status()
 		return
 	rest_requested.emit()
 
