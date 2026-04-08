@@ -1,9 +1,6 @@
 class_name BattleUI
 extends Control
 
-const SkillExecutorClass = preload("res://scripts/battle/skill_executor.gd")
-const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
-const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
 
 signal skill_selected(skill_id: String)
 @warning_ignore("unused_signal")
@@ -55,10 +52,10 @@ func _ready() -> void:
 	$ActionMenu/FamiliarButton.pressed.connect(_on_familiar_button)
 	$ActionMenu/FleeButton.pressed.connect(_on_flee_button)
 
-	$FamiliarCmdPanel/Content/AttackModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantDataClass.FamiliarMode.ATTACK))
-	$FamiliarCmdPanel/Content/DefendModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantDataClass.FamiliarMode.DEFEND))
-	$FamiliarCmdPanel/Content/SupportModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantDataClass.FamiliarMode.SUPPORT))
-	$FamiliarCmdPanel/Content/StandbyModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantDataClass.FamiliarMode.STANDBY))
+	$FamiliarCmdPanel/Content/AttackModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.ATTACK))
+	$FamiliarCmdPanel/Content/DefendModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.DEFEND))
+	$FamiliarCmdPanel/Content/SupportModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.SUPPORT))
+	$FamiliarCmdPanel/Content/StandbyModeBtn.pressed.connect(func(): _on_familiar_mode(CombatantData.FamiliarMode.STANDBY))
 
 	$SkillPanel/Content/BackButton.pressed.connect(_show_action_menu)
 	$ItemPanel/Content/BackButton.pressed.connect(_show_action_menu)
@@ -154,10 +151,10 @@ func _create_enemy_panel(enemy) -> PanelContainer:
 	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	status_label.visible = false
-	status_label.add_theme_color_override("font_color", ThemeConstantsClass.TEXT_SECONDARY)
+	status_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
 	vbox.add_child(status_label)
 
-	name_label.add_theme_color_override("font_color", ThemeConstantsClass.get_element_color(enemy.element))
+	name_label.add_theme_color_override("font_color", ThemeConstants.get_element_color(enemy.element))
 
 	panel.set_meta("combatant", enemy)
 	panel.set_meta("hp_bar", hp_bar)
@@ -259,7 +256,7 @@ func _populate_skill_list() -> void:
 		if skill_data.is_empty():
 			continue
 
-		var check: Dictionary = SkillExecutorClass.can_use_skill(_player, skill_id)
+		var check: Dictionary = SkillExecutor.can_use_skill(_player, skill_id)
 		var remaining_pp := int(_player.skill_pp.get(skill_id, 0))
 		var mp_cost := int(skill_data.get("mp_cost", 0))
 		var cd: int = int(_player.cooldowns.get(skill_id, 0))
@@ -270,7 +267,7 @@ func _populate_skill_list() -> void:
 			label_text += " [CD:%d]" % cd
 		button.text = label_text
 		button.disabled = not bool(check.get("usable", false))
-		button.add_theme_color_override("font_color", ThemeConstantsClass.get_element_color(String(skill_data.get("element", "none"))))
+		button.add_theme_color_override("font_color", ThemeConstants.get_element_color(String(skill_data.get("element", "none"))))
 
 		var captured_id: String = skill_id
 		button.pressed.connect(func(): _on_skill_chosen(captured_id))
@@ -336,12 +333,12 @@ func update_turn_order(order: Array) -> void:
 	for combatant in order:
 		var label := Label.new()
 		label.text = combatant.display_name
-		if combatant.team == CombatantDataClass.Team.PLAYER:
+		if combatant.team == CombatantData.Team.PLAYER:
 			label.add_theme_color_override("font_color", Color.WHITE)
-		elif combatant.team == CombatantDataClass.Team.FAMILIAR:
+		elif combatant.team == CombatantData.Team.FAMILIAR:
 			label.add_theme_color_override("font_color", Color.CYAN)
 		else:
-			label.add_theme_color_override("font_color", ThemeConstantsClass.get_element_color(combatant.element))
+			label.add_theme_color_override("font_color", ThemeConstants.get_element_color(combatant.element))
 		turn_order_display.add_child(label)
 
 
@@ -352,7 +349,7 @@ func add_log(text: String, color: Color = Color.WHITE) -> void:
 
 
 func add_element_log(text: String, element: String) -> void:
-	add_log(text, ThemeConstantsClass.get_element_color(element))
+	add_log(text, ThemeConstants.get_element_color(element))
 
 
 func show_waiting_indicator(actor_name: String) -> void:
@@ -440,7 +437,7 @@ func _ensure_status_labels() -> void:
 		_player_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_player_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_player_status_label.visible = false
-		_player_status_label.add_theme_color_override("font_color", ThemeConstantsClass.TEXT_SECONDARY)
+		_player_status_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
 		player_content.add_child(_player_status_label)
 
 	var familiar_content := $AllyArea/FamiliarPanel/Content as VBoxContainer
@@ -451,7 +448,7 @@ func _ensure_status_labels() -> void:
 		_familiar_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_familiar_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		_familiar_status_label.visible = false
-		_familiar_status_label.add_theme_color_override("font_color", ThemeConstantsClass.TEXT_SECONDARY)
+		_familiar_status_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
 		familiar_content.add_child(_familiar_status_label)
 
 

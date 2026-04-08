@@ -1,13 +1,6 @@
 class_name TurnManager
 extends RefCounted
 
-const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
-const AccessoryProcessorClass = preload("res://scripts/battle/accessory_processor.gd")
-const BattleAIClass = preload("res://scripts/battle/battle_ai.gd")
-const PassiveProcessorClass = preload("res://scripts/battle/passive_processor.gd")
-const SkillExecutorClass = preload("res://scripts/battle/skill_executor.gd")
-const StatusProcessorClass = preload("res://scripts/battle/status_processor.gd")
-const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
 
 signal turn_order_determined(order: Array)
 signal combatant_turn_started(combatant)
@@ -49,15 +42,15 @@ func execute_turn() -> void:
 			continue
 
 		combatant_turn_started.emit(actor)
-		if actor.team == CombatantDataClass.Team.PLAYER:
-			var turn_passive_logs: Array[Dictionary] = PassiveProcessorClass.on_turn_start(actor)
+		if actor.team == CombatantData.Team.PLAYER:
+			var turn_passive_logs: Array[Dictionary] = PassiveProcessor.on_turn_start(actor)
 			for raw_log in turn_passive_logs:
 				var log_entry: Dictionary = raw_log
 				_battle_manager.battle_ui.add_log(
 					String(log_entry.get("text", "")),
 					log_entry.get("color", Color.WHITE)
 				)
-			var turn_accessory_logs: Array[Dictionary] = AccessoryProcessorClass.on_turn_start(actor, _battle_manager.familiar)
+			var turn_accessory_logs: Array[Dictionary] = AccessoryProcessor.on_turn_start(actor, _battle_manager.familiar)
 			for raw_log in turn_accessory_logs:
 				var log_entry: Dictionary = raw_log
 				_battle_manager.battle_ui.add_log(
@@ -70,7 +63,7 @@ func execute_turn() -> void:
 
 		var all_allies: Array = _get_friendly_targets_for(actor)
 		var all_enemies: Array = _get_hostile_targets_for(actor)
-		var status_check: Dictionary = StatusProcessorClass.check_before_action(actor, all_allies, all_enemies)
+		var status_check: Dictionary = StatusProcessor.check_before_action(actor, all_allies, all_enemies)
 		for raw_log_entry in Array(status_check.get("logs", [])):
 			var log_entry: Dictionary = raw_log_entry
 			_battle_manager.battle_ui.add_log(
@@ -86,19 +79,19 @@ func execute_turn() -> void:
 		var redirect_target = status_check.get("redirect_target", null)
 
 		match actor.team:
-			CombatantDataClass.Team.PLAYER:
+			CombatantData.Team.PLAYER:
 				if redirect_target != null:
 					_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
 					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
 				else:
 					await _execute_player_turn(actor)
-			CombatantDataClass.Team.FAMILIAR:
+			CombatantData.Team.FAMILIAR:
 				_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
 				if redirect_target != null:
 					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
 				else:
 					_execute_familiar_turn(actor)
-			CombatantDataClass.Team.ENEMY:
+			CombatantData.Team.ENEMY:
 				_battle_manager._change_state(_battle_manager.BattleState.EXECUTING)
 				if redirect_target != null:
 					_resolve_action(actor, {"type": "skill", "skill_id": "", "target": redirect_target})
@@ -153,7 +146,7 @@ func _execute_enemy_turn(actor) -> void:
 
 	_battle_manager.battle_ui.add_log(
 		"輪到 %s 行動" % actor.display_name,
-		ThemeConstantsClass.get_element_color(actor.element)
+		ThemeConstants.get_element_color(actor.element)
 	)
 	var action: Dictionary = _get_enemy_action(actor)
 	_resolve_action(actor, action)
@@ -192,7 +185,7 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 	var target_groups: Dictionary = _get_target_groups_for(actor)
 	var all_enemies: Array = Array(target_groups.get("enemies", []))
 	var all_allies: Array = Array(target_groups.get("allies", []))
-	var exec_result: Dictionary = SkillExecutorClass.execute_skill(
+	var exec_result: Dictionary = SkillExecutor.execute_skill(
 		actor,
 		skill_id,
 		target,
@@ -240,7 +233,7 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 		if effect_target != null:
 			_update_display_for(effect_target)
 
-	if actor.team == CombatantDataClass.Team.PLAYER and not skill_id.is_empty():
+	if actor.team == CombatantData.Team.PLAYER and not skill_id.is_empty():
 		var killed_any: bool = false
 		for result in results:
 			if result is Dictionary and bool(Dictionary(result).get("killed", false)):
@@ -297,22 +290,22 @@ func _get_enemy_action(actor) -> Dictionary:
 	var friendly: Array = _get_friendly_targets_for(actor)
 	if hostile.is_empty():
 		return {}
-	return BattleAIClass.decide_enemy_action(actor, hostile, friendly)
+	return BattleAI.decide_enemy_action(actor, hostile, friendly)
 
 
 func _get_familiar_action(actor) -> Dictionary:
 	match actor.familiar_mode:
-		CombatantDataClass.FamiliarMode.DEFEND:
+		CombatantData.FamiliarMode.DEFEND:
 			return {"type": "defend"}
-		CombatantDataClass.FamiliarMode.STANDBY:
+		CombatantData.FamiliarMode.STANDBY:
 			_battle_manager.battle_ui.add_log("%s 待命中" % actor.display_name)
 			return {}
 		_:
 			var hostile: Array = _get_hostile_targets_for(actor)
 			var friendly: Array = _get_friendly_targets_for(actor)
-			if hostile.is_empty() and actor.familiar_mode == CombatantDataClass.FamiliarMode.ATTACK:
+			if hostile.is_empty() and actor.familiar_mode == CombatantData.FamiliarMode.ATTACK:
 				return {}
-			return BattleAIClass.decide_familiar_action(actor, hostile, friendly)
+			return BattleAI.decide_familiar_action(actor, hostile, friendly)
 
 
 func _check_battle_end() -> bool:
@@ -340,14 +333,14 @@ func _end_of_turn_phase() -> void:
 		if not combatant.is_alive:
 			continue
 
-		var status_results: Array = StatusProcessorClass.process_end_of_turn(combatant)
+		var status_results: Array = StatusProcessor.process_end_of_turn(combatant)
 		for raw_result in status_results:
 			_handle_status_tick_result(raw_result)
 
 		if not combatant.is_alive:
 			continue
 
-		SkillExecutorClass.tick_cooldowns(combatant)
+		SkillExecutor.tick_cooldowns(combatant)
 
 		var expired: Array[int] = []
 		for index in range(combatant.battle_buffs.size()):
@@ -391,8 +384,8 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 	var damage_type: String = String(result.get("damage_type", "magic"))
 	var attacker_status_changed: bool = false
 
-	if actor.team == CombatantDataClass.Team.PLAYER and target.team != CombatantDataClass.Team.PLAYER:
-		var passive_result: Dictionary = PassiveProcessorClass.on_deal_damage(
+	if actor.team == CombatantData.Team.PLAYER and target.team != CombatantData.Team.PLAYER:
+		var passive_result: Dictionary = PassiveProcessor.on_deal_damage(
 			actor,
 			target,
 			dealt_damage,
@@ -417,7 +410,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 		if heal_actor > 0:
 			actor.current_hp = clampi(actor.current_hp + heal_actor, 0, actor.max_hp)
 
-		var accessory_result: Dictionary = AccessoryProcessorClass.on_deal_damage(
+		var accessory_result: Dictionary = AccessoryProcessor.on_deal_damage(
 			actor,
 			target,
 			dealt_damage,
@@ -451,8 +444,8 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 			if _apply_status_to_combatant(status_target, status_entry) and status_target != null:
 				_update_display_for(status_target)
 
-	if target.team == CombatantDataClass.Team.PLAYER and actor.team != CombatantDataClass.Team.PLAYER:
-		var receive_result: Dictionary = PassiveProcessorClass.on_receive_damage(
+	if target.team == CombatantData.Team.PLAYER and actor.team != CombatantData.Team.PLAYER:
+		var receive_result: Dictionary = PassiveProcessor.on_receive_damage(
 			actor,
 			target,
 			dealt_damage,
@@ -471,7 +464,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 				log_entry.get("color", Color.WHITE)
 			)
 
-		var accessory_receive_result: Dictionary = AccessoryProcessorClass.on_receive_damage(
+		var accessory_receive_result: Dictionary = AccessoryProcessor.on_receive_damage(
 			actor,
 			target,
 			dealt_damage,
@@ -525,7 +518,7 @@ func _handle_damage_result(actor, result: Dictionary, skill_name: String, elemen
 	_battle_manager.combatant_hp_changed.emit(target)
 
 	if bool(result.get("is_hit", false)) and not skill_id.is_empty():
-		if target.team == CombatantDataClass.Team.PLAYER and actor.team == CombatantDataClass.Team.ENEMY:
+		if target.team == CombatantData.Team.PLAYER and actor.team == CombatantData.Team.ENEMY:
 			_battle_manager.record_enemy_skill_hit(skill_id)
 
 	if bool(result.get("killed", false)):
@@ -708,10 +701,10 @@ func _get_hostile_targets_for(actor) -> Array:
 	for combatant in _battle_manager.all_combatants:
 		if combatant == null or not combatant.is_alive:
 			continue
-		if actor.team == CombatantDataClass.Team.ENEMY:
-			if combatant.team != CombatantDataClass.Team.ENEMY:
+		if actor.team == CombatantData.Team.ENEMY:
+			if combatant.team != CombatantData.Team.ENEMY:
 				targets.append(combatant)
-		elif combatant.team == CombatantDataClass.Team.ENEMY:
+		elif combatant.team == CombatantData.Team.ENEMY:
 			targets.append(combatant)
 
 	return targets
@@ -722,19 +715,19 @@ func _get_friendly_targets_for(actor) -> Array:
 	for combatant in _battle_manager.all_combatants:
 		if combatant == null or not combatant.is_alive:
 			continue
-		if actor.team == CombatantDataClass.Team.ENEMY:
-			if combatant.team == CombatantDataClass.Team.ENEMY:
+		if actor.team == CombatantData.Team.ENEMY:
+			if combatant.team == CombatantData.Team.ENEMY:
 				targets.append(combatant)
-		elif combatant.team != CombatantDataClass.Team.ENEMY:
+		elif combatant.team != CombatantData.Team.ENEMY:
 			targets.append(combatant)
 
 	return targets
 
 
 func _update_display_for(combatant) -> void:
-	if combatant.team == CombatantDataClass.Team.PLAYER:
+	if combatant.team == CombatantData.Team.PLAYER:
 		_battle_manager.battle_ui._update_player_display()
-	elif combatant.team == CombatantDataClass.Team.FAMILIAR:
+	elif combatant.team == CombatantData.Team.FAMILIAR:
 		_battle_manager.battle_ui._update_familiar_display()
 	else:
 		_battle_manager.battle_ui.update_enemy_display(combatant)

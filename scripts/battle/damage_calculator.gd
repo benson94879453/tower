@@ -1,7 +1,6 @@
 class_name DamageCalculator
 extends RefCounted
 
-const StatusProcessorClass = preload("res://scripts/battle/status_processor.gd")
 
 const ELEMENTS := ["fire", "water", "thunder", "wind", "earth", "light", "dark", "none"]
 const MULTIPLIER_TABLE := {
@@ -126,7 +125,7 @@ static func get_effective_stat(combatant, stat_name: String) -> float:
 		if String(buff.get("stat", "")) == stat_name:
 			buff_bonus += float(buff.get("value", 0))
 
-	var status_mod: float = StatusProcessorClass.get_status_stat_modifier(combatant, stat_name)
+	var status_mod: float = StatusProcessor.get_status_stat_modifier(combatant, stat_name)
 	return max(0.0, base_value + buff_bonus + status_mod)
 
 
@@ -144,6 +143,10 @@ static func calculate_damage(
 		"effectiveness_text": "",
 		"environment_mod": 1.0,
 	}
+
+	if attacker == null or defender == null:
+		result["is_hit"] = false
+		return result
 
 	if not calc_hit(attacker, defender, skill_data):
 		result["is_hit"] = false

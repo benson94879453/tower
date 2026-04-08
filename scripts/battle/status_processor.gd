@@ -176,7 +176,7 @@ static func on_damage_received(target, damage_element: String) -> Array[Dictiona
 static func check_reflect(target, _skill_element: String, damage_type: String) -> Dictionary:
 	var logs: Array = []
 	var result: Dictionary = {"reflected": false, "logs": logs}
-	if damage_type == "physical":
+	if target == null or damage_type == "physical":
 		return result
 	if not target.has_status("reflect"):
 		return result
@@ -193,7 +193,7 @@ static func check_reflect(target, _skill_element: String, damage_type: String) -
 static func check_stealth_dodge(target) -> Dictionary:
 	var logs: Array = []
 	var result: Dictionary = {"dodged": false, "logs": logs}
-	if not target.has_status("stealth"):
+	if target == null or not target.has_status("stealth"):
 		return result
 
 	target.remove_status("stealth")

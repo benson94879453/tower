@@ -1,7 +1,6 @@
 class_name AccessoryProcessor
 extends RefCounted
 
-const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
 const TURN_ORDER_SPEED_BONUS := 9999
 
 static var _battle_state: Dictionary = {}
@@ -82,7 +81,7 @@ static func on_battle_start(player, familiar) -> Array[Dictionary]:
 
 static func on_turn_start(actor, familiar) -> Array[Dictionary]:
 	var logs: Array[Dictionary] = []
-	if actor == null or int(actor.team) != CombatantDataClass.Team.PLAYER:
+	if actor == null or int(actor.team) != CombatantData.Team.PLAYER:
 		return logs
 
 	if bool(_battle_state.get("time_watch_pending", false)):
@@ -153,9 +152,9 @@ static func on_deal_damage(actor, target, damage: int, skill_element: String, el
 
 	if actor == null or target == null:
 		return result
-	if int(actor.team) != CombatantDataClass.Team.PLAYER:
+	if int(actor.team) != CombatantData.Team.PLAYER:
 		return result
-	if int(target.team) == CombatantDataClass.Team.PLAYER:
+	if int(target.team) == CombatantData.Team.PLAYER:
 		return result
 
 	var bonus_damage: int = 0
@@ -225,9 +224,9 @@ static func on_receive_damage(attacker, target, damage: int, skill_element: Stri
 
 	if attacker == null or target == null:
 		return result
-	if int(target.team) != CombatantDataClass.Team.PLAYER:
+	if int(target.team) != CombatantData.Team.PLAYER:
 		return result
-	if int(attacker.team) == CombatantDataClass.Team.PLAYER:
+	if int(attacker.team) == CombatantData.Team.PLAYER:
 		return result
 
 	for effect in _get_accessory_effects():
@@ -346,14 +345,14 @@ static func _atomic_condition_matches(condition_text: String, context: Dictionar
 	return false
 
 
-static func _coerce_condition_value(raw_text: String, reference) -> Variant:
+static func _coerce_condition_value(raw_text: String, ref_val) -> Variant:
 	var cleaned: String = raw_text.strip_edges()
 	if cleaned.begins_with("\"") and cleaned.ends_with("\"") and cleaned.length() >= 2:
 		cleaned = cleaned.substr(1, cleaned.length() - 2)
 	elif cleaned.begins_with("'") and cleaned.ends_with("'") and cleaned.length() >= 2:
 		cleaned = cleaned.substr(1, cleaned.length() - 2)
 
-	match typeof(reference):
+	match typeof(ref_val):
 		TYPE_BOOL:
 			var bool_lower: String = cleaned.to_lower()
 			return bool_lower == "true" or bool_lower == "1" or bool_lower == "yes"

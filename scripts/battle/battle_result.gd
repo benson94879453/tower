@@ -1,8 +1,6 @@
 class_name BattleResult
 extends RefCounted
 
-const AccessoryProcessorClass = preload("res://scripts/battle/accessory_processor.gd")
-const PassiveProcessorClass = preload("res://scripts/battle/passive_processor.gd")
 
 
 static func calculate_victory_rewards(
@@ -77,8 +75,8 @@ static func calculate_victory_rewards(
 		"drop_rate_bonus": int(title_bonuses.get("drop_rate_bonus", 0)),
 	}
 
-	PassiveProcessorClass.on_battle_reward(rewards)
-	AccessoryProcessorClass.on_battle_reward(rewards)
+	PassiveProcessor.on_battle_reward(rewards)
+	AccessoryProcessor.on_battle_reward(rewards)
 
 	var drop_rate_bonus: int = max(int(rewards.get("drop_rate_bonus", 0)), 0)
 	for raw_drop in Array(rewards.get("drop_entries", [])):

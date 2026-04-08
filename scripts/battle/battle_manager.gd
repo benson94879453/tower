@@ -1,11 +1,6 @@
 class_name BattleManager
 extends Node
 
-const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
-const AccessoryProcessorClass = preload("res://scripts/battle/accessory_processor.gd")
-const BattleResultClass = preload("res://scripts/battle/battle_result.gd")
-const PassiveProcessorClass = preload("res://scripts/battle/passive_processor.gd")
-const TurnManagerClass = preload("res://scripts/battle/turn_manager.gd")
 
 enum BattleState {
 	INACTIVE,
@@ -73,21 +68,21 @@ func start_battle(enemy_ids: Array, config: Dictionary = {}) -> void:
 	floor_number = int(config.get("floor", 1))
 	environment_element = String(config.get("environment_element", "none"))
 
-	player = CombatantDataClass.from_player()
+	player = CombatantData.from_player()
 
 	var familiar_id := String(config.get("familiar_id", ""))
 	var familiar_level := int(config.get("familiar_level", 1))
 	var familiar_skill_ids: Array = Array(config.get("familiar_skill_ids", []))
 	var familiar_mode: String = String(config.get("familiar_mode", "attack"))
 	if not familiar_id.is_empty():
-		familiar = CombatantDataClass.from_familiar(familiar_id, familiar_level, familiar_skill_ids, familiar_mode)
+		familiar = CombatantData.from_familiar(familiar_id, familiar_level, familiar_skill_ids, familiar_mode)
 	else:
 		familiar = null
 
 	enemies.clear()
 	for enemy_id in normalized_enemy_ids:
 		PlayerManager.discover_enemy(enemy_id)
-		var enemy = CombatantDataClass.from_enemy(enemy_id)
+		var enemy = CombatantData.from_enemy(enemy_id)
 		if enemy != null:
 			enemies.append(enemy)
 
@@ -100,12 +95,12 @@ func start_battle(enemy_ids: Array, config: Dictionary = {}) -> void:
 	battle_ui.setup_battle(player, familiar, enemies)
 	battle_ui.set_player_input_enabled(false)
 
-	turn_manager = TurnManagerClass.new()
+	turn_manager = TurnManager.new()
 	turn_manager._battle_manager = self
 
-	AccessoryProcessorClass.reset_battle_state()
-	var passive_logs: Array[Dictionary] = PassiveProcessorClass.on_battle_start(player, familiar)
-	var accessory_logs: Array[Dictionary] = AccessoryProcessorClass.on_battle_start(player, familiar)
+	AccessoryProcessor.reset_battle_state()
+	var passive_logs: Array[Dictionary] = PassiveProcessor.on_battle_start(player, familiar)
+	var accessory_logs: Array[Dictionary] = AccessoryProcessor.on_battle_start(player, familiar)
 	battle_ui.refresh_all_displays()
 	for raw_log in passive_logs:
 		var log_entry: Dictionary = raw_log
@@ -275,14 +270,14 @@ func _run_battle_loop() -> void:
 
 
 func _process_victory() -> void:
-	var rewards: Dictionary = BattleResultClass.calculate_victory_rewards(
+	var rewards: Dictionary = BattleResult.calculate_victory_rewards(
 		enemies,
 		floor_number,
 		_received_enemy_skill_ids,
 		is_boss_battle,
 		is_elite_battle
 	)
-	var level_result: Dictionary = BattleResultClass.apply_victory_rewards(rewards)
+	var level_result: Dictionary = BattleResult.apply_victory_rewards(rewards)
 	if PlayerManager.player_data != null:
 		PlayerManager.player_data.battle_victories += 1
 	if QuestManager != null:
@@ -306,6 +301,6 @@ func _process_victory() -> void:
 
 
 func _process_defeat() -> void:
-	var penalty: Dictionary = BattleResultClass.calculate_defeat_penalty()
-	BattleResultClass.apply_defeat_penalty(penalty)
+	var penalty: Dictionary = BattleResult.calculate_defeat_penalty()
+	BattleResult.apply_defeat_penalty(penalty)
 	battle_ui.show_defeat_result(penalty)

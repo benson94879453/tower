@@ -148,7 +148,7 @@ static func from_enemy(enemy_id: String) -> CombatantData:
 static func from_familiar(
 	familiar_id: String,
 	level: int = 1,
-	skill_ids: Array = [],
+	p_skill_ids: Array = [],
 	mode: String = "attack"
 ) -> CombatantData:
 	var data := DataManager.get_familiar(familiar_id)
@@ -177,7 +177,7 @@ static func from_familiar(
 	combatant.hit = int(base_stats.get("hit", 100))
 	combatant.dodge = float(base_stats.get("dodge", 0.0))
 	combatant.crit = float(base_stats.get("crit", 5.0))
-	var active_skill_ids: Array = Array(skill_ids)
+	var active_skill_ids: Array = Array(p_skill_ids)
 	if active_skill_ids.is_empty():
 		active_skill_ids = Array(data.get("default_skills", []))
 	_append_skill_data(combatant, active_skill_ids, 10)

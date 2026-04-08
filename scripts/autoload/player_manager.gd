@@ -1227,11 +1227,11 @@ func _sanitize_familiar_entry(raw_entry: Dictionary) -> Dictionary:
 
 	var max_level: int = max(int(familiar_data.get("max_level", 1)), 1)
 	var level: int = clampi(int(raw_entry.get("level", 1)), 1, max_level)
-	var exp: int = max(int(raw_entry.get("exp", 0)), 0)
+	var exp_val: int = maxi(roundi(float(raw_entry.get("exp", 0))), 0)
 	if level >= max_level:
-		exp = 0
+		exp_val = 0
 	else:
-		exp = mini(exp, max(DataManager.get_familiar_exp_required(level) - 1, 0))
+		exp_val = mini(exp_val, maxi(DataManager.get_familiar_exp_required(level) - 1, 0))
 
 	var skill_slots: int = max(int(familiar_data.get("skill_slots", 0)), 0)
 	var saved_skills: Array = Array(raw_entry.get("skill_ids", []))
@@ -1242,7 +1242,7 @@ func _sanitize_familiar_entry(raw_entry: Dictionary) -> Dictionary:
 	return {
 		"id": familiar_id,
 		"level": level,
-		"exp": exp,
+		"exp": exp_val,
 		"nickname": String(raw_entry.get("nickname", "")),
 		"skill_ids": skill_ids,
 		"mode": _normalize_familiar_mode_string(String(raw_entry.get("mode", "attack"))),
@@ -1687,7 +1687,7 @@ func _build_skill_mutation_branches(skill_data: Dictionary, proficiency: int) ->
 		var required_proficiency: int = max(int(branch_data.get("required_proficiency", 0)), 0)
 		var target_id: String = String(branch_data.get("id", ""))
 		var target_data: Dictionary = DataManager.get_skill(target_id)
-		var ready: bool = (
+		var is_ready: bool = (
 			_skill_level_from_proficiency(proficiency) >= SKILL_LEVEL_THRESHOLDS.size()
 			and proficiency >= required_proficiency
 			and missing_items.is_empty()
@@ -1704,7 +1704,7 @@ func _build_skill_mutation_branches(skill_data: Dictionary, proficiency: int) ->
 			"missing": missing_items,
 			"required_items": required_items,
 			"target_found": not target_data.is_empty(),
-			"ready": ready,
+			"ready": is_ready,
 		})
 
 	return branches

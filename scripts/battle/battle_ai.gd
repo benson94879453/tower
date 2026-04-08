@@ -1,7 +1,6 @@
 class_name BattleAI
 extends RefCounted
 
-const SkillExecutorClass = preload("res://scripts/battle/skill_executor.gd")
 
 
 static func decide_enemy_action(actor, hostile_targets: Array, friendly_targets: Array) -> Dictionary:
@@ -33,7 +32,7 @@ static func decide_familiar_action(actor, hostile_targets: Array, friendly_targe
 static func _get_usable_skills_with_data(actor) -> Array:
 	var result: Array = []
 	for skill_id in actor.skill_ids:
-		var check: Dictionary = SkillExecutorClass.can_use_skill(actor, skill_id)
+		var check: Dictionary = SkillExecutor.can_use_skill(actor, skill_id)
 		if not bool(check.get("usable", false)):
 			continue
 

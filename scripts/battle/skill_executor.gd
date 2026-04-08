@@ -1,9 +1,6 @@
 class_name SkillExecutor
 extends RefCounted
 
-const CombatantDataClass = preload("res://scripts/data/combatant_data.gd")
-const DamageCalculatorClass = preload("res://scripts/battle/damage_calculator.gd")
-const StatusProcessorClass = preload("res://scripts/battle/status_processor.gd")
 
 
 static func execute_skill(
@@ -22,17 +19,21 @@ static func execute_skill(
 		"skill_element": "none",
 	}
 
+	if actor == null:
+		output["fail_reason"] = "invalid_actor"
+		return output
+
 	var skill_data: Dictionary = {}
 	var using_basic_attack: bool = skill_id.is_empty()
 	if not skill_id.is_empty():
 		skill_data = DataManager.get_skill(skill_id)
 	if using_basic_attack or skill_data.is_empty():
-		skill_data = DamageCalculatorClass.get_basic_attack_data()
+		skill_data = DamageCalculator.get_basic_attack_data()
 		using_basic_attack = true
 
 	var resolved_skill_data: Dictionary = skill_data.duplicate(true)
 	var scaled_power: int = -1
-	if not using_basic_attack and actor != null and int(actor.team) == CombatantDataClass.Team.PLAYER:
+	if not using_basic_attack and actor != null and int(actor.team) == CombatantData.Team.PLAYER:
 		var skill_level: int = PlayerManager.get_skill_level(skill_id)
 		if skill_level >= 2:
 			var scaling: Dictionary = Dictionary(skill_data.get("level_scaling", {}))
@@ -218,19 +219,19 @@ static func _apply_damage(
 	}
 	var extra_logs: Array = result["extra_logs"]
 
-	var stealth_check: Dictionary = StatusProcessorClass.check_stealth_dodge(target)
+	var stealth_check: Dictionary = StatusProcessor.check_stealth_dodge(target)
 	if bool(stealth_check.get("dodged", false)):
 		extra_logs.append_array(Array(stealth_check.get("logs", [])))
 		return result
 
-	var reflect_check: Dictionary = StatusProcessorClass.check_reflect(target, skill_element, damage_type)
+	var reflect_check: Dictionary = StatusProcessor.check_reflect(target, skill_element, damage_type)
 	if bool(reflect_check.get("reflected", false)):
 		extra_logs.append_array(Array(reflect_check.get("logs", [])))
 		result["reflected"] = true
 		target = actor
 		result["target"] = actor
 
-	var calc_result: Dictionary = DamageCalculatorClass.calculate_damage(
+	var calc_result: Dictionary = DamageCalculator.calculate_damage(
 		actor,
 		target,
 		modified_skill,
@@ -260,7 +261,7 @@ static func _apply_damage(
 		target.is_alive = false
 		result["killed"] = true
 	elif bool(result.get("is_hit", false)):
-		extra_logs.append_array(StatusProcessorClass.on_damage_received(target, skill_element))
+		extra_logs.append_array(StatusProcessor.on_damage_received(target, skill_element))
 
 	return result
 
@@ -277,13 +278,13 @@ static func _apply_heal(actor, target, effect: Dictionary) -> Dictionary:
 			var missing: int = target.max_hp - target.current_hp
 			actual_heal = int(float(missing) * float(value) / 100.0)
 		"matk_scale":
-			actual_heal = int(float(DamageCalculatorClass.get_effective_stat(actor, "matk")) * float(value) / 100.0)
+			actual_heal = int(float(DamageCalculator.get_effective_stat(actor, "matk")) * float(value) / 100.0)
 		_:
 			actual_heal = value
 
 	actual_heal = max(0, actual_heal)
 	var old_hp: int = target.current_hp
-	if StatusProcessorClass.has_curse(target):
+	if StatusProcessor.has_curse(target):
 		target.current_hp = clampi(target.current_hp - actual_heal, 0, target.max_hp)
 		var killed: bool = target.current_hp <= 0
 		if killed:
@@ -336,7 +337,7 @@ static func _apply_status(target, effect: Dictionary) -> Dictionary:
 
 	result["applied"] = true
 	if status_id == "seal":
-		result["sealed_skill"] = StatusProcessorClass.apply_seal(target)
+		result["sealed_skill"] = StatusProcessor.apply_seal(target)
 	return result
 
 

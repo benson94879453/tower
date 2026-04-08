@@ -11,14 +11,14 @@ var _bounty_board: Array[String] = []
 var _suspend_item_updates: int = 0
 
 
-func refresh_bounty_board(floor: int) -> void:
+func refresh_bounty_board(target_floor: int) -> void:
 	_ensure_player_data()
 
 	var eligible_ids: Array[String] = []
 	for quest_data in DataManager.get_all_quests():
 		if String(quest_data.get("type", "")) != "bounty":
 			continue
-		if not _is_quest_available_for_floor(quest_data, floor):
+		if not _is_quest_available_for_floor(quest_data, target_floor):
 			continue
 		var quest_id: String = String(quest_data.get("id", ""))
 		if quest_id.is_empty() or _is_quest_active(quest_id):
@@ -115,15 +115,15 @@ func get_active_quests() -> Array[Dictionary]:
 	for raw_entry in PlayerManager.player_data.active_quests:
 		if raw_entry is not Dictionary:
 			continue
-		var active_entry: Dictionary = Dictionary(raw_entry)
-		var quest_id: String = String(active_entry.get("id", ""))
+		var _active_entry: Dictionary = Dictionary(raw_entry)
+		var quest_id: String = String(_active_entry.get("id", ""))
 		var quest_data: Dictionary = DataManager.get_quest(quest_id)
 		if quest_data.is_empty():
 			continue
 
-		var objective_states: Array[Dictionary] = _build_objective_states(quest_data, active_entry)
+		var objective_states: Array[Dictionary] = _build_objective_states(quest_data, _active_entry)
 		var merged: Dictionary = Dictionary(quest_data).duplicate(true)
-		merged["progress"] = Array(active_entry.get("progress", [])).duplicate()
+		merged["progress"] = Array(_active_entry.get("progress", [])).duplicate()
 		merged["objective_states"] = objective_states
 		merged["is_complete"] = _are_objectives_complete(objective_states)
 		result.append(merged)
@@ -149,7 +149,7 @@ func complete_quest(quest_id: String) -> Dictionary:
 		return {"success": false, "reason": "not_found", "rewards": {}}
 
 	_refresh_collect_progress(active_index)
-	var active_entry: Dictionary = Dictionary(PlayerManager.player_data.active_quests[active_index])
+	var _active_entry: Dictionary = Dictionary(PlayerManager.player_data.active_quests[active_index])
 	var quest_data: Dictionary = DataManager.get_quest(quest_id)
 	if quest_data.is_empty():
 		return {"success": false, "reason": "not_found", "rewards": {}}
@@ -251,9 +251,9 @@ func on_item_changed() -> void:
 		_refresh_collect_progress(active_index)
 
 
-func on_floor_reached(floor: int) -> void:
+func on_floor_reached(target_floor: int) -> void:
 	_ensure_player_data()
-	if floor <= 0:
+	if target_floor <= 0:
 		return
 
 	for active_index in range(PlayerManager.player_data.active_quests.size()):
@@ -271,10 +271,10 @@ func on_floor_reached(floor: int) -> void:
 			if String(objective.get("type", "")) != "reach_floor":
 				continue
 
-			var target_floor: int = int(objective.get("floor", 0))
+			var target_floor_val: int = int(objective.get("floor", 0))
 			var target: int = _get_objective_target(objective)
 			var current: int = _get_progress_value(progress, objective_index)
-			var new_current: int = target if floor >= target_floor else current
+			var new_current: int = target if target_floor >= target_floor_val else current
 			if new_current == current:
 				continue
 			_set_progress_value(progress, objective_index, new_current)
@@ -286,9 +286,9 @@ func on_floor_reached(floor: int) -> void:
 			PlayerManager.player_data.active_quests[active_index] = active_entry
 
 
-func on_boss_defeated(floor: int) -> void:
+func on_boss_defeated(target_floor: int) -> void:
 	_ensure_player_data()
-	if floor <= 0:
+	if target_floor <= 0:
 		return
 
 	for active_index in range(PlayerManager.player_data.active_quests.size()):
@@ -305,7 +305,7 @@ func on_boss_defeated(floor: int) -> void:
 			var objective: Dictionary = Dictionary(objectives[objective_index])
 			if String(objective.get("type", "")) != "kill_boss":
 				continue
-			if int(objective.get("floor", 0)) != floor:
+			if int(objective.get("floor", 0)) != target_floor:
 				continue
 
 			var target: int = _get_objective_target(objective)
@@ -326,10 +326,10 @@ func _ensure_player_data() -> void:
 		PlayerManager.init_new_game()
 
 
-func _is_quest_available_for_floor(quest_data: Dictionary, floor: int) -> bool:
+func _is_quest_available_for_floor(quest_data: Dictionary, target_floor: int) -> bool:
 	var min_floor: int = int(quest_data.get("min_floor", 1))
 	var max_floor: int = int(quest_data.get("max_floor", 999))
-	return floor >= min_floor and floor <= max_floor
+	return target_floor >= min_floor and target_floor <= max_floor
 
 
 func _is_side_quest_available(quest_data: Dictionary, current_floor: int) -> bool:
