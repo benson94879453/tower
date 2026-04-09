@@ -98,6 +98,8 @@ static func build_theme() -> Theme:
 		ThemeConstantsClass.PANEL_BG.darkened(0.2),
 		ThemeConstantsClass.ACCENT,
 		2,
+		8,
+		8,
 		8
 	)
 	theme.set_type_variation("CombatantPanel", "PanelContainer")
@@ -107,7 +109,9 @@ static func build_theme() -> Theme:
 		ThemeConstantsClass.BG_DARK,
 		ThemeConstantsClass.TEXT_SECONDARY,
 		1,
-		8
+		8,
+		6,
+		6
 	)
 	theme.set_type_variation("EnemyPanel", "PanelContainer")
 	theme.set_stylebox("panel", "EnemyPanel", enemy_panel)
