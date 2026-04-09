@@ -190,14 +190,19 @@ func _on_explore_pressed() -> void:
 		explore_requested.emit(next_floor)
 
 
+func _center_panel(panel: Control) -> void:
+	var vp_size := get_viewport_rect().size
+	panel.position = (vp_size - panel.custom_minimum_size) / 2.0
+
+
 func _on_inventory_pressed() -> void:
 	if _has_open_panel():
 		return
 
 	_inventory_panel = InventoryPanelClass.new()
-	_inventory_panel.position = Vector2(80, 40)
 	add_child(_inventory_panel)
 	_inventory_panel.setup(InventoryPanelClass.Mode.SAFE_ZONE)
+	_center_panel(_inventory_panel)
 	_inventory_panel.panel_closed.connect(_close_inventory_panel)
 	_inventory_panel.item_action_performed.connect(_on_inventory_action)
 
@@ -218,9 +223,9 @@ func _on_shop_pressed() -> void:
 		return
 
 	_shop_panel = ShopPanelClass.new()
-	_shop_panel.position = Vector2(60, 30)
 	add_child(_shop_panel)
 	_shop_panel.setup(current_safe_floor)
+	_center_panel(_shop_panel)
 	_shop_panel.panel_closed.connect(_close_shop_panel)
 	_shop_panel.transaction_completed.connect(_on_shop_transaction)
 
@@ -241,9 +246,9 @@ func _on_forge_pressed() -> void:
 		return
 
 	_forge_panel = ForgePanelClass.new()
-	_forge_panel.position = Vector2(60, 30)
 	add_child(_forge_panel)
 	_forge_panel.setup(current_safe_floor)
+	_center_panel(_forge_panel)
 	_forge_panel.panel_closed.connect(_close_forge_panel)
 	_forge_panel.forge_action_performed.connect(_on_forge_action)
 
@@ -264,9 +269,9 @@ func _on_familiar_pressed() -> void:
 		return
 
 	_familiar_house_panel = FamiliarHousePanelClass.new()
-	_familiar_house_panel.position = Vector2(60, 30)
 	add_child(_familiar_house_panel)
 	_familiar_house_panel.setup()
+	_center_panel(_familiar_house_panel)
 	_familiar_house_panel.panel_closed.connect(_close_familiar_panel)
 	_familiar_house_panel.familiar_action_performed.connect(_on_familiar_action)
 
@@ -287,9 +292,9 @@ func _on_library_pressed() -> void:
 		return
 
 	_library_panel = LibraryPanelClass.new()
-	_library_panel.position = Vector2(60, 30)
 	add_child(_library_panel)
 	_library_panel.setup()
+	_center_panel(_library_panel)
 	_library_panel.panel_closed.connect(_close_library_panel)
 
 
@@ -304,9 +309,9 @@ func _on_tavern_pressed() -> void:
 		return
 
 	_tavern_panel = TavernPanelClass.new()
-	_tavern_panel.position = Vector2(60, 30)
 	add_child(_tavern_panel)
 	_tavern_panel.setup(current_safe_floor)
+	_center_panel(_tavern_panel)
 	_tavern_panel.panel_closed.connect(_close_tavern_panel)
 	_tavern_panel.quest_action_performed.connect(_on_tavern_action)
 

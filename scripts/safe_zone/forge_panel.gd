@@ -32,7 +32,7 @@ var _action_container: HBoxContainer
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(760, 520)
+	custom_minimum_size = Vector2(860, 580)
 	size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	top_level = true
