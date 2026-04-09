@@ -42,6 +42,8 @@ func setup(floor_number: int) -> void:
 	_selected_item_id = ""
 	_selected_equipment_index = -1
 
+	theme_type_variation = "CombatantPanel"
+
 	for child in get_children():
 		child.queue_free()
 
@@ -89,10 +91,10 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 10)
 	root.anchor_right = 1.0
 	root.anchor_bottom = 1.0
-	root.offset_left = 20.0
-	root.offset_top = 20.0
-	root.offset_right = -20.0
-	root.offset_bottom = -20.0
+	root.offset_left = 12.0
+	root.offset_top = 12.0
+	root.offset_right = -12.0
+	root.offset_bottom = -12.0
 	add_child(root)
 
 	var header := HBoxContainer.new()
@@ -153,6 +155,7 @@ func _build_ui() -> void:
 	_scroll_container.add_child(_item_list_container)
 
 	var detail_panel := PanelContainer.new()
+	detail_panel.theme_type_variation = "EnemyPanel"
 	detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail_panel.size_flags_stretch_ratio = 0.8
 	detail_panel.custom_minimum_size.x = 280.0

@@ -53,10 +53,10 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 12)
 	root.anchor_right = 1.0
 	root.anchor_bottom = 1.0
-	root.offset_left = 20.0
-	root.offset_top = 20.0
-	root.offset_right = -20.0
-	root.offset_bottom = -20.0
+	root.offset_left = 12.0
+	root.offset_top = 12.0
+	root.offset_right = -12.0
+	root.offset_bottom = -12.0
 	add_child(root)
 
 	var left_panel := VBoxContainer.new()

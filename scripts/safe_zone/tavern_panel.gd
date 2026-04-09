@@ -40,6 +40,8 @@ func setup(safe_floor: int) -> void:
 	_selected_quest_id = ""
 	_status_message = ""
 
+	theme_type_variation = "CombatantPanel"
+
 	if QuestManager != null:
 		QuestManager.on_item_changed()
 		if QuestManager.get_bounty_board().is_empty():
@@ -57,10 +59,10 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 10)
 	root.anchor_right = 1.0
 	root.anchor_bottom = 1.0
-	root.offset_left = 16.0
-	root.offset_top = 16.0
-	root.offset_right = -16.0
-	root.offset_bottom = -16.0
+	root.offset_left = 10.0
+	root.offset_top = 10.0
+	root.offset_right = -10.0
+	root.offset_bottom = -10.0
 	add_child(root)
 
 	var header := HBoxContainer.new()
@@ -113,6 +115,7 @@ func _build_ui() -> void:
 	scroll.add_child(_list_container)
 
 	var detail_panel := PanelContainer.new()
+	detail_panel.theme_type_variation = "EnemyPanel"
 	detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail_panel.size_flags_stretch_ratio = 0.85
 	detail_panel.custom_minimum_size.x = 280.0
