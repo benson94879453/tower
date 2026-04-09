@@ -26,7 +26,7 @@ var _action_container: HBoxContainer
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(680, 480)
+	custom_minimum_size = Vector2(800, 560)
 	size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	top_level = true
@@ -53,10 +53,10 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 12)
 	root.anchor_right = 1.0
 	root.anchor_bottom = 1.0
-	root.offset_left = 16.0
-	root.offset_top = 16.0
-	root.offset_right = -16.0
-	root.offset_bottom = -16.0
+	root.offset_left = 20.0
+	root.offset_top = 20.0
+	root.offset_right = -20.0
+	root.offset_bottom = -20.0
 	add_child(root)
 
 	var left_panel := VBoxContainer.new()
@@ -118,7 +118,7 @@ func _build_ui() -> void:
 	_detail_panel.theme_type_variation = "EnemyPanel"
 	_detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_detail_panel.size_flags_stretch_ratio = 0.8
-	_detail_panel.custom_minimum_size.x = 220.0
+	_detail_panel.custom_minimum_size.x = 260.0
 	root.add_child(_detail_panel)
 
 	var detail_root := VBoxContainer.new()

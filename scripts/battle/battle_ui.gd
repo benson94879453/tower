@@ -144,7 +144,7 @@ func _generate_enemy_panels() -> void:
 
 func _create_enemy_panel(enemy) -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(200, 160)
+	panel.custom_minimum_size = Vector2(200, 150)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 

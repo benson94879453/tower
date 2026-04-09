@@ -29,7 +29,7 @@ var _action_container: HBoxContainer
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(720, 500)
+	custom_minimum_size = Vector2(820, 560)
 	size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	top_level = true
@@ -89,10 +89,10 @@ func _build_ui() -> void:
 	root.add_theme_constant_override("separation", 10)
 	root.anchor_right = 1.0
 	root.anchor_bottom = 1.0
-	root.offset_left = 16.0
-	root.offset_top = 16.0
-	root.offset_right = -16.0
-	root.offset_bottom = -16.0
+	root.offset_left = 20.0
+	root.offset_top = 20.0
+	root.offset_right = -20.0
+	root.offset_bottom = -20.0
 	add_child(root)
 
 	var header := HBoxContainer.new()
@@ -155,7 +155,7 @@ func _build_ui() -> void:
 	var detail_panel := PanelContainer.new()
 	detail_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	detail_panel.size_flags_stretch_ratio = 0.8
-	detail_panel.custom_minimum_size.x = 240.0
+	detail_panel.custom_minimum_size.x = 280.0
 	content.add_child(detail_panel)
 
 	var detail_root := VBoxContainer.new()
