@@ -32,5 +32,124 @@
 			{"type": "buff", "target": "self", "stat": "mdef", "value": 10, "duration": 3}
 		],
 		"description": "提升自身魔防 3 回合"
+	},
+	{
+		"id": "skill_bite",
+		"name": "冰霜撕咬",
+		"element": "water",
+		"type": "attack_single",
+		"rarity": "N",
+		"base_power": 40,
+		"mp_cost": 5,
+		"pp_max": 99,
+		"hit_rate": 90,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 40}
+		],
+		"description": "猛烈的撕咬攻擊"
+	},
+	{
+		"id": "skill_howl",
+		"name": "冰原嚎叫",
+		"element": "water",
+		"type": "buff_self",
+		"rarity": "N",
+		"base_power": 0,
+		"mp_cost": 10,
+		"pp_max": 99,
+		"hit_rate": 100,
+		"priority": 0,
+		"cooldown": 2,
+		"effects": [
+			{"type": "buff", "target": "self", "stat": "patk", "value": 15, "duration": 3}
+		],
+		"description": "嚎叫提升自身物攻 3 回合"
+	},
+	{
+		"id": "skill_ice_slash",
+		"name": "冰霜斬擊",
+		"element": "water",
+		"type": "attack_single",
+		"rarity": "N",
+		"base_power": 65,
+		"mp_cost": 12,
+		"pp_max": 99,
+		"hit_rate": 85,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 65}
+		],
+		"description": "以冰霜凝結而成的斬擊"
+	},
+	{
+		"id": "skill_blizzard",
+		"name": "暴風雪",
+		"element": "water",
+		"type": "attack_all",
+		"rarity": "R",
+		"base_power": 45,
+		"mp_cost": 25,
+		"pp_max": 99,
+		"hit_rate": 90,
+		"priority": 0,
+		"cooldown": 3,
+		"effects": [
+			{"type": "damage", "target": "all_enemies", "power": 45}
+		],
+		"description": "對所有敵人造成冰霜傷害"
+	},
+	{
+		"id": "skill_frost_smash",
+		"name": "寒冰重擊",
+		"element": "water",
+		"type": "attack_single",
+		"rarity": "R",
+		"base_power": 110,
+		"mp_cost": 20,
+		"pp_max": 99,
+		"hit_rate": 80,
+		"priority": 0,
+		"cooldown": 1,
+		"effects": [
+			{"type": "damage", "target": "single_enemy", "power": 110}
+		],
+		"description": "毀滅性的寒冰重擊"
+	},
+	{
+		"id": "skill_ice_wall",
+		"name": "寒冰之牆",
+		"element": "water",
+		"type": "buff_self",
+		"rarity": "R",
+		"base_power": 0,
+		"mp_cost": 30,
+		"pp_max": 99,
+		"hit_rate": 100,
+		"priority": 0,
+		"cooldown": 4,
+		"effects": [
+			{"type": "shield", "target": "self", "value": 150}
+		],
+		"description": "為自身創造一個強大的冰盾"
+	},
+	{
+		"id": "skill_frost_nova",
+		"name": "寒冰新星",
+		"element": "water",
+		"type": "attack_all",
+		"rarity": "SR",
+		"base_power": 80,
+		"mp_cost": 40,
+		"pp_max": 99,
+		"hit_rate": 95,
+		"priority": 0,
+		"cooldown": 5,
+		"effects": [
+			{"type": "damage", "target": "all_enemies", "power": 80}
+		],
+		"description": "釋放巨大的冰霜衝擊波"
 	}
 ]
