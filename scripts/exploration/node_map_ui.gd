@@ -102,18 +102,18 @@ func _draw() -> void:
 
 
 func _draw_background_grid() -> void:
-	var grid_color := Color(1, 1, 1, 0.03)
+	var grid_color := Color(1, 1, 1, 0.05)
 	if not _zone_id.is_empty() and ThemeConstantsClass.ZONE_AMBIENT.has(_zone_id):
 		var accent: Color = ThemeConstantsClass.ZONE_AMBIENT[_zone_id].get("accent", Color.GRAY)
-		grid_color = Color(accent.r, accent.g, accent.b, 0.05)
+		grid_color = Color(accent.r, accent.g, accent.b, 0.08)
 	var spacing: float = 60.0
 	var x: float = 0.0
 	while x < size.x:
-		draw_line(Vector2(x, 0), Vector2(x, size.y), grid_color, 1.0)
+		draw_line(Vector2(x, 0), Vector2(x, size.y), grid_color, 2.0)
 		x += spacing
 	var y: float = 0.0
 	while y < size.y:
-		draw_line(Vector2(0, y), Vector2(size.x, y), grid_color, 1.0)
+		draw_line(Vector2(0, y), Vector2(size.x, y), grid_color, 2.0)
 		y += spacing
 
 

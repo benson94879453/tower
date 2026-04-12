@@ -1,0 +1,435 @@
+[gd_scene format=3 uid="uid://q7pr1rmrnbse"]
+
+[ext_resource type="Script" uid="uid://6dg5giervrcq" path="res://scripts/battle/battle_manager.gd" id="1_3tso5"]
+[ext_resource type="Script" uid="uid://cycy3m3rnnsa5" path="res://scripts/battle/battle_ui.gd" id="2_q6u4w"]
+
+[node name="Battle" type="Node" unique_id=1407333652]
+script = ExtResource("1_3tso5")
+
+[node name="BattleBackground" type="ColorRect" parent="." unique_id=200761743]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.101960786, 0.101960786, 0.18039216, 1)
+
+[node name="BattleUI" type="Control" parent="." unique_id=55600964]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_q6u4w")
+
+[node name="EnemyArea" type="VBoxContainer" parent="BattleUI" unique_id=2058123330]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.3
+offset_left = 24.0
+offset_top = 12.0
+offset_right = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="EnemyContainer" type="HBoxContainer" parent="BattleUI/EnemyArea" unique_id=400472246]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="AllyArea" type="HBoxContainer" parent="BattleUI" unique_id=2044648014]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.15
+anchor_top = 0.32
+anchor_right = 0.85
+anchor_bottom = 0.58
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 24
+alignment = 1
+
+[node name="PlayerPanel" type="PanelContainer" parent="BattleUI/AllyArea" unique_id=1495306146]
+custom_minimum_size = Vector2(380, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/AllyArea/PlayerPanel" unique_id=1409137781]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/PlayerPanel/Padding" unique_id=1107346157]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderRow" type="HBoxContainer" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content" unique_id=508200762]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PlayerName" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content/HeaderRow" unique_id=938814036]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "玩家"
+
+[node name="PlayerLevel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content/HeaderRow" unique_id=1077011189]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
+text = "Lv.1"
+
+[node name="PlayerHPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content" unique_id=50529160]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="PlayerHPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content" unique_id=1449831406]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "HP: 100/100"
+
+[node name="PlayerMPBar" type="ProgressBar" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content" unique_id=1913091919]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+max_value = 60.0
+value = 60.0
+show_percentage = false
+
+[node name="PlayerMPLabel" type="Label" parent="BattleUI/AllyArea/PlayerPanel/Padding/Content" unique_id=1019535560]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "MP: 60/60"
+
+[node name="FamiliarPanel" type="PanelContainer" parent="BattleUI/AllyArea" unique_id=28043028]
+custom_minimum_size = Vector2(340, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/AllyArea/FamiliarPanel" unique_id=1568000555]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/AllyArea/FamiliarPanel/Padding" unique_id=1484598237]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HeaderRow" type="HBoxContainer" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content" unique_id=424999845]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="FamiliarName" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content/HeaderRow" unique_id=1113740481]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "使魔"
+
+[node name="FamiliarMode" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content/HeaderRow" unique_id=1214874571]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
+text = "攻擊模式"
+
+[node name="FamiliarHPBar" type="ProgressBar" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content" unique_id=1684647975]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+value = 100.0
+show_percentage = false
+
+[node name="FamiliarHPLabel" type="Label" parent="BattleUI/AllyArea/FamiliarPanel/Padding/Content" unique_id=493893003]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "HP: 100/100"
+
+[node name="ActionMenu" type="HBoxContainer" parent="BattleUI" unique_id=254161513]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.15
+anchor_top = 0.6
+anchor_right = 0.85
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="SkillButton" type="Button" parent="BattleUI/ActionMenu" unique_id=458997430]
+custom_minimum_size = Vector2(140, 48)
+layout_mode = 2
+text = "技能"
+
+[node name="ItemButton" type="Button" parent="BattleUI/ActionMenu" unique_id=248475590]
+custom_minimum_size = Vector2(140, 48)
+layout_mode = 2
+text = "道具"
+
+[node name="FamiliarButton" type="Button" parent="BattleUI/ActionMenu" unique_id=305046283]
+custom_minimum_size = Vector2(140, 48)
+layout_mode = 2
+text = "使魔"
+
+[node name="FleeButton" type="Button" parent="BattleUI/ActionMenu" unique_id=1000444496]
+custom_minimum_size = Vector2(140, 48)
+layout_mode = 2
+text = "逃跑"
+
+[node name="SkillPanel" type="PanelContainer" parent="BattleUI" unique_id=2119759075]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.2
+anchor_right = 0.95
+anchor_bottom = 0.7
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/SkillPanel" unique_id=1890902531]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="HBoxContainer" parent="BattleUI/SkillPanel/Padding" unique_id=703191397]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="SkillListContainer" type="VBoxContainer" parent="BattleUI/SkillPanel/Padding/Content" unique_id=238254061]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2
+theme_override_constants/separation = 8
+
+[node name="SkillListTitle" type="Label" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer" unique_id=2091987005]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "技能列表"
+
+[node name="SkillSep" type="HSeparator" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer" unique_id=228869833]
+layout_mode = 2
+
+[node name="SkillScroll" type="ScrollContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer" unique_id=572993301]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="SkillList" type="VBoxContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer/SkillScroll" unique_id=1074214851]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="BackButton" type="Button" parent="BattleUI/SkillPanel/Padding/Content/SkillListContainer" unique_id=1559821005]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "返回"
+
+[node name="SkillPreviewPanel" type="PanelContainer" parent="BattleUI/SkillPanel/Padding/Content" unique_id=423342805]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.8
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel" unique_id=68718294]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PreviewContent" type="VBoxContainer" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding" unique_id=1122233522]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PreviewTitle" type="Label" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent" unique_id=1258802850]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "技能資訊"
+
+[node name="PreviewSep" type="HSeparator" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent" unique_id=137850942]
+layout_mode = 2
+
+[node name="PreviewDesc" type="RichTextLabel" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent" unique_id=438701354]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+
+[node name="PreviewHint" type="Label" parent="BattleUI/SkillPanel/Padding/Content/SkillPreviewPanel/Padding/PreviewContent" unique_id=969078166]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
+theme_override_font_sizes/font_size = 14
+text = "選擇技能查看詳情"
+horizontal_alignment = 1
+
+[node name="ItemPanel" type="PanelContainer" parent="BattleUI" unique_id=869600811]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 0.25
+anchor_right = 0.9
+anchor_bottom = 0.65
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/ItemPanel" unique_id=566736194]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/ItemPanel/Padding" unique_id=1108077378]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ItemList" type="VBoxContainer" parent="BattleUI/ItemPanel/Padding/Content" unique_id=1931970502]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="BackButton" type="Button" parent="BattleUI/ItemPanel/Padding/Content" unique_id=1614733711]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "返回"
+
+[node name="FamiliarCmdPanel" type="PanelContainer" parent="BattleUI" unique_id=1924487429]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.2
+anchor_top = 0.35
+anchor_right = 0.8
+anchor_bottom = 0.65
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/FamiliarCmdPanel" unique_id=173157504]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="BattleUI/FamiliarCmdPanel/Padding" unique_id=311820586]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="AttackModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content" unique_id=912147212]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "攻擊"
+
+[node name="DefendModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content" unique_id=514004574]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "防禦"
+
+[node name="SupportModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content" unique_id=1950198641]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "輔助"
+
+[node name="StandbyModeBtn" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content" unique_id=1157316480]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "待命"
+
+[node name="BackButton" type="Button" parent="BattleUI/FamiliarCmdPanel/Padding/Content" unique_id=926522379]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "返回"
+
+[node name="TargetSelector" type="Control" parent="BattleUI" unique_id=2087806526]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TurnOrderPanel" type="PanelContainer" parent="BattleUI" unique_id=1163976389]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.6
+anchor_top = 0.73
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_right = -8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/TurnOrderPanel" unique_id=1004668283]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="TurnOrderContent" type="VBoxContainer" parent="BattleUI/TurnOrderPanel/Padding" unique_id=2073512]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="TurnOrderTitle" type="Label" parent="BattleUI/TurnOrderPanel/Padding/TurnOrderContent" unique_id=295303338]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
+theme_override_font_sizes/font_size = 14
+text = "行動順序"
+horizontal_alignment = 1
+
+[node name="TurnOrderSep" type="HSeparator" parent="BattleUI/TurnOrderPanel/Padding/TurnOrderContent" unique_id=1789419615]
+layout_mode = 2
+
+[node name="TurnOrderDisplay" type="VBoxContainer" parent="BattleUI/TurnOrderPanel/Padding/TurnOrderContent" unique_id=1333708]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="BattleLogPanel" type="PanelContainer" parent="BattleUI" unique_id=1004354982]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.73
+anchor_right = 0.58
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Padding" type="MarginContainer" parent="BattleUI/BattleLogPanel" unique_id=1819400246]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BattleLogContent" type="VBoxContainer" parent="BattleUI/BattleLogPanel/Padding" unique_id=1158254559]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="LogTitle" type="Label" parent="BattleUI/BattleLogPanel/Padding/BattleLogContent" unique_id=1367825641]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
+theme_override_font_sizes/font_size = 14
+text = "戰鬥紀錄"
+
+[node name="BattleLog" type="RichTextLabel" parent="BattleUI/BattleLogPanel/Padding/BattleLogContent" unique_id=1243265316]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true
+
+[node name="DamageNumbers" type="Node2D" parent="." unique_id=67883195]

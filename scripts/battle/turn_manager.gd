@@ -246,8 +246,91 @@ func _resolve_skill_action(actor, action: Dictionary) -> void:
 
 
 func _resolve_item_action(actor, _action: Dictionary) -> void:
-	_battle_manager.battle_ui.add_log("%s 想使用道具，但功能尚未完成。" % actor.display_name)
-	await _battle_manager.delay(0.3)
+	var item_id: String = String(_action.get("item_id", ""))
+	if item_id.is_empty():
+		_battle_manager.battle_ui.add_log("道具資料異常。")
+		await _battle_manager.delay(0.3)
+		return
+
+	var item_data: Dictionary = DataManager.get_item(item_id)
+	if item_data.is_empty():
+		_battle_manager.battle_ui.add_log("找不到道具資料。")
+		await _battle_manager.delay(0.3)
+		return
+
+	var item_name: String = String(item_data.get("name", item_id))
+	var effects: Array = Array(item_data.get("effects", []))
+
+	if not PlayerManager.has_item(item_id):
+		_battle_manager.battle_ui.add_log("%s 沒有 %s。" % [actor.display_name, item_name])
+		await _battle_manager.delay(0.3)
+		return
+
+	_battle_manager.battle_ui.add_log("%s 使用了 %s！" % [actor.display_name, item_name])
+	await _battle_manager.delay(0.4)
+
+	for raw_effect in effects:
+		if raw_effect is not Dictionary:
+			continue
+		var effect: Dictionary = raw_effect
+		var effect_type: String = String(effect.get("type", ""))
+		var value: int = int(effect.get("value", 0))
+
+		match effect_type:
+			"heal_hp":
+				var old_hp: int = actor.current_hp
+				actor.current_hp = clampi(actor.current_hp + value, 0, actor.max_hp)
+				var healed: int = actor.current_hp - old_hp
+				PlayerManager.player_data.current_hp = clampi(actor.current_hp, 0, PlayerManager.get_max_hp())
+				PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
+				_battle_manager.battle_ui.add_log("HP 回復了 %d！" % healed)
+			"heal_mp":
+				var old_mp: int = actor.current_mp
+				actor.current_mp = clampi(actor.current_mp + value, 0, actor.max_mp)
+				var restored: int = actor.current_mp - old_mp
+				PlayerManager.player_data.current_mp = clampi(actor.current_mp, 0, PlayerManager.get_max_mp())
+				PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
+				_battle_manager.battle_ui.add_log("MP 回復了 %d！" % restored)
+			"revive":
+				var familiar = _battle_manager.familiar
+				if familiar != null and not familiar.is_alive:
+					familiar.is_alive = true
+					var hp_percent: int = int(effect.get("hp_percent", 50))
+					familiar.current_hp = clampi(int(ceilf(float(familiar.max_hp) * float(hp_percent) / 100.0)), 1, familiar.max_hp)
+					_battle_manager.battle_ui.add_log("%s 復活了！HP 回復至 %d！" % [familiar.display_name, familiar.current_hp])
+					_update_display_for(familiar)
+				else:
+					_battle_manager.battle_ui.add_log("沒有可復活的夥伴。")
+			"cure_status":
+				if not actor.status_effects.is_empty():
+					var cured: Dictionary = actor.status_effects.pop_front()
+					var status_id: String = String(cured.get("id", ""))
+					_battle_manager.battle_ui.add_log("治療了 %s 的 %s！" % [actor.display_name, _get_status_display_name(status_id)])
+				else:
+					_battle_manager.battle_ui.add_log("%s 沒有異常狀態。" % actor.display_name)
+			"cure_all_status":
+				var count: int = actor.status_effects.size()
+				actor.status_effects.clear()
+				if count > 0:
+					_battle_manager.battle_ui.add_log("治療了 %s 的所有異常狀態！（%d 個）" % [actor.display_name, count])
+				else:
+					_battle_manager.battle_ui.add_log("%s 沒有異常狀態。" % actor.display_name)
+			"buff_stat":
+				var buff_stat: String = String(effect.get("stat", ""))
+				var buff_value: int = int(effect.get("value", 0))
+				var buff_duration: int = int(effect.get("duration", 1))
+				actor.battle_buffs.append({
+					"stat": buff_stat,
+					"value": buff_value,
+					"turns": buff_duration,
+					"source": item_name,
+				})
+				_battle_manager.battle_ui.add_log("%s 的 %s 提升了 %d！（%d 回合）" % [actor.display_name, buff_stat, buff_value, buff_duration])
+
+		await _battle_manager.delay(0.3)
+
+	PlayerManager.remove_item(item_id)
+	_update_display_for(actor)
 
 
 func _resolve_flee_action(actor) -> void:

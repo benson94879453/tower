@@ -3,6 +3,8 @@ extends PanelContainer
 
 const ThemeConstantsClass = preload("res://scripts/ui/theme_constants.gd")
 
+const MAX_ACCESSORY_SLOTS_FROM_PM := 6
+
 signal panel_closed
 signal item_action_performed(item_id: String, action: String)
 
@@ -64,6 +66,21 @@ func setup(mode: int) -> void:
 
 
 func _build_ui() -> void:
+	var custom_bg := StyleBoxFlat.new()
+	custom_bg.bg_color = ThemeConstantsClass.BG_MID.darkened(0.2)
+	custom_bg.border_width_left = 2
+	custom_bg.border_width_top = 2
+	custom_bg.border_width_right = 2
+	custom_bg.border_width_bottom = 2
+	custom_bg.border_color = ThemeConstantsClass.ACCENT.darkened(0.2)
+	custom_bg.corner_radius_top_left = 12
+	custom_bg.corner_radius_top_right = 12
+	custom_bg.corner_radius_bottom_right = 12
+	custom_bg.corner_radius_bottom_left = 12
+	custom_bg.shadow_color = Color(0, 0, 0, 0.5)
+	custom_bg.shadow_size = 6
+	add_theme_stylebox_override("panel", custom_bg)
+
 	var root := HBoxContainer.new()
 	root.add_theme_constant_override("separation", 12)
 	root.anchor_right = 1.0
@@ -339,9 +356,8 @@ func _build_action_buttons(item_id: String, item_type: String, item_data: Dictio
 		child.queue_free()
 
 	if item_type == "consumable":
-		var can_use: bool = true
-		if _mode == Mode.EXPLORATION:
-			can_use = bool(item_data.get("usable_in_explore", false))
+		var usable_in_explore: bool = bool(item_data.get("usable_in_explore", true))
+		var can_use: bool = usable_in_explore
 
 		var use_button := Button.new()
 		use_button.text = "使用"
@@ -381,6 +397,10 @@ func _on_use_pressed(item_id: String) -> void:
 		var effect_parts: Array = Array(result.get("effects", []))
 		var effects_text: String = ", ".join(effect_parts)
 		item_action_performed.emit(item_id, "使用：%s" % effects_text)
+	else:
+		var reason: String = String(result.get("reason", ""))
+		if reason == "battle_only":
+			item_action_performed.emit(item_id, "此道具僅限戰鬥中使用")
 	_refresh_item_list()
 
 
@@ -397,7 +417,10 @@ func _on_equip_pressed(item_id: String, item_type: String, equipment_index: int)
 		"armor":
 			old_id = PlayerManager.equip_armor(item_id, equip_enhance)
 		"accessory":
-			old_id = PlayerManager.equip_accessory(item_id, 0, equip_enhance)
+			var target_slot := _find_first_empty_accessory_slot()
+			if target_slot < 0:
+				return
+			old_id = PlayerManager.equip_accessory(item_id, target_slot, equip_enhance)
 
 	var old_enhance: int = PlayerManager.get_last_unequip_enhance()
 
@@ -473,3 +496,16 @@ func _format_enhance(level: int) -> String:
 	if level <= 0:
 		return ""
 	return " +%d" % level
+
+
+func _find_first_empty_accessory_slot() -> int:
+	if PlayerManager.player_data == null:
+		return -1
+	var max_slots := MAX_ACCESSORY_SLOTS_FROM_PM
+	for i in range(max_slots):
+		if i < PlayerManager.player_data.accessory_ids.size():
+			if String(PlayerManager.player_data.accessory_ids[i]).is_empty():
+				return i
+		else:
+			return i
+	return -1

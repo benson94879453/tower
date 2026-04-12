@@ -25,6 +25,8 @@ const GROWTH_PER_LEVEL := {
 	"base_pdef": 1,
 	"base_speed": 1,
 }
+const MAX_ACTIVE_SKILLS := 8
+const MAX_ACCESSORY_SLOTS := 6
 const FAMILIAR_ROSTER_LIMIT := 10
 const DEFAULT_TITLE_ID := "見習法師"
 const SKILL_LEVEL_THRESHOLDS := [0, 50, 120, 250]
@@ -89,8 +91,8 @@ func _setup_initial_skills() -> void:
 	for skill_id in initial_skills:
 		learn_skill(skill_id)
 	
-	# Equip first few skills to active slots (up to 4)
-	var active_slots = min(initial_skills.size(), 4)
+	# Equip first few skills to active slots (up to MAX_ACTIVE_SKILLS)
+	var active_slots = min(initial_skills.size(), MAX_ACTIVE_SKILLS)
 	for i in range(active_slots):
 		equip_active_skill(initial_skills[i], i)
 
@@ -142,6 +144,18 @@ func load_from_save(save_dict: Dictionary) -> void:
 			continue
 		if field_name == "skill_proficiency":
 			player_data.skill_proficiency = _coerce_skill_proficiency_map(value)
+			continue
+		if field_name == "active_skill_ids":
+			player_data.active_skill_ids = _coerce_string_array(value)
+			continue
+		if field_name == "passive_skill_ids":
+			player_data.passive_skill_ids = _coerce_string_array(value)
+			continue
+		if field_name == "learned_skill_ids":
+			player_data.learned_skill_ids = _coerce_string_array(value)
+			continue
+		if field_name == "accessory_ids":
+			player_data.accessory_ids = _coerce_string_array(value)
 			continue
 		if field_name == "skill_element_usage":
 			player_data.skill_element_usage = _coerce_element_usage_map(value)
@@ -664,6 +678,20 @@ func use_item(item_id: String) -> Dictionary:
 	if effects.is_empty():
 		return {"success": false, "reason": "no_effects"}
 
+	# Pre-check: if all effects are battle-only, block usage outside battle
+	var usable_in_explore: bool = bool(item_data.get("usable_in_explore", true))
+	if not usable_in_explore:
+		return {"success": false, "reason": "battle_only"}
+
+	# Battle-only effect types that have no effect outside combat
+	var _battle_only_types: Array = ["revive"]
+	for raw_effect in effects:
+		if raw_effect is not Dictionary:
+			continue
+		var _et: String = String(raw_effect.get("type", ""))
+		if _battle_only_types.has(_et):
+			return {"success": false, "reason": "battle_only"}
+
 	inventory.remove(item_id)
 	player_data.inventory_data = inventory.to_save_dict()
 	item_removed.emit(item_id, 1)
@@ -682,6 +710,14 @@ func use_item(item_id: String) -> Dictionary:
 			"heal_mp":
 				restore_mp(value)
 				applied.append("MP +%d" % value)
+			"cure_status":
+				applied.append("狀態已治療")
+			"cure_all_status":
+				applied.append("所有狀態已治療")
+			"buff_stat":
+				var buff_stat: String = String(effect.get("stat", ""))
+				var buff_value: int = int(effect.get("value", 0))
+				applied.append("%s +%d" % [buff_stat, buff_value])
 			_:
 				applied.append("(%s - 尚未實作)" % effect_type)
 
@@ -721,7 +757,7 @@ func equip_armor(item_id: String, enhance_level: int = 0) -> String:
 
 func equip_accessory(item_id: String, slot: int, enhance_level: int = 0) -> String:
 	_ensure_player_data()
-	if slot < 0 or slot > 2:
+	if slot < 0 or slot >= MAX_ACCESSORY_SLOTS:
 		return ""
 	if not item_id.is_empty():
 		discover_item(item_id)
@@ -856,7 +892,7 @@ func research_skill(skill_id: String) -> Dictionary:
 
 func equip_active_skill(skill_id: String, slot: int) -> void:
 	_ensure_player_data()
-	if slot < 0 or skill_id.is_empty():
+	if slot < 0 or slot >= MAX_ACTIVE_SKILLS or skill_id.is_empty():
 		return
 
 	while player_data.active_skill_ids.size() <= slot:
@@ -1202,6 +1238,44 @@ func _backfill_item_discovery_from_inventory() -> void:
 		discover_item(player_data.armor_id)
 
 
+func save_familiar_battle_state(index: int, current_hp: int, current_mp: int, is_alive: bool) -> void:
+	_ensure_player_data()
+	if not _is_valid_familiar_index(index):
+		return
+	var familiar := player_data.owned_familiars[index]
+	familiar["current_hp"] = maxi(current_hp, 0)
+	familiar["current_mp"] = maxi(current_mp, 0)
+	familiar["is_alive"] = is_alive and current_hp > 0
+	player_data.owned_familiars[index] = familiar
+
+
+func heal_all_familiars() -> void:
+	_ensure_player_data()
+	for index in range(player_data.owned_familiars.size()):
+		var familiar := player_data.owned_familiars[index]
+		var max_resources: Dictionary = _calculate_familiar_max_resources(
+			String(familiar.get("id", "")),
+			int(familiar.get("level", 1))
+		)
+		familiar["current_hp"] = int(max_resources.get("max_hp", 1))
+		familiar["current_mp"] = int(max_resources.get("max_mp", 0))
+		familiar["is_alive"] = true
+		player_data.owned_familiars[index] = familiar
+
+
+func _calculate_familiar_max_resources(familiar_id: String, level: int) -> Dictionary:
+	var familiar_data: Dictionary = DataManager.get_familiar(familiar_id)
+	if familiar_data.is_empty():
+		return {"max_hp": 1, "max_mp": 0}
+	var base_stats: Dictionary = familiar_data.get("base_stats", {})
+	var growth: Dictionary = familiar_data.get("growth_per_level", {})
+	var level_bonus: int = max(level - 1, 0)
+	return {
+		"max_hp": int(base_stats.get("hp", 80)) + int(growth.get("hp", 0)) * level_bonus,
+		"max_mp": int(base_stats.get("mp", 30)) + int(growth.get("mp", 0)) * level_bonus,
+	}
+
+
 func _normalize_owned_familiars() -> void:
 	var normalized: Array[Dictionary] = []
 	for raw_entry in _get_owned_familiars_value():
@@ -1239,6 +1313,23 @@ func _sanitize_familiar_entry(raw_entry: Dictionary) -> Dictionary:
 	if skill_ids.is_empty():
 		skill_ids = _sanitize_familiar_skill_ids(Array(familiar_data.get("default_skills", [])), skill_slots)
 
+	var max_resources: Dictionary = _calculate_familiar_max_resources(familiar_id, level)
+	var familiar_max_hp: int = int(max_resources.get("max_hp", 1))
+	var familiar_max_mp: int = int(max_resources.get("max_mp", 0))
+	var saved_current_hp: int = int(raw_entry.get("current_hp", -1))
+	var saved_current_mp: int = int(raw_entry.get("current_mp", -1))
+	var final_current_hp: int
+	var final_current_mp: int
+	var final_is_alive: bool
+	if saved_current_hp < 0:
+		final_current_hp = familiar_max_hp
+		final_current_mp = familiar_max_mp
+		final_is_alive = true
+	else:
+		final_current_hp = clampi(saved_current_hp, 0, familiar_max_hp)
+		final_current_mp = clampi(saved_current_mp, 0, familiar_max_mp)
+		final_is_alive = bool(raw_entry.get("is_alive", true)) and final_current_hp > 0
+
 	return {
 		"id": familiar_id,
 		"level": level,
@@ -1247,6 +1338,9 @@ func _sanitize_familiar_entry(raw_entry: Dictionary) -> Dictionary:
 		"skill_ids": skill_ids,
 		"mode": _normalize_familiar_mode_string(String(raw_entry.get("mode", "attack"))),
 		"obtained_at": String(raw_entry.get("obtained_at", Time.get_date_string_from_system())),
+		"current_hp": final_current_hp,
+		"current_mp": final_current_mp,
+		"is_alive": final_is_alive,
 	}
 
 
@@ -1254,6 +1348,8 @@ func _build_new_familiar_entry(familiar_id: String) -> Dictionary:
 	var familiar_data: Dictionary = DataManager.get_familiar(familiar_id)
 	if familiar_data.is_empty():
 		return {}
+
+	var max_resources: Dictionary = _calculate_familiar_max_resources(familiar_id, 1)
 
 	return {
 		"id": familiar_id,
@@ -1266,6 +1362,9 @@ func _build_new_familiar_entry(familiar_id: String) -> Dictionary:
 		),
 		"mode": "attack",
 		"obtained_at": Time.get_date_string_from_system(),
+		"current_hp": int(max_resources.get("max_hp", 1)),
+		"current_mp": int(max_resources.get("max_mp", 0)),
+		"is_alive": true,
 	}
 
 

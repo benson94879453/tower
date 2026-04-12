@@ -84,6 +84,57 @@ theme_override_font_sizes/font_size = 14
 theme_override_colors/font_color = Color(0.545098, 0.545098, 0.545098, 1)
 horizontal_alignment = 1
 
+[node name="SlotPanel" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -200.0
+offset_right = 220.0
+offset_bottom = 200.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Padding" type="MarginContainer" parent="SlotPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="Content" type="VBoxContainer" parent="SlotPanel/Padding"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="SlotTitle" type="Label" parent="SlotPanel/Padding/Content"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "選擇存檔讀取"
+horizontal_alignment = 1
+
+[node name="Sep" type="HSeparator" parent="SlotPanel/Padding/Content"]
+layout_mode = 2
+
+[node name="SlotScroll" type="ScrollContainer" parent="SlotPanel/Padding/Content"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 200)
+horizontal_scroll_mode = 0
+
+[node name="SlotList" type="VBoxContainer" parent="SlotPanel/Padding/Content/SlotScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="CloseButton" type="Button" parent="SlotPanel/Padding/Content"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+text = "取消"
+
 [node name="VersionLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 3

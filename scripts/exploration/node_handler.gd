@@ -29,9 +29,15 @@ static func build_battle_config(floor_number: int, zone_element: String, is_boss
 	var familiar_level: int = int(active_familiar.get("level", 1))
 	var familiar_skill_ids: Array = []
 	var familiar_mode: String = "attack"
+	var familiar_current_hp: int = -1
+	var familiar_current_mp: int = -1
+	var familiar_is_alive: bool = true
 	if not active_familiar.is_empty():
 		familiar_skill_ids = Array(active_familiar.get("skill_ids", [])).duplicate(true)
 		familiar_mode = String(active_familiar.get("mode", "attack"))
+		familiar_current_hp = int(active_familiar.get("current_hp", -1))
+		familiar_current_mp = int(active_familiar.get("current_mp", -1))
+		familiar_is_alive = bool(active_familiar.get("is_alive", true))
 
 	return {
 		"floor": floor_number,
@@ -42,6 +48,9 @@ static func build_battle_config(floor_number: int, zone_element: String, is_boss
 		"familiar_level": familiar_level,
 		"familiar_skill_ids": familiar_skill_ids,
 		"familiar_mode": familiar_mode,
+		"familiar_current_hp": familiar_current_hp,
+		"familiar_current_mp": familiar_current_mp,
+		"familiar_is_alive": familiar_is_alive,
 	}
 
 

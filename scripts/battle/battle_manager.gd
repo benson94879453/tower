@@ -74,8 +74,11 @@ func start_battle(enemy_ids: Array, config: Dictionary = {}) -> void:
 	var familiar_level := int(config.get("familiar_level", 1))
 	var familiar_skill_ids: Array = Array(config.get("familiar_skill_ids", []))
 	var familiar_mode: String = String(config.get("familiar_mode", "attack"))
+	var familiar_current_hp := int(config.get("familiar_current_hp", -1))
+	var familiar_current_mp := int(config.get("familiar_current_mp", -1))
+	var familiar_is_alive := bool(config.get("familiar_is_alive", true))
 	if not familiar_id.is_empty():
-		familiar = CombatantData.from_familiar(familiar_id, familiar_level, familiar_skill_ids, familiar_mode)
+		familiar = CombatantData.from_familiar(familiar_id, familiar_level, familiar_skill_ids, familiar_mode, familiar_current_hp, familiar_current_mp, familiar_is_alive)
 	else:
 		familiar = null
 
@@ -135,10 +138,18 @@ func end_battle(result: String) -> void:
 			_change_state(BattleState.FLEEING)
 
 	if player != null and PlayerManager.player_data != null:
-		PlayerManager.player_data.current_hp = clampi(player.current_hp, 0, PlayerManager.get_max_hp())
-		PlayerManager.player_data.current_mp = clampi(player.current_mp, 0, PlayerManager.get_max_mp())
-		PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
-		PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
+		match result:
+			"victory", "flee":
+				PlayerManager.player_data.current_hp = clampi(player.current_hp, 0, PlayerManager.get_max_hp())
+				PlayerManager.player_data.current_mp = clampi(player.current_mp, 0, PlayerManager.get_max_mp())
+				PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
+				PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
+				if familiar != null:
+					var active_idx: int = PlayerManager.player_data.active_familiar_index
+					if active_idx >= 0:
+						PlayerManager.save_familiar_battle_state(
+							active_idx, familiar.current_hp, familiar.current_mp, familiar.is_alive
+						)
 
 	battle_ui.set_player_input_enabled(false)
 	match result:
@@ -316,6 +327,8 @@ func _process_defeat() -> void:
 	var penalty: Dictionary = BattleResult.calculate_defeat_penalty()
 	BattleResult.apply_defeat_penalty(penalty)
 	await battle_ui.show_defeat_result(penalty)
+	await delay(0.3)
+	cleanup()
 
 
 func delay(seconds: float) -> void:

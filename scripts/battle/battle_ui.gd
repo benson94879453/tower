@@ -1,7 +1,7 @@
 class_name BattleUI
 extends Control
 
-const DrawShape = preload("res://scripts/ui/draw_shape.gd")
+const DrawShapeClass = preload("res://scripts/ui/draw_shape.gd")
 
 
 class _ElementIcon extends Control:
@@ -15,7 +15,7 @@ class _ElementIcon extends Control:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	func _draw() -> void:
-		DrawShape.draw_element_icon(self, _element, size / 2.0, _icon_size, ThemeConstants.get_element_color(_element))
+		DrawShapeClass.draw_element_icon(self, _element, size / 2.0, _icon_size, ThemeConstants.get_element_color(_element))
 
 
 class _SkillTypeIcon extends Control:
@@ -31,16 +31,9 @@ class _SkillTypeIcon extends Control:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	func _draw() -> void:
-		DrawShape.draw_skill_type_icon(self, _skill_type, size / 2.0, _icon_size, _color)
+		DrawShapeClass.draw_skill_type_icon(self, _skill_type, size / 2.0, _icon_size, _color)
 
 
-signal skill_selected(skill_id: String)
-@warning_ignore("unused_signal")
-signal item_selected(item_id: String)
-signal familiar_mode_selected(mode: int)
-signal flee_pressed
-signal target_selected(combatant)
-signal back_pressed
 
 @onready var enemy_container: HBoxContainer = $EnemyArea/EnemyContainer
 @onready var player_panel: PanelContainer = $AllyArea/PlayerPanel
@@ -73,8 +66,8 @@ var _player
 var _familiar
 var _enemies: Array = []
 var _pending_skill_id: String = ""
-var _player_status_label: Label
-var _familiar_status_label: Label
+var _player_status_container: HFlowContainer
+var _familiar_status_container: HFlowContainer
 
 
 func _ready() -> void:
@@ -84,6 +77,7 @@ func _ready() -> void:
 	_ensure_status_labels()
 	_hide_all_subpanels()
 	_style_progress_bars()
+	_style_panels()
 
 	$ActionMenu/SkillButton.pressed.connect(_on_skill_button)
 	$ActionMenu/ItemButton.pressed.connect(_on_item_button)
@@ -104,6 +98,51 @@ func _style_progress_bars() -> void:
 	_apply_bar_style(player_hp_bar, ThemeConstants.HP_COLOR, ThemeConstants.HP_BG_COLOR)
 	_apply_bar_style(player_mp_bar, ThemeConstants.MP_COLOR, ThemeConstants.MP_BG_COLOR)
 	_apply_bar_style(familiar_hp_bar, ThemeConstants.HP_COLOR, ThemeConstants.HP_BG_COLOR)
+
+
+func _style_panels() -> void:
+	var dark_style := StyleBoxFlat.new()
+	dark_style.bg_color = ThemeConstants.BG_MID.darkened(0.2)
+	dark_style.border_width_left = 2
+	dark_style.border_width_top = 2
+	dark_style.border_width_right = 2
+	dark_style.border_width_bottom = 2
+	dark_style.border_color = ThemeConstants.ACCENT.darkened(0.2)
+	dark_style.corner_radius_top_left = 8
+	dark_style.corner_radius_top_right = 8
+	dark_style.corner_radius_bottom_right = 8
+	dark_style.corner_radius_bottom_left = 8
+	dark_style.shadow_color = Color(0, 0, 0, 0.4)
+	dark_style.shadow_size = 4
+	dark_style.content_margin_left = 12
+	dark_style.content_margin_right = 12
+	dark_style.content_margin_top = 12
+	dark_style.content_margin_bottom = 12
+
+	var light_style := dark_style.duplicate()
+	light_style.bg_color = ThemeConstants.PANEL_BG.darkened(0.1)
+	light_style.border_color = ThemeConstants.ACCENT
+	light_style.shadow_size = 6
+
+	for panel in [skill_panel, item_panel, familiar_cmd_panel]:
+		panel.add_theme_stylebox_override("panel", dark_style)
+
+	var log_panel: PanelContainer = $BattleLogPanel
+	if log_panel:
+		log_panel.add_theme_stylebox_override("panel", dark_style)
+		var scroll: ScrollContainer = log_panel.get_node_or_null("Padding/BattleLogContent/BattleLogScroll")
+		if scroll:
+			var scroll_style := StyleBoxFlat.new()
+			scroll_style.bg_color = ThemeConstants.BG_DARK.darkened(0.3)
+			scroll_style.corner_radius_top_left = 4
+			scroll_style.corner_radius_top_right = 4
+			scroll_style.corner_radius_bottom_right = 4
+			scroll_style.corner_radius_bottom_left = 4
+			scroll.add_theme_stylebox_override("panel", scroll_style)
+
+	var turn_order_panel: PanelContainer = $TurnOrderPanel
+	if turn_order_panel:
+		turn_order_panel.add_theme_stylebox_override("panel", light_style)
 
 
 func _apply_bar_style(bar: ProgressBar, fill_color: Color, bg_color: Color) -> void:
@@ -152,7 +191,7 @@ func _update_player_display() -> void:
 	player_mp_bar.max_value = _player.max_mp
 	player_mp_bar.value = _player.current_mp
 	player_mp_label.text = "MP: %d/%d" % [_player.current_mp, _player.max_mp]
-	_set_status_label(_player_status_label, _player)
+	_set_status_container(_player_status_container, _player)
 
 
 func _update_familiar_display() -> void:
@@ -167,7 +206,7 @@ func _update_familiar_display() -> void:
 	familiar_hp_label.text = "HP: %d/%d" % [_familiar.current_hp, _familiar.max_hp]
 	var mode_names := ["攻擊模式", "防禦模式", "輔助模式", "待命"]
 	familiar_mode_label.text = mode_names[_familiar.familiar_mode]
-	_set_status_label(_familiar_status_label, _familiar)
+	_set_status_container(_familiar_status_container, _familiar)
 
 
 func _generate_enemy_panels() -> void:
@@ -248,18 +287,16 @@ func _create_enemy_panel(enemy) -> PanelContainer:
 	hp_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
 	vbox.add_child(hp_label)
 
-	var status_label := Label.new()
-	status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	status_label.visible = false
-	status_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
-	status_label.add_theme_font_size_override("font_size", 12)
-	vbox.add_child(status_label)
+	var status_container := HFlowContainer.new()
+	status_container.alignment = FlowContainer.ALIGNMENT_CENTER
+	status_container.add_theme_constant_override("h_separation", 4)
+	status_container.add_theme_constant_override("v_separation", 4)
+	vbox.add_child(status_container)
 
 	panel.set_meta("combatant", enemy)
 	panel.set_meta("hp_bar", hp_bar)
 	panel.set_meta("hp_label", hp_label)
-	panel.set_meta("status_label", status_label)
+	panel.set_meta("status_container", status_container)
 	panel.set_meta("target_connected", false)
 
 	return panel
@@ -274,13 +311,13 @@ func update_enemy_display(enemy) -> void:
 		if panel.get_meta("combatant", null) == enemy:
 			var hp_bar := panel.get_meta("hp_bar", null) as ProgressBar
 			var hp_label := panel.get_meta("hp_label", null) as Label
-			var status_label := panel.get_meta("status_label", null) as Label
+			var status_container := panel.get_meta("status_container", null) as HFlowContainer
 			if hp_bar != null:
 				hp_bar.value = enemy.current_hp
 			if hp_label != null:
 				hp_label.text = "%d/%d" % [enemy.current_hp, enemy.max_hp]
-			if status_label != null:
-				_set_status_label(status_label, enemy)
+			if status_container != null:
+				_set_status_container(status_container, enemy)
 			panel.modulate.a = 0.4 if not enemy.is_alive else 1.0
 			break
 
@@ -304,7 +341,6 @@ func _show_action_menu() -> void:
 	_hide_all_subpanels()
 	action_menu.visible = true
 	_pending_skill_id = ""
-	back_pressed.emit()
 
 
 func _on_skill_button() -> void:
@@ -333,12 +369,10 @@ func _on_familiar_button() -> void:
 
 
 func _on_flee_button() -> void:
-	flee_pressed.emit()
 	_battle_manager.on_player_flee()
 
 
 func _on_familiar_mode(mode: int) -> void:
-	familiar_mode_selected.emit(mode)
 	_battle_manager.on_player_familiar_mode_changed(mode)
 	_update_familiar_display()
 	_show_action_menu()
@@ -468,7 +502,7 @@ func _populate_skill_list() -> void:
 
 
 func _get_skill_type_label(skill_type: String) -> String:
-	var display := DrawShape.get_skill_type_display(skill_type)
+	var display := DrawShapeClass.get_skill_type_display(skill_type)
 	if not display.is_empty():
 		return "[%s]" % display
 	if skill_type.contains("all"):
@@ -585,7 +619,6 @@ func _on_skill_chosen(skill_id: String) -> void:
 			break
 
 	if skill_type.contains("all") or skill_type.contains("self") or has_single_ally_target:
-		skill_selected.emit(skill_id)
 		var default_target = _enemies[0] if not _enemies.is_empty() else _player
 		if skill_type.contains("self") or has_single_ally_target:
 			default_target = _player
@@ -605,9 +638,85 @@ func _populate_item_list() -> void:
 	for child in item_list.get_children():
 		child.queue_free()
 
-	var placeholder := Label.new()
-	placeholder.text = "（道具系統尚未實作）"
-	item_list.add_child(placeholder)
+	var all_items: Array = PlayerManager.inventory.get_all_items()
+	var has_any := false
+
+	for raw_entry in all_items:
+		if raw_entry is not Dictionary:
+			continue
+		var entry: Dictionary = raw_entry
+		var entry_id: String = String(entry.get("id", ""))
+		if entry_id.is_empty():
+			continue
+
+		var item_data: Dictionary = DataManager.get_item(entry_id)
+		if item_data.is_empty():
+			continue
+
+		var item_type: String = String(item_data.get("type", ""))
+		if item_type != "consumable":
+			continue
+
+		var usable_in_battle: bool = bool(item_data.get("usable_in_battle", true))
+		var quantity: int = int(entry.get("count", 0))
+
+		var item_name: String = String(item_data.get("name", entry_id))
+		var effects: Array = Array(item_data.get("effects", []))
+		var effect_desc: String = ""
+		for raw_effect in effects:
+			if raw_effect is not Dictionary:
+				continue
+			var effect: Dictionary = raw_effect
+			var etype: String = String(effect.get("type", ""))
+			if not effect_desc.is_empty():
+				effect_desc += ", "
+			match etype:
+				"heal_hp":
+					effect_desc += "HP+%d" % int(effect.get("value", 0))
+				"heal_mp":
+					effect_desc += "MP+%d" % int(effect.get("value", 0))
+				"revive":
+					effect_desc += "復活%d%%HP" % int(effect.get("hp_percent", 50))
+				"cure_status":
+					effect_desc += "治療異常"
+				"cure_all_status":
+					effect_desc += "全狀態治療"
+				"buff_stat":
+					effect_desc += "%s+%d" % [String(effect.get("stat", "")), int(effect.get("value", 0))]
+				_:
+					effect_desc += etype
+
+		var is_usable: bool = usable_in_battle and quantity > 0
+		has_any = true
+
+		var btn := Button.new()
+		btn.text = "%s x%d  (%s)" % [item_name, quantity, effect_desc]
+		btn.alignment = HorizontalAlignment.HORIZONTAL_ALIGNMENT_LEFT
+		btn.add_theme_font_size_override("font_size", ThemeConstants.FONT_SIZE_SMALL)
+
+		if is_usable:
+			btn.add_theme_color_override("font_color", ThemeConstants.TEXT_PRIMARY)
+			btn.add_theme_color_override("font_hover_color", ThemeConstants.TEXT_PRIMARY)
+		else:
+			btn.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
+			btn.add_theme_color_override("font_hover_color", ThemeConstants.TEXT_SECONDARY)
+			btn.disabled = true
+
+		var captured_id: String = entry_id
+		btn.pressed.connect(func():
+			_battle_manager.on_player_item_selected(captured_id)
+			_hide_all_subpanels()
+			action_menu.visible = false
+		)
+
+		item_list.add_child(btn)
+
+	if not has_any:
+		var placeholder := Label.new()
+		placeholder.text = "沒有可用的道具"
+		placeholder.add_theme_font_size_override("font_size", ThemeConstants.FONT_SIZE_SMALL)
+		placeholder.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
+		item_list.add_child(placeholder)
 
 
 func _show_target_selector() -> void:
@@ -618,8 +727,6 @@ func _show_target_selector() -> void:
 
 func _on_enemy_panel_clicked(event: InputEvent, enemy) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		target_selected.emit(enemy)
-		skill_selected.emit(_pending_skill_id)
 		_battle_manager.on_player_skill_selected(_pending_skill_id, enemy)
 		_pending_skill_id = ""
 		_hide_all_subpanels()
@@ -710,6 +817,90 @@ func show_defeat_result(penalty: Dictionary) -> void:
 	add_log("HP/MP 已完全回復", Color("#44CC44"))
 	add_log("══════════════════════", Color.RED)
 
+	# Show a centered defeat overlay panel and wait for input or timeout
+	var overlay := PanelContainer.new()
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var overlay_style := StyleBoxFlat.new()
+	overlay_style.bg_color = Color(0, 0, 0, 0.85)
+	overlay_style.border_width_left = 3
+	overlay_style.border_width_top = 3
+	overlay_style.border_width_right = 3
+	overlay_style.border_width_bottom = 3
+	overlay_style.border_color = Color(0.8, 0.15, 0.15)
+	overlay_style.corner_radius_top_left = 12
+	overlay_style.corner_radius_top_right = 12
+	overlay_style.corner_radius_bottom_right = 12
+	overlay_style.corner_radius_bottom_left = 12
+	overlay.add_theme_stylebox_override("panel", overlay_style)
+
+	var center := VBoxContainer.new()
+	center.alignment = BoxContainer.ALIGNMENT_CENTER
+	center.add_theme_constant_override("separation", 16)
+	var center_pad := MarginContainer.new()
+	center_pad.add_theme_constant_override("margin_left", 40)
+	center_pad.add_theme_constant_override("margin_right", 40)
+	center_pad.add_theme_constant_override("margin_top", 20)
+	center_pad.add_theme_constant_override("margin_bottom", 20)
+	center_pad.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.add_child(center_pad)
+	center_pad.add_child(center)
+
+	var defeat_label := Label.new()
+	defeat_label.text = "戰鬥失敗"
+	defeat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	defeat_label.add_theme_font_size_override("font_size", 42)
+	defeat_label.add_theme_color_override("font_color", Color(1, 0.25, 0.25))
+	center.add_child(defeat_label)
+
+	var sep := HSeparator.new()
+	center.add_child(sep)
+
+	if gold_lost > 0:
+		var gold_label := Label.new()
+		gold_label.text = "失去 %d 金幣" % gold_lost
+		gold_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		gold_label.add_theme_font_size_override("font_size", 20)
+		gold_label.add_theme_color_override("font_color", Color("#FF6666"))
+		center.add_child(gold_label)
+
+	var heal_label := Label.new()
+	heal_label.text = "HP / MP 已完全回復"
+	heal_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	heal_label.add_theme_font_size_override("font_size", 20)
+	heal_label.add_theme_color_override("font_color", Color("#44CC44"))
+	center.add_child(heal_label)
+
+	var return_label := Label.new()
+	return_label.text = "即將返回安全區..."
+	return_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	return_label.add_theme_font_size_override("font_size", 18)
+	return_label.add_theme_color_override("font_color", Color(0.7, 0.7, 0.7))
+	center.add_child(return_label)
+
+	add_child(overlay)
+
+	# Move overlay to front so it covers everything
+	move_child(overlay, get_child_count() - 1)
+
+	# Wait for a click/key press or a 3-second timeout
+	var state := { "clicked": false }
+	var _on_input := func(_event: InputEvent):
+		if (_event is InputEventMouseButton and _event.pressed) or \
+		   (_event is InputEventKey and _event.pressed):
+			state["clicked"] = true
+	overlay.gui_input.connect(_on_input)
+	var _elapsed := 0.0
+	while _elapsed < 3.0 and not state["clicked"]:
+		await get_tree().create_timer(0.05).timeout
+		_elapsed += 0.05
+	if overlay.gui_input.is_connected(_on_input):
+		overlay.gui_input.disconnect(_on_input)
+
+	if is_instance_valid(overlay):
+		overlay.queue_free()
+
 
 func set_player_input_enabled(enabled: bool) -> void:
 	action_menu.visible = enabled
@@ -739,74 +930,111 @@ func _set_enemy_panels_targetable(enabled: bool) -> void:
 
 func _ensure_status_labels() -> void:
 	var player_content := $AllyArea/PlayerPanel/Padding/Content as VBoxContainer
-	_player_status_label = player_content.get_node_or_null("PlayerStatusLabel") as Label
-	if _player_status_label == null:
-		_player_status_label = Label.new()
-		_player_status_label.name = "PlayerStatusLabel"
-		_player_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_player_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		_player_status_label.visible = false
-		_player_status_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
-		_player_status_label.add_theme_font_size_override("font_size", 13)
-		player_content.add_child(_player_status_label)
+	_player_status_container = player_content.get_node_or_null("PlayerStatusContainer") as HFlowContainer
+	if _player_status_container == null:
+		_player_status_container = HFlowContainer.new()
+		_player_status_container.name = "PlayerStatusContainer"
+		_player_status_container.alignment = FlowContainer.ALIGNMENT_CENTER
+		_player_status_container.add_theme_constant_override("h_separation", 4)
+		_player_status_container.add_theme_constant_override("v_separation", 4)
+		player_content.add_child(_player_status_container)
 
 	var familiar_content := $AllyArea/FamiliarPanel/Padding/Content as VBoxContainer
-	_familiar_status_label = familiar_content.get_node_or_null("FamiliarStatusLabel") as Label
-	if _familiar_status_label == null:
-		_familiar_status_label = Label.new()
-		_familiar_status_label.name = "FamiliarStatusLabel"
-		_familiar_status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_familiar_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		_familiar_status_label.visible = false
-		_familiar_status_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
-		_familiar_status_label.add_theme_font_size_override("font_size", 13)
-		familiar_content.add_child(_familiar_status_label)
+	_familiar_status_container = familiar_content.get_node_or_null("FamiliarStatusContainer") as HFlowContainer
+	if _familiar_status_container == null:
+		_familiar_status_container = HFlowContainer.new()
+		_familiar_status_container.name = "FamiliarStatusContainer"
+		_familiar_status_container.alignment = FlowContainer.ALIGNMENT_CENTER
+		_familiar_status_container.add_theme_constant_override("h_separation", 4)
+		_familiar_status_container.add_theme_constant_override("v_separation", 4)
+		familiar_content.add_child(_familiar_status_container)
 
-
-func _set_status_label(label: Label, combatant) -> void:
-	if label == null or combatant == null:
+func _set_status_container(container: HFlowContainer, combatant) -> void:
+	if container == null or combatant == null:
 		return
+		
+	for child in container.get_children():
+		child.queue_free()
 
-	var status_text: String = _get_status_text(combatant)
-	label.text = status_text
-	label.visible = not status_text.is_empty()
-
-
-func _get_status_text(combatant) -> String:
-	if combatant == null or combatant.status_effects.is_empty():
-		return ""
-
-	var status_names: Dictionary = {
-		"burn": "🔥燃燒",
-		"poison": "☠中毒",
-		"heavy_poison": "☠猛毒",
-		"freeze": "❄凍結",
-		"paralyze": "⚡麻痺",
-		"sleep": "💤睡眠",
-		"confuse": "💫混亂",
-		"charm": "💕魅惑",
-		"atk_down": "⬇攻↓",
-		"def_down": "⬇防↓",
-		"speed_down": "⬇速↓",
-		"hit_down": "⬇命↓",
-		"seal": "🔒封印",
-		"curse": "💀詛咒",
-		"atk_up": "⬆攻↑",
-		"def_up": "⬆防↑",
-		"speed_up": "⬆速↑",
-		"regen": "💚再生",
-		"mp_regen": "💙回魔",
-		"reflect": "🪞反射",
-		"stealth": "👻隱身",
-	}
-	var parts: Array[String] = []
+	if combatant.status_effects.is_empty():
+		container.visible = false
+		return
+		
+	container.visible = true
 	for effect in combatant.status_effects:
 		var status_id: String = String(effect.get("id", ""))
 		var turns: int = int(effect.get("turns", 0))
-		var status_name: String = String(status_names.get(status_id, status_id))
-		if turns > 0:
-			parts.append("%s(%d)" % [status_name, turns])
-		else:
-			parts.append(status_name)
+		var icon := _StatusIcon.new(status_id, turns)
+		container.add_child(icon)
 
-	return " ".join(PackedStringArray(parts))
+class _StatusIcon extends PanelContainer:
+	func _init(status_id: String, turns: int):
+		var bg := StyleBoxFlat.new()
+		bg.bg_color = _get_status_color(status_id)
+		bg.corner_radius_top_left = 4
+		bg.corner_radius_top_right = 4
+		bg.corner_radius_bottom_right = 4
+		bg.corner_radius_bottom_left = 4
+		bg.content_margin_left = 4
+		bg.content_margin_right = 4
+		bg.content_margin_top = 2
+		bg.content_margin_bottom = 2
+		add_theme_stylebox_override("panel", bg)
+		
+		var hbox := HBoxContainer.new()
+		hbox.add_theme_constant_override("separation", 2)
+		add_child(hbox)
+		
+		var name_label := Label.new()
+		name_label.text = _get_status_short_name(status_id)
+		name_label.add_theme_font_size_override("font_size", 11)
+		name_label.add_theme_color_override("font_color", Color.WHITE)
+		hbox.add_child(name_label)
+		
+		if turns > 0:
+			var turn_label := Label.new()
+			turn_label.text = str(turns)
+			turn_label.add_theme_font_size_override("font_size", 11)
+			turn_label.add_theme_color_override("font_color", Color(1, 1, 1, 0.7))
+			hbox.add_child(turn_label)
+
+	func _get_status_color(id: String) -> Color:
+		match id:
+			"burn": return Color("#e74c3c")
+			"poison", "heavy_poison": return Color("#9b59b6")
+			"freeze": return Color("#3498db")
+			"paralyze": return Color("#f1c40f")
+			"sleep": return Color("#34495e")
+			"confuse": return Color("#e67e22")
+			"charm": return Color("#ff69b4")
+			"atk_down", "def_down", "speed_down", "hit_down": return Color("#c0392b")
+			"seal", "curse": return Color("#2c3e50")
+			"atk_up", "def_up", "speed_up": return Color("#27ae60")
+			"regen", "mp_regen": return Color("#2ecc71")
+			"reflect", "stealth": return Color("#95a5a6")
+			_: return Color("#7f8c8d")
+
+	func _get_status_short_name(id: String) -> String:
+		match id:
+			"burn": return "🔥燃燒"
+			"poison": return "☠中毒"
+			"heavy_poison": return "☠猛毒"
+			"freeze": return "❄凍結"
+			"paralyze": return "⚡麻痺"
+			"sleep": return "💤睡眠"
+			"confuse": return "💫混亂"
+			"charm": return "💕魅惑"
+			"atk_down": return "⬇攻"
+			"def_down": return "⬇防"
+			"speed_down": return "⬇速"
+			"hit_down": return "⬇命"
+			"seal": return "🔒封印"
+			"curse": return "💀詛咒"
+			"atk_up": return "⬆攻"
+			"def_up": return "⬆防"
+			"speed_up": return "⬆速"
+			"regen": return "💚再生"
+			"mp_regen": return "💙回魔"
+			"reflect": return "🪞反射"
+			"stealth": return "👻隱身"
+			_: return id

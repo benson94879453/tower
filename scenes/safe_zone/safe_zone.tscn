@@ -205,6 +205,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "酒館"
 
+[node name="LoadoutButton" type="Button" parent="MainLayout/RightPanel/FacilityGrid"]
+custom_minimum_size = Vector2(160, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "編組配置"
+
 [node name="ActionLabel" type="Label" parent="MainLayout/RightPanel"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18

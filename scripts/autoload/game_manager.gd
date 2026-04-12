@@ -103,6 +103,7 @@ func load_saved_game(slot: int) -> void:
 
 func go_to_safe_zone(safe_floor: int) -> void:
 	change_state(GameState.SAFE_ZONE)
+	PlayerManager.heal_all_familiars()
 	await SceneManager.change_scene("res://scenes/safe_zone/safe_zone.tscn")
 
 	var scene = SceneManager.get_current_scene()
@@ -117,6 +118,8 @@ func go_to_safe_zone(safe_floor: int) -> void:
 			scene.rest_requested.connect(_on_rest_requested.bind(safe_floor), CONNECT_ONE_SHOT)
 		if scene.has_signal("save_requested"):
 			scene.save_requested.connect(_on_save_requested.bind(safe_floor), CONNECT_ONE_SHOT)
+		if scene.has_signal("save_slot_requested"):
+			scene.save_slot_requested.connect(_on_save_slot_requested, CONNECT_ONE_SHOT)
 
 	SaveManager.auto_save()
 
@@ -195,12 +198,20 @@ func _on_rest_requested(safe_floor: int) -> void:
 		PlayerManager.player_data.current_mp = PlayerManager.get_max_mp()
 		PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
 		PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
+	PlayerManager.heal_all_familiars()
 	go_to_safe_zone(safe_floor)
 
 
 func _on_save_requested(safe_floor: int) -> void:
 	SaveManager.save_game(1)
 	go_to_safe_zone(safe_floor)
+
+
+func _on_save_slot_requested(slot: int) -> void:
+	SaveManager.save_game(slot)
+	if PlayerManager.player_data != null:
+		var safe_floor: int = _get_nearest_safe_floor(PlayerManager.player_data.highest_floor)
+		go_to_safe_zone(safe_floor)
 
 
 func _on_floor_completed(floor_number: int) -> void:

@@ -149,7 +149,10 @@ static func from_familiar(
 	familiar_id: String,
 	level: int = 1,
 	p_skill_ids: Array = [],
-	mode: String = "attack"
+	mode: String = "attack",
+	p_current_hp: int = -1,
+	p_current_mp: int = -1,
+	p_is_alive: bool = true
 ) -> CombatantData:
 	var data := DataManager.get_familiar(familiar_id)
 	if data.is_empty():
@@ -166,9 +169,7 @@ static func from_familiar(
 	var growth: Dictionary = data.get("growth_per_level", {})
 	var level_bonus: int = max(level - 1, 0)
 	combatant.max_hp = int(base_stats.get("hp", 80)) + int(growth.get("hp", 0)) * level_bonus
-	combatant.current_hp = combatant.max_hp
 	combatant.max_mp = int(base_stats.get("mp", 30)) + int(growth.get("mp", 0)) * level_bonus
-	combatant.current_mp = combatant.max_mp
 	combatant.matk = int(base_stats.get("matk", 10)) + int(growth.get("matk", 0)) * level_bonus
 	combatant.mdef = int(base_stats.get("mdef", 10)) + int(growth.get("mdef", 0)) * level_bonus
 	combatant.patk = int(base_stats.get("patk", 10)) + int(growth.get("patk", 0)) * level_bonus
@@ -177,13 +178,21 @@ static func from_familiar(
 	combatant.hit = int(base_stats.get("hit", 100))
 	combatant.dodge = float(base_stats.get("dodge", 0.0))
 	combatant.crit = float(base_stats.get("crit", 5.0))
+	if p_current_hp >= 0:
+		combatant.current_hp = clampi(p_current_hp, 0, combatant.max_hp)
+	else:
+		combatant.current_hp = combatant.max_hp
+	if p_current_mp >= 0:
+		combatant.current_mp = clampi(p_current_mp, 0, combatant.max_mp)
+	else:
+		combatant.current_mp = combatant.max_mp
 	var active_skill_ids: Array = Array(p_skill_ids)
 	if active_skill_ids.is_empty():
 		active_skill_ids = Array(data.get("default_skills", []))
 	_append_skill_data(combatant, active_skill_ids, 10)
 	combatant.familiar_mode = _familiar_mode_from_string(mode)
 	combatant.visual = data.get("visual", {}).duplicate(true) if data.get("visual", {}) is Dictionary else {}
-	combatant.is_alive = combatant.current_hp > 0
+	combatant.is_alive = p_is_alive and combatant.current_hp > 0
 	return combatant
 
 

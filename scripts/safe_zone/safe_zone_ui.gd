@@ -8,11 +8,13 @@ const ForgePanelClass = preload("res://scripts/safe_zone/forge_panel.gd")
 const FamiliarHousePanelClass = preload("res://scripts/safe_zone/familiar_house_panel.gd")
 const LibraryPanelClass = preload("res://scripts/safe_zone/library_panel.gd")
 const TavernPanelClass = preload("res://scripts/safe_zone/tavern_panel.gd")
+const LoadoutPanelClass = preload("res://scripts/safe_zone/loadout_panel.gd")
 
 signal explore_requested(floor_number: int)
 signal teleport_requested(floor_number: int)
 signal rest_requested
 signal save_requested
+signal save_slot_requested(slot: int)
 
 var current_safe_floor: int = 1
 var highest_floor: int = 1
@@ -22,6 +24,8 @@ var _forge_panel = null
 var _familiar_house_panel = null
 var _library_panel = null
 var _tavern_panel = null
+var _loadout_panel = null
+var _save_slot_panel: PanelContainer = null
 
 @onready var zone_label: Label = $ZoneLabel
 @onready var status_panel: PanelContainer = $MainLayout/LeftPanel/StatusPanel
@@ -41,6 +45,7 @@ var _tavern_panel = null
 @onready var familiar_button: Button = $MainLayout/RightPanel/FacilityGrid/FamiliarButton
 @onready var library_button: Button = $MainLayout/RightPanel/FacilityGrid/LibraryButton
 @onready var tavern_button: Button = $MainLayout/RightPanel/FacilityGrid/TavernButton
+@onready var loadout_button: Button = $MainLayout/RightPanel/FacilityGrid/LoadoutButton
 @onready var explore_button: Button = $MainLayout/RightPanel/ActionRow/ExploreButton
 @onready var teleport_button: Button = $MainLayout/RightPanel/ActionRow/TeleportButton
 @onready var rest_button: Button = $MainLayout/RightPanel/SystemRow/RestButton
@@ -58,6 +63,7 @@ func _ready() -> void:
 	familiar_button.pressed.connect(_on_familiar_pressed)
 	library_button.pressed.connect(_on_library_pressed)
 	tavern_button.pressed.connect(_on_tavern_pressed)
+	loadout_button.pressed.connect(_on_loadout_pressed)
 	explore_button.pressed.connect(_on_explore_pressed)
 	teleport_button.pressed.connect(_on_teleport_pressed)
 	rest_button.pressed.connect(_request_rest)
@@ -171,7 +177,19 @@ func _update_equip_summary() -> void:
 	if not pd.armor_id.is_empty():
 		var a_data: Dictionary = DataManager.get_item(pd.armor_id)
 		armor_name = String(a_data.get("name", pd.armor_id))
-	equip_summary.append_text("防具: %s" % armor_name)
+	equip_summary.append_text("防具: %s\n" % armor_name)
+
+	var acc_count: int = 0
+	for raw_id in pd.accessory_ids:
+		if not String(raw_id).is_empty():
+			acc_count += 1
+	equip_summary.append_text("飾品: %d/%d\n" % [acc_count, PlayerManager.MAX_ACCESSORY_SLOTS])
+
+	var skill_count: int = 0
+	for raw_id in pd.active_skill_ids:
+		if not String(raw_id).is_empty():
+			skill_count += 1
+	equip_summary.append_text("技能: %d/%d" % [skill_count, PlayerManager.MAX_ACTIVE_SKILLS])
 
 	equip_summary.pop()
 	equip_summary.pop()
@@ -324,6 +342,29 @@ func _on_tavern_action(_action: String, _detail: String) -> void:
 	_update_status()
 
 
+func _on_loadout_pressed() -> void:
+	if _has_open_panel():
+		return
+
+	_loadout_panel = LoadoutPanelClass.new()
+	add_child(_loadout_panel)
+	_loadout_panel.setup()
+	_center_panel(_loadout_panel)
+	_loadout_panel.panel_closed.connect(_close_loadout_panel)
+	_loadout_panel.loadout_changed.connect(_on_loadout_changed)
+
+
+func _close_loadout_panel() -> void:
+	if _loadout_panel != null:
+		_loadout_panel.queue_free()
+		_loadout_panel = null
+	_update_status()
+
+
+func _on_loadout_changed() -> void:
+	_update_status()
+
+
 func _on_teleport_pressed() -> void:
 	for child in teleport_list.get_children():
 		child.queue_free()
@@ -363,17 +404,96 @@ func _request_rest() -> void:
 			PlayerManager.player_data.current_mp = PlayerManager.get_max_mp()
 			PlayerManager.player_hp_changed.emit(PlayerManager.player_data.current_hp, PlayerManager.get_max_hp())
 			PlayerManager.player_mp_changed.emit(PlayerManager.player_data.current_mp, PlayerManager.get_max_mp())
+		PlayerManager.heal_all_familiars()
 		_update_status()
 		return
 	rest_requested.emit()
 
 
 func _request_save() -> void:
-	if get_signal_connection_list("save_requested").is_empty():
-		SaveManager.save_game(1)
-		_update_status()
+	_show_save_slot_panel()
+
+
+func _show_save_slot_panel() -> void:
+	if _save_slot_panel != null:
+		_save_slot_panel.queue_free()
+		_save_slot_panel = null
+
+	_save_slot_panel = PanelContainer.new()
+	_save_slot_panel.theme_type_variation = "CombatantPanel"
+	_save_slot_panel.custom_minimum_size = Vector2(360, 300)
+	_save_slot_panel.top_level = true
+	add_child(_save_slot_panel)
+	_center_panel(_save_slot_panel)
+
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 10)
+	content.anchor_right = 1.0
+	content.anchor_bottom = 1.0
+	content.offset_left = 12.0
+	content.offset_top = 12.0
+	content.offset_right = -12.0
+	content.offset_bottom = -12.0
+	_save_slot_panel.add_child(content)
+
+	var title := Label.new()
+	title.text = "選擇存檔位置"
+	title.add_theme_font_size_override("font_size", ThemeConstantsClass.FONT_SIZE_LARGE)
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	content.add_child(title)
+
+	content.add_child(HSeparator.new())
+
+	for slot in range(1, SaveManager.MAX_SLOTS + 1):
+		var slot_row := HBoxContainer.new()
+		slot_row.add_theme_constant_override("separation", 8)
+		content.add_child(slot_row)
+
+		var info_label := Label.new()
+		info_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		if SaveManager.has_save(slot):
+			var info: Dictionary = SaveManager.get_save_info(slot)
+			info_label.text = "欄位 %d: Lv.%d / %dF / %s" % [
+				slot,
+				int(info.get("level", 1)),
+				int(info.get("highest_floor", 1)),
+				String(info.get("timestamp", "")).split("T")[0],
+			]
+		else:
+			info_label.text = "欄位 %d: (空)" % slot
+			info_label.add_theme_color_override("font_color", ThemeConstantsClass.TEXT_SECONDARY)
+		slot_row.add_child(info_label)
+
+		var save_btn := Button.new()
+		save_btn.text = "存檔"
+		save_btn.custom_minimum_size = Vector2(64, 32)
+		var bound_slot := slot
+		save_btn.pressed.connect(_on_save_slot_chosen.bind(bound_slot))
+		slot_row.add_child(save_btn)
+
+	var close_btn := Button.new()
+	close_btn.text = "取消"
+	close_btn.custom_minimum_size = Vector2(0, 36)
+	close_btn.pressed.connect(_close_save_slot_panel)
+	content.add_child(close_btn)
+
+
+func _on_save_slot_chosen(slot: int) -> void:
+	_close_save_slot_panel()
+	if get_signal_connection_list("save_slot_requested").is_empty():
+		if get_signal_connection_list("save_requested").is_empty():
+			SaveManager.save_game(slot)
+			_update_status()
+			return
+		save_requested.emit()
 		return
-	save_requested.emit()
+	save_slot_requested.emit(slot)
+
+
+func _close_save_slot_panel() -> void:
+	if _save_slot_panel != null:
+		_save_slot_panel.queue_free()
+		_save_slot_panel = null
 
 
 func _get_next_explore_floor(safe_floor: int) -> int:
@@ -404,7 +524,8 @@ func _is_safe_floor(floor_number: int) -> bool:
 
 func _has_open_panel() -> bool:
 	return _inventory_panel != null or _shop_panel != null or _forge_panel != null \
-		or _familiar_house_panel != null or _library_panel != null or _tavern_panel != null
+		or _familiar_house_panel != null or _library_panel != null or _tavern_panel != null \
+		or _loadout_panel != null
 
 
 func _get_active_familiar_status() -> String:

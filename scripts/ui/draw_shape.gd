@@ -187,7 +187,6 @@ static func get_element_icon(element: String, center: Vector2, size: float) -> P
 
 
 static func draw_element_icon(canvas: CanvasItem, element: String, center: Vector2, size: float, color: Color = Color.WHITE) -> void:
-	var draw_color := color if color != Color.WHITE else Color.GRAY if element == "" or element == "none" else color
 	var points := get_element_icon(element, center, size)
 	if points.size() < 3:
 		return
