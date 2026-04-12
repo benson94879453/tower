@@ -37,6 +37,10 @@ func _draw() -> void:
 			if show_glow:
 				DrawShapeRef.draw_glow(self, points, center, _glow_color)
 			DrawShapeRef.draw_outlined_polygon(self, points, _fill_color, _outline_color)
+			# Draw small element icon below shape for enemies
+			if element != "" and element != "none":
+				var icon_pos := Vector2(center.x, center.y + min(size.x, size.y) * 0.38)
+				DrawShapeRef.draw_element_icon(self, element, icon_pos, 12.0, _outline_color)
 		else:
 			# Fallback to circle if no points returned
 			var circle_points: PackedVector2Array = DrawShapeRef.get_circle(center, radius)

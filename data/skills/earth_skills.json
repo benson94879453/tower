@@ -1,0 +1,227 @@
+[
+  {
+    "id": "skill_mud_slap",
+    "name": "擲泥",
+    "element": "earth",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 30,
+    "mp_cost": 6,
+    "pp_max": 15,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 30},
+      {"type": "buff", "target": "single_enemy", "stat": "hit", "value": -20, "duration": 3}
+    ],
+    "research_cost": {"gold": 100, "items": [], "prerequisite_skills": []},
+    "description": "向敵人投擲泥巴，傷害不高但能有效降低命中率。"
+  },
+  {
+    "id": "skill_earthquake",
+    "name": "地震",
+    "element": "earth",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 80,
+    "mp_cost": 25,
+    "pp_max": 6,
+    "hit_rate": 90,
+    "priority": 0,
+    "cooldown": 1,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 80}
+    ],
+    "research_cost": {"gold": 650, "items": [{"id": "mat_earth_crystal", "count": 3}], "prerequisite_skills": []},
+    "description": "引發劇烈地震震撼全場，土屬性核心範圍攻擊。"
+  },
+  {
+    "id": "skill_rock_slide",
+    "name": "岩崩",
+    "element": "earth",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 65,
+    "mp_cost": 20,
+    "pp_max": 8,
+    "hit_rate": 85,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 65},
+      {"type": "buff", "target": "all_enemies", "stat": "speed", "value": -15, "duration": 2}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_earth_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "引發岩石崩塌砸向全體敵人，附帶減速效果。"
+  },
+  {
+    "id": "skill_dig",
+    "name": "挖洞",
+    "element": "earth",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 75,
+    "mp_cost": 16,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": -1,
+    "cooldown": 1,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 75}
+    ],
+    "research_cost": {"gold": 400, "items": [{"id": "mat_earth_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "潛入地底後從敵人腳下突襲，需蓄力但威力不俗。"
+  },
+  {
+    "id": "skill_stone_edge",
+    "name": "尖石攻擊",
+    "element": "earth",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 90,
+    "mp_cost": 20,
+    "pp_max": 6,
+    "hit_rate": 85,
+    "priority": 0,
+    "cooldown": 0,
+    "crit_bonus": 30,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 90}
+    ],
+    "research_cost": {"gold": 1100, "items": [{"id": "mat_earth_crystal", "count": 4}], "prerequisite_skills": []},
+    "description": "以尖銳岩石貫穿目標，高暴擊率的強力土屬性攻擊。"
+  },
+  {
+    "id": "skill_sandstorm",
+    "name": "沙暴",
+    "element": "earth",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 18,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 3,
+    "effects": [
+      {"type": "status", "target": "all_enemies", "status": "acc_down", "chance": 100, "duration": 4},
+      {"type": "buff", "target": "all_enemies", "stat": "hit", "value": -25, "duration": 4},
+      {"type": "buff", "target": "self", "stat": "mdef", "value": 15, "duration": 4}
+    ],
+    "research_cost": {"gold": 550, "items": [{"id": "mat_earth_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "召喚沙暴籠罩戰場，大幅降低全體命中率並提升自身魔防。"
+  },
+  {
+    "id": "skill_bulldoze",
+    "name": "重踏",
+    "element": "earth",
+    "type": "attack_all",
+    "rarity": "N",
+    "base_power": 50,
+    "mp_cost": 14,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 50},
+      {"type": "buff", "target": "all_enemies", "stat": "speed", "value": -20, "duration": 3}
+    ],
+    "research_cost": {"gold": 200, "items": [], "prerequisite_skills": []},
+    "description": "重踏地面引發震波，傷害全體敵人並降低速度。"
+  },
+  {
+    "id": "skill_rock_blast",
+    "name": "岩石爆擊",
+    "element": "earth",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 75,
+    "mp_cost": 14,
+    "pp_max": 10,
+    "hit_rate": 85,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 75}
+    ],
+    "research_cost": {"gold": 480, "items": [{"id": "mat_earth_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "連續發射岩石碎片攻擊，每塊命中率獨立計算，總傷害波動大。"
+  },
+  {
+    "id": "skill_earth_power",
+    "name": "大地之力",
+    "element": "earth",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 75,
+    "mp_cost": 18,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 75},
+      {"type": "buff", "target": "single_enemy", "stat": "mdef", "value": -15, "duration": 3}
+    ],
+    "research_cost": {"gold": 520, "items": [{"id": "mat_earth_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "從地底釋放大地之力，傷害目標並削弱其魔防。"
+  },
+  {
+    "id": "skill_landslide",
+    "name": "山崩",
+    "element": "earth",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 85,
+    "mp_cost": 22,
+    "pp_max": 6,
+    "hit_rate": 90,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 85},
+      {"type": "buff", "target": "single_enemy", "stat": "matk", "value": -20, "duration": 3}
+    ],
+    "research_cost": {"gold": 600, "items": [{"id": "mat_earth_crystal", "count": 3}], "prerequisite_skills": ["skill_earthquake"]},
+    "description": "引發山體崩塌壓制目標，造成傷害並大幅削弱攻擊力。"
+  },
+  {
+    "id": "skill_iron_defense",
+    "name": "鐵壁",
+    "element": "earth",
+    "type": "buff_self",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 18,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 2,
+    "effects": [
+      {"type": "buff", "target": "self", "stat": "mdef", "value": 40, "duration": 3},
+      {"type": "buff", "target": "self", "stat": "pdef", "value": 40, "duration": 3}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_iron_ore", "count": 3}], "prerequisite_skills": []},
+    "description": "將肌膚硬化為鐵壁，大幅提升雙防。"
+  },
+  {
+    "id": "skill_genesis_strike",
+    "name": "創世一擊",
+    "element": "earth",
+    "type": "attack_single",
+    "rarity": "SSR",
+    "base_power": 150,
+    "mp_cost": 38,
+    "pp_max": 3,
+    "hit_rate": 80,
+    "priority": -1,
+    "cooldown": 2,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 150}
+    ],
+    "research_cost": {"gold": 2500, "items": [{"id": "mat_earth_crystal", "count": 8}, {"id": "mat_ancient_shard", "count": 2}], "prerequisite_skills": ["skill_earthquake"]},
+    "description": "凝聚大地全部魔力揮出創世之力的一擊，威力無與倫比但需蓄力。"
+  }
+]

@@ -1,6 +1,38 @@
 class_name BattleUI
 extends Control
 
+const DrawShape = preload("res://scripts/ui/draw_shape.gd")
+
+
+class _ElementIcon extends Control:
+	var _element: String = "none"
+	var _icon_size: float = 14.0
+
+	func _init(element: String, icon_size: float = 14.0) -> void:
+		_element = element
+		_icon_size = icon_size
+		custom_minimum_size = Vector2(icon_size + 8.0, icon_size + 4.0)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		DrawShape.draw_element_icon(self, _element, size / 2.0, _icon_size, ThemeConstants.get_element_color(_element))
+
+
+class _SkillTypeIcon extends Control:
+	var _skill_type: String = ""
+	var _icon_size: float = 10.0
+	var _color: Color = Color.WHITE
+
+	func _init(skill_type: String, icon_size: float = 10.0, color: Color = Color.WHITE) -> void:
+		_skill_type = skill_type
+		_icon_size = icon_size
+		_color = color
+		custom_minimum_size = Vector2(icon_size + 4.0, icon_size + 4.0)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		DrawShape.draw_skill_type_icon(self, _skill_type, size / 2.0, _icon_size, _color)
+
 
 signal skill_selected(skill_id: String)
 @warning_ignore("unused_signal")
@@ -46,6 +78,8 @@ var _familiar_status_label: Label
 
 
 func _ready() -> void:
+	# Hide until setup_battle() fills real data — prevents default panel flash
+	visible = false
 	_battle_manager = get_parent()
 	_ensure_status_labels()
 	_hide_all_subpanels()
@@ -102,6 +136,8 @@ func setup_battle(player_data, familiar_data, enemy_list: Array) -> void:
 	_generate_enemy_panels()
 	set_player_input_enabled(false)
 	add_log("戰鬥開始！")
+	# Now that real data is loaded, make UI visible
+	visible = true
 
 
 func _update_player_display() -> void:
@@ -144,13 +180,16 @@ func _generate_enemy_panels() -> void:
 
 func _create_enemy_panel(enemy) -> PanelContainer:
 	var panel := PanelContainer.new()
-	panel.custom_minimum_size = Vector2(200, 150)
+	panel.custom_minimum_size = Vector2(160, 120)
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var element_color: Color = ThemeConstants.get_element_color(enemy.element)
 	var panel_style := StyleBoxFlat.new()
-	panel_style.bg_color = ThemeConstants.PANEL_BG.darkened(0.2)
+	panel_style.bg_color = Color(ThemeConstants.PANEL_BG.darkened(0.2)).lerp(
+		Color(ThemeConstants.ELEMENT_BG_TINT.get(enemy.element, ThemeConstants.ELEMENT_BG_TINT["none"])),
+		0.4
+	)
 	panel_style.border_width_left = 2
 	panel_style.border_width_top = 2
 	panel_style.border_width_right = 2
@@ -160,24 +199,31 @@ func _create_enemy_panel(enemy) -> PanelContainer:
 	panel_style.corner_radius_top_right = 8
 	panel_style.corner_radius_bottom_right = 8
 	panel_style.corner_radius_bottom_left = 8
-	panel_style.content_margin_left = 12.0
-	panel_style.content_margin_top = 10.0
-	panel_style.content_margin_right = 12.0
-	panel_style.content_margin_bottom = 10.0
+	panel_style.content_margin_left = 8.0
+	panel_style.content_margin_top = 6.0
+	panel_style.content_margin_right = 8.0
+	panel_style.content_margin_bottom = 6.0
 	panel.add_theme_stylebox_override("panel", panel_style)
 
 	var vbox := VBoxContainer.new()
 	vbox.name = "Content"
 	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.add_theme_constant_override("separation", 6)
+	vbox.add_theme_constant_override("separation", 4)
 	panel.add_child(vbox)
+
+	var header_row := HBoxContainer.new()
+	header_row.add_theme_constant_override("separation", 4)
+	vbox.add_child(header_row)
+
+	var elem_icon := _ElementIcon.new(String(enemy.element), 16.0)
+	header_row.add_child(elem_icon)
 
 	var name_label := Label.new()
 	name_label.text = enemy.display_name
-	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_label.add_theme_font_size_override("font_size", 18)
+	name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_label.add_theme_font_size_override("font_size", 16)
 	name_label.add_theme_color_override("font_color", element_color)
-	vbox.add_child(name_label)
+	header_row.add_child(name_label)
 
 	var enemy_data := DataManager.get_enemy(enemy.id)
 	var level_label := Label.new()
@@ -187,14 +233,10 @@ func _create_enemy_panel(enemy) -> PanelContainer:
 	level_label.add_theme_font_size_override("font_size", 14)
 	vbox.add_child(level_label)
 
-	var spacer := Control.new()
-	spacer.custom_minimum_size.y = 4.0
-	vbox.add_child(spacer)
-
 	var hp_bar := ProgressBar.new()
 	hp_bar.max_value = enemy.max_hp
 	hp_bar.value = enemy.current_hp
-	hp_bar.custom_minimum_size.y = 18
+	hp_bar.custom_minimum_size.y = 14
 	hp_bar.show_percentage = false
 	_apply_bar_style(hp_bar, element_color.darkened(0.15), ThemeConstants.HP_BG_COLOR)
 	vbox.add_child(hp_bar)
@@ -321,37 +363,48 @@ func _populate_skill_list() -> void:
 		var cd: int = int(_player.cooldowns.get(skill_id, 0))
 		var skill_element: String = String(skill_data.get("element", "none"))
 		var is_usable: bool = bool(check.get("usable", false))
+		var base_power: int = int(skill_data.get("base_power", skill_data.get("power", 0)))
+		var rarity: String = String(skill_data.get("rarity", "N"))
 
 		var card := PanelContainer.new()
 		var card_style := StyleBoxFlat.new()
-		card_style.bg_color = ThemeConstants.BG_MID if is_usable else ThemeConstants.BG_DARK
+		var rarity_bg: Color = ThemeConstants.get_rarity_bg(rarity)
+		card_style.bg_color = Color(ThemeConstants.BG_MID).lerp(rarity_bg, 0.3) if is_usable else ThemeConstants.BG_DARK
 		card_style.corner_radius_top_left = 6
 		card_style.corner_radius_top_right = 6
 		card_style.corner_radius_bottom_right = 6
 		card_style.corner_radius_bottom_left = 6
-		card_style.border_width_left = 1
+		card_style.border_width_left = 3
 		card_style.border_width_bottom = 1
 		card_style.border_width_right = 1
 		card_style.border_width_top = 1
-		card_style.border_color = ThemeConstants.get_element_color(skill_element).darkened(0.4) if is_usable else Color(0.3, 0.3, 0.3, 0.5)
-		card_style.content_margin_left = 10.0
-		card_style.content_margin_top = 6.0
-		card_style.content_margin_right = 10.0
-		card_style.content_margin_bottom = 6.0
+		card_style.border_color = ThemeConstants.get_element_color(skill_element).darkened(0.3) if is_usable else Color(0.3, 0.3, 0.3, 0.5)
+		card_style.content_margin_left = 8.0
+		card_style.content_margin_top = 4.0
+		card_style.content_margin_right = 8.0
+		card_style.content_margin_bottom = 4.0
 		card.add_theme_stylebox_override("panel", card_style)
+
+		var card_hbox := HBoxContainer.new()
+		card_hbox.add_theme_constant_override("separation", 4)
+		card.add_child(card_hbox)
+
+		var elem_icon := _ElementIcon.new(skill_element, 14.0)
+		card_hbox.add_child(elem_icon)
 
 		var card_content := VBoxContainer.new()
 		card_content.add_theme_constant_override("separation", 2)
-		card.add_child(card_content)
+		card_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		card_hbox.add_child(card_content)
 
 		var top_row := HBoxContainer.new()
-		top_row.add_theme_constant_override("separation", 8)
+		top_row.add_theme_constant_override("separation", 6)
 		card_content.add_child(top_row)
 
 		var skill_name_label := Label.new()
 		skill_name_label.text = String(skill_data.get("name", "???"))
 		skill_name_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		skill_name_label.add_theme_font_size_override("font_size", 16)
+		skill_name_label.add_theme_font_size_override("font_size", 15)
 		if is_usable:
 			skill_name_label.add_theme_color_override("font_color", ThemeConstants.get_element_color(skill_element))
 		else:
@@ -359,6 +412,9 @@ func _populate_skill_list() -> void:
 		top_row.add_child(skill_name_label)
 
 		var skill_type: String = String(skill_data.get("type", ""))
+		var type_icon := _SkillTypeIcon.new(skill_type, 10.0, ThemeConstants.TEXT_SECONDARY)
+		top_row.add_child(type_icon)
+
 		var type_text: String = _get_skill_type_label(skill_type)
 		var type_label := Label.new()
 		type_label.text = type_text
@@ -367,27 +423,34 @@ func _populate_skill_list() -> void:
 		top_row.add_child(type_label)
 
 		var info_row := HBoxContainer.new()
-		info_row.add_theme_constant_override("separation", 16)
+		info_row.add_theme_constant_override("separation", 12)
 		card_content.add_child(info_row)
 
 		var mp_label := Label.new()
 		mp_label.text = "MP:%d" % mp_cost
-		mp_label.add_theme_font_size_override("font_size", 13)
+		mp_label.add_theme_font_size_override("font_size", 12)
 		mp_label.add_theme_color_override("font_color", ThemeConstants.MP_COLOR if is_usable else ThemeConstants.TEXT_SECONDARY)
 		info_row.add_child(mp_label)
 
 		var pp_label := Label.new()
 		pp_label.text = "PP:%d" % remaining_pp
-		pp_label.add_theme_font_size_override("font_size", 13)
+		pp_label.add_theme_font_size_override("font_size", 12)
 		pp_label.add_theme_color_override("font_color", ThemeConstants.EXP_COLOR if remaining_pp > 0 else Color.RED)
 		info_row.add_child(pp_label)
 
 		if cd > 0:
 			var cd_label := Label.new()
 			cd_label.text = "CD:%d" % cd
-			cd_label.add_theme_font_size_override("font_size", 13)
+			cd_label.add_theme_font_size_override("font_size", 12)
 			cd_label.add_theme_color_override("font_color", Color.RED)
 			info_row.add_child(cd_label)
+
+		if base_power > 0:
+			var power_label := Label.new()
+			power_label.text = "POW:%d" % base_power
+			power_label.add_theme_font_size_override("font_size", 12)
+			power_label.add_theme_color_override("font_color", ThemeConstants.TEXT_SECONDARY)
+			info_row.add_child(power_label)
 
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
 		var captured_id: String = skill_id
@@ -405,6 +468,9 @@ func _populate_skill_list() -> void:
 
 
 func _get_skill_type_label(skill_type: String) -> String:
+	var display := DrawShape.get_skill_type_display(skill_type)
+	if not display.is_empty():
+		return "[%s]" % display
 	if skill_type.contains("all"):
 		return "[全體]"
 	elif skill_type.contains("self"):
@@ -565,6 +631,12 @@ func update_turn_order(order: Array) -> void:
 		child.queue_free()
 
 	for combatant in order:
+		var entry := HBoxContainer.new()
+		entry.add_theme_constant_override("separation", 4)
+
+		var icon := _ElementIcon.new(String(combatant.element), 12.0)
+		entry.add_child(icon)
+
 		var label := Label.new()
 		label.text = combatant.display_name
 		label.add_theme_font_size_override("font_size", 14)
@@ -574,7 +646,9 @@ func update_turn_order(order: Array) -> void:
 			label.add_theme_color_override("font_color", Color.CYAN)
 		else:
 			label.add_theme_color_override("font_color", ThemeConstants.get_element_color(combatant.element))
-		turn_order_display.add_child(label)
+		entry.add_child(label)
+
+		turn_order_display.add_child(entry)
 
 
 func add_log(text: String, color: Color = Color.WHITE) -> void:

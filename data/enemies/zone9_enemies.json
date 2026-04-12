@@ -1,0 +1,128 @@
+[
+	{
+		"id": "enemy_void_wanderer",
+		"name": "虛空漫遊者",
+		"element": "none",
+		"level": 37,
+		"stats": {
+			"hp": 550,
+			"mp": 65,
+			"matk": 115,
+			"mdef": 55,
+			"patk": 38,
+			"pdef": 30,
+			"speed": 24
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_swift", "skill_mimic", "skill_focus_energy"],
+		"drops": [
+			{"id": "mat_void_essence", "rate": 0.30},
+			{"id": "mat_ancient_shard", "rate": 0.10},
+			{"id": "item_hp_potion_l", "rate": 0.20}
+		],
+		"exp": 100,
+		"gold": 70,
+		"visual": {
+			"shape": "circle",
+			"color": "#8866AA",
+			"size": "medium",
+			"effects": ["shadow_trail"]
+		},
+		"floor_range": [81, 88]
+	},
+	{
+		"id": "enemy_chaos_phantom",
+		"name": "混沌幻影",
+		"element": "dark",
+		"level": 38,
+		"stats": {
+			"hp": 600,
+			"mp": 70,
+			"matk": 125,
+			"mdef": 58,
+			"patk": 35,
+			"pdef": 32,
+			"speed": 28
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_shadow_ball", "skill_hex", "skill_soul_steal"],
+		"drops": [
+			{"id": "mat_void_essence", "rate": 0.25},
+			{"id": "mat_dark_crystal", "rate": 0.15},
+			{"id": "item_mp_potion_l", "rate": 0.15}
+		],
+		"exp": 110,
+		"gold": 75,
+		"visual": {
+			"shape": "hexagon",
+			"color": "#AA66CC",
+			"size": "medium",
+			"effects": ["shadow_trail"]
+		},
+		"floor_range": [81, 88]
+	},
+	{
+		"id": "enemy_dimensional_guard",
+		"name": "異界門衛",
+		"element": "earth",
+		"level": 39,
+		"stats": {
+			"hp": 750,
+			"mp": 50,
+			"matk": 100,
+			"mdef": 70,
+			"patk": 48,
+			"pdef": 48,
+			"speed": 12
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_earthquake", "skill_iron_defense", "skill_barrier"],
+		"drops": [
+			{"id": "mat_void_essence", "rate": 0.30},
+			{"id": "mat_earth_crystal", "rate": 0.20},
+			{"id": "mat_ancient_shard", "rate": 0.15}
+		],
+		"exp": 120,
+		"gold": 80,
+		"visual": {
+			"shape": "square",
+			"color": "#667788",
+			"size": "large",
+			"effects": []
+		},
+		"floor_range": [82, 88]
+	},
+	{
+		"id": "boss_void_king",
+		"name": "虛空之王",
+		"element": "none",
+		"level": 42,
+		"stats": {
+			"hp": 2000,
+			"mp": 160,
+			"matk": 155,
+			"mdef": 75,
+			"patk": 52,
+			"pdef": 48,
+			"speed": 20
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_swift", "skill_substitute", "skill_protect", "skill_power_up", "skill_barrier"],
+		"drops": [
+			{"id": "mat_ancient_shard", "rate": 0.40},
+			{"id": "mat_void_essence", "rate": 0.60},
+			{"id": "weapon_void_staff", "rate": 0.10},
+			{"id": "acc_time_watch", "rate": 0.08}
+		],
+		"exp": 600,
+		"gold": 350,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#9977CC",
+			"size": "large",
+			"effects": ["glow", "shadow_trail"]
+		},
+		"floor_range": [89, 89],
+		"is_boss": true
+	}
+]

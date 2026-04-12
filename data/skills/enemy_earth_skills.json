@@ -1,0 +1,51 @@
+[
+    {
+        "id": "skill_rock_throw",
+        "name": "投石",
+        "element": "earth",
+        "type": "attack_single",
+        "base_power": 45,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 95,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 45}
+        ],
+        "description": "投擲巨大岩石砸向目標"
+    },
+    {
+        "id": "skill_ground_slam",
+        "name": "地裂",
+        "element": "earth",
+        "type": "attack_all",
+        "base_power": 50,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 90,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "all_enemies", "power": 50},
+            {"type": "buff", "target": "all_enemies", "stat": "speed", "value": -10, "duration": 2}
+        ],
+        "description": "重踏地面引發裂隙波及全體"
+    },
+    {
+        "id": "skill_stone_barrage",
+        "name": "碎石彈幕",
+        "element": "earth",
+        "type": "attack_single",
+        "base_power": 65,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 85,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 65}
+        ],
+        "description": "連續發射大量碎石攻擊單一目標"
+    }
+]

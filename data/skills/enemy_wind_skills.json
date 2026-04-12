@@ -1,0 +1,67 @@
+[
+    {
+        "id": "skill_wind_blade",
+        "name": "風刃",
+        "element": "wind",
+        "type": "attack_single",
+        "base_power": 50,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 95,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 50}
+        ],
+        "description": "以鋒利風刃切割目標"
+    },
+    {
+        "id": "skill_storm_breath",
+        "name": "暴風吐息",
+        "element": "wind",
+        "type": "attack_all",
+        "base_power": 45,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 90,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "all_enemies", "power": 45}
+        ],
+        "description": "吐出猛烈風暴席捲全體敵人"
+    },
+    {
+        "id": "skill_feather_dart",
+        "name": "羽刃",
+        "element": "wind",
+        "type": "attack_single",
+        "base_power": 35,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 100,
+        "priority": 1,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 35}
+        ],
+        "description": "以風力加速的羽毛射擊，必定先手"
+    },
+    {
+        "id": "skill_gale_force",
+        "name": "烈風衝擊",
+        "element": "wind",
+        "type": "attack_single",
+        "base_power": 70,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 90,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 70},
+            {"type": "buff", "target": "single_enemy", "stat": "speed", "value": -15, "duration": 2}
+        ],
+        "description": "猛烈風壓衝擊目標，使其速度下降"
+    }
+]

@@ -67,6 +67,46 @@ func get_available_side_quests(current_floor: int) -> Array[Dictionary]:
 	return result
 
 
+func get_available_main_quests(current_floor: int) -> Array[Dictionary]:
+	_ensure_player_data()
+	var result: Array[Dictionary] = []
+	for quest_data in DataManager.get_all_quests():
+		if String(quest_data.get("type", "")) != "main":
+			continue
+		var quest_id: String = String(quest_data.get("id", ""))
+		if quest_id.is_empty():
+			continue
+		if _is_quest_active(quest_id):
+			continue
+		if _is_non_repeatable_completed(quest_id, quest_data):
+			continue
+		if not _is_main_quest_available(quest_data, current_floor):
+			continue
+		result.append(Dictionary(quest_data).duplicate(true))
+	return result
+
+
+func check_auto_main_quests(current_floor: int) -> void:
+	_ensure_player_data()
+	for quest_data in get_available_main_quests(current_floor):
+		var quest_id: String = String(quest_data.get("id", ""))
+		if quest_id.is_empty():
+			continue
+		if _is_quest_active(quest_id):
+			continue
+		if PlayerManager.player_data.active_quests.size() >= MAX_ACTIVE_QUESTS:
+			continue
+		var trigger: String = String(quest_data.get("trigger", "auto"))
+		if trigger != "auto":
+			continue
+		var available_from: int = int(quest_data.get("available_from_floor", 1))
+		var progress_floor: int = current_floor
+		if PlayerManager.player_data != null:
+			progress_floor = maxi(progress_floor, PlayerManager.player_data.highest_floor)
+		if progress_floor >= available_from:
+			accept_quest(quest_id)
+
+
 func accept_quest(quest_id: String) -> Dictionary:
 	_ensure_player_data()
 
@@ -203,6 +243,17 @@ func complete_quest(quest_id: String) -> Dictionary:
 	on_item_changed()
 
 	quest_completed.emit(quest_id)
+
+	# Auto-trigger next main quest after completing one with next_quest
+	var next_quest_id: String = String(quest_data.get("next_quest", ""))
+	if not next_quest_id.is_empty() and not _is_quest_active(next_quest_id):
+		var next_quest_data: Dictionary = DataManager.get_quest(next_quest_id)
+		if not next_quest_data.is_empty() and String(next_quest_data.get("type", "")) == "main":
+			var current_floor: int = PlayerManager.player_data.highest_floor if PlayerManager.player_data != null else 1
+			if _is_main_quest_available(next_quest_data, current_floor):
+				if PlayerManager.player_data.active_quests.size() < MAX_ACTIVE_QUESTS:
+					accept_quest(next_quest_id)
+
 	return {"success": true, "reason": "", "rewards": rewards}
 
 
@@ -342,6 +393,28 @@ func _is_side_quest_available(quest_data: Dictionary, current_floor: int) -> boo
 		"reach_floor":
 			return progress_floor >= int(quest_data.get("trigger_floor", 1))
 		"auto":
+			return progress_floor >= int(quest_data.get("available_from_floor", 1))
+		_:
+			return false
+
+
+func _is_main_quest_available(quest_data: Dictionary, current_floor: int) -> bool:
+	var trigger_type: String = String(quest_data.get("trigger", "auto"))
+	var progress_floor: int = current_floor
+	if PlayerManager.player_data != null:
+		progress_floor = maxi(progress_floor, PlayerManager.player_data.highest_floor)
+
+	match trigger_type:
+		"auto":
+			return progress_floor >= int(quest_data.get("available_from_floor", 1))
+		"quest_complete":
+			var trigger_quest: String = String(quest_data.get("trigger_quest", ""))
+			if trigger_quest.is_empty():
+				return false
+			if PlayerManager.player_data == null:
+				return false
+			if not PlayerManager.player_data.completed_quests.has(trigger_quest):
+				return false
 			return progress_floor >= int(quest_data.get("available_from_floor", 1))
 		_:
 			return false

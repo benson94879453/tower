@@ -24,7 +24,7 @@
 		},
 		"max_level": 50,
 		"skill_slots": 2,
-		"default_skills": ["skill_flame_claw"],
+		"default_skills": ["skill_fireball"],
 		"evolution": {
 			"target_id": "familiar_inferno_demon",
 			"required_level": 25,
@@ -100,7 +100,7 @@
 		},
 		"max_level": 50,
 		"skill_slots": 3,
-		"default_skills": ["skill_flame_claw", "skill_fireball", "skill_fire_storm"],
+		"default_skills": ["skill_spark", "skill_fireball", "skill_fire_storm"],
 		"evolution": {},
 		"visual": {
 			"shape": "diamond",
@@ -142,5 +142,365 @@
 			"size": "large"
 		},
 		"obtain_source": "冰霜守衛進化"
+	},
+	{
+		"id": "familiar_wind_hawk",
+		"name": "風鷹",
+		"element": "wind",
+		"type": "attack",
+		"base_stats": {
+			"hp": 70,
+			"mp": 35,
+			"matk": 30,
+			"mdef": 10,
+			"patk": 25,
+			"pdef": 8,
+			"speed": 35
+		},
+		"growth_per_level": {
+			"hp": 6,
+			"mp": 3,
+			"matk": 3,
+			"mdef": 1,
+			"patk": 2,
+			"pdef": 1,
+			"speed": 3
+		},
+		"max_level": 50,
+		"skill_slots": 2,
+		"default_skills": ["skill_gust"],
+		"evolution": {
+			"target_id": "familiar_sky_eagle",
+			"required_level": 25,
+			"required_items": [{"id": "mat_wind_crystal", "count": 10}]
+		},
+		"visual": {
+			"shape": "sharp_triangle",
+			"color": "#44CC88",
+			"size": "small"
+		},
+		"obtain_source": "暴風迴廊區域掉落"
+	},
+	{
+		"id": "familiar_thunder_spirit",
+		"name": "雷精靈",
+		"element": "thunder",
+		"type": "attack",
+		"base_stats": {
+			"hp": 65,
+			"mp": 40,
+			"matk": 38,
+			"mdef": 14,
+			"patk": 15,
+			"pdef": 10,
+			"speed": 30
+		},
+		"growth_per_level": {
+			"hp": 7,
+			"mp": 4,
+			"matk": 4,
+			"mdef": 1,
+			"patk": 1,
+			"pdef": 1,
+			"speed": 2
+		},
+		"max_level": 50,
+		"skill_slots": 2,
+		"default_skills": ["skill_thunder_shock"],
+		"evolution": {
+			"target_id": "familiar_storm_lord",
+			"required_level": 25,
+			"required_items": [{"id": "mat_thunder_crystal", "count": 10}]
+		},
+		"visual": {
+			"shape": "diamond",
+			"color": "#FFD700",
+			"size": "small"
+		},
+		"obtain_source": "雷鳴雲海區域掉落"
+	},
+	{
+		"id": "familiar_rock_tortoise",
+		"name": "岩龜",
+		"element": "earth",
+		"type": "defense",
+		"base_stats": {
+			"hp": 140,
+			"mp": 20,
+			"matk": 12,
+			"mdef": 28,
+			"patk": 15,
+			"pdef": 30,
+			"speed": 8
+		},
+		"growth_per_level": {
+			"hp": 12,
+			"mp": 2,
+			"matk": 1,
+			"mdef": 3,
+			"patk": 2,
+			"pdef": 3,
+			"speed": 1
+		},
+		"max_level": 50,
+		"skill_slots": 2,
+		"default_skills": ["skill_mud_slap"],
+		"evolution": {
+			"target_id": "familiar_mountain_golem",
+			"required_level": 25,
+			"required_items": [{"id": "mat_earth_crystal", "count": 10}]
+		},
+		"visual": {
+			"shape": "hexagon",
+			"color": "#AA8855",
+			"size": "medium"
+		},
+		"obtain_source": "大地迷宮區域掉落"
+	},
+	{
+		"id": "familiar_shadow_fox",
+		"name": "暗影狐",
+		"element": "dark",
+		"type": "attack",
+		"base_stats": {
+			"hp": 75,
+			"mp": 35,
+			"matk": 32,
+			"mdef": 12,
+			"patk": 22,
+			"pdef": 10,
+			"speed": 32
+		},
+		"growth_per_level": {
+			"hp": 7,
+			"mp": 3,
+			"matk": 3,
+			"mdef": 1,
+			"patk": 2,
+			"pdef": 1,
+			"speed": 3
+		},
+		"max_level": 50,
+		"skill_slots": 2,
+		"default_skills": ["skill_shadow_sneak"],
+		"evolution": {
+			"target_id": "familiar_nightmare_wolf",
+			"required_level": 25,
+			"required_items": [{"id": "mat_dark_crystal", "count": 10}]
+		},
+		"visual": {
+			"shape": "sharp_triangle",
+			"color": "#8844AA",
+			"size": "small"
+		},
+		"obtain_source": "暗影深淵區域掉落"
+	},
+	{
+		"id": "familiar_holy_fairy",
+		"name": "聖光妖精",
+		"element": "light",
+		"type": "support",
+		"base_stats": {
+			"hp": 90,
+			"mp": 50,
+			"matk": 20,
+			"mdef": 22,
+			"patk": 10,
+			"pdef": 15,
+			"speed": 25
+		},
+		"growth_per_level": {
+			"hp": 8,
+			"mp": 5,
+			"matk": 2,
+			"mdef": 3,
+			"patk": 1,
+			"pdef": 2,
+			"speed": 2
+		},
+		"max_level": 50,
+		"skill_slots": 2,
+		"default_skills": ["skill_holy_light"],
+		"evolution": {
+			"target_id": "familiar_seraphim",
+			"required_level": 25,
+			"required_items": [{"id": "mat_light_crystal", "count": 10}]
+		},
+		"visual": {
+			"shape": "diamond",
+			"color": "#FFEE88",
+			"size": "small"
+		},
+		"obtain_source": "聖光殿堂區域掉落"
+	},
+	{
+		"id": "familiar_sky_eagle",
+		"name": "蒼穹鷹",
+		"element": "wind",
+		"type": "attack",
+		"base_stats": {
+			"hp": 150,
+			"mp": 70,
+			"matk": 65,
+			"mdef": 22,
+			"patk": 45,
+			"pdef": 18,
+			"speed": 55
+		},
+		"growth_per_level": {
+			"hp": 10,
+			"mp": 5,
+			"matk": 5,
+			"mdef": 2,
+			"patk": 3,
+			"pdef": 2,
+			"speed": 4
+		},
+		"max_level": 50,
+		"skill_slots": 3,
+		"default_skills": ["skill_gust", "skill_air_slash", "skill_hurricane"],
+		"evolution": {},
+		"visual": {
+			"shape": "sharp_triangle",
+			"color": "#22AA66",
+			"size": "large"
+		},
+		"obtain_source": "風鷹進化"
+	},
+	{
+		"id": "familiar_storm_lord",
+		"name": "暴風領主",
+		"element": "thunder",
+		"type": "attack",
+		"base_stats": {
+			"hp": 140,
+			"mp": 80,
+			"matk": 75,
+			"mdef": 28,
+			"patk": 30,
+			"pdef": 20,
+			"speed": 50
+		},
+		"growth_per_level": {
+			"hp": 11,
+			"mp": 6,
+			"matk": 6,
+			"mdef": 2,
+			"patk": 2,
+			"pdef": 2,
+			"speed": 3
+		},
+		"max_level": 50,
+		"skill_slots": 3,
+		"default_skills": ["skill_thunder_shock", "skill_thunderbolt", "skill_discharge"],
+		"evolution": {},
+		"visual": {
+			"shape": "diamond",
+			"color": "#FFAA00",
+			"size": "large"
+		},
+		"obtain_source": "雷精靈進化"
+	},
+	{
+		"id": "familiar_mountain_golem",
+		"name": "山嶽魔像",
+		"element": "earth",
+		"type": "defense",
+		"base_stats": {
+			"hp": 250,
+			"mp": 40,
+			"matk": 25,
+			"mdef": 45,
+			"patk": 25,
+			"pdef": 50,
+			"speed": 10
+		},
+		"growth_per_level": {
+			"hp": 15,
+			"mp": 3,
+			"matk": 2,
+			"mdef": 4,
+			"patk": 3,
+			"pdef": 5,
+			"speed": 1
+		},
+		"max_level": 50,
+		"skill_slots": 3,
+		"default_skills": ["skill_mud_slap", "skill_earthquake", "skill_iron_defense"],
+		"evolution": {},
+		"visual": {
+			"shape": "hexagon",
+			"color": "#886633",
+			"size": "large"
+		},
+		"obtain_source": "岩龜進化"
+	},
+	{
+		"id": "familiar_nightmare_wolf",
+		"name": "噩夢狼",
+		"element": "dark",
+		"type": "attack",
+		"base_stats": {
+			"hp": 160,
+			"mp": 70,
+			"matk": 68,
+			"mdef": 25,
+			"patk": 50,
+			"pdef": 22,
+			"speed": 55
+		},
+		"growth_per_level": {
+			"hp": 11,
+			"mp": 5,
+			"matk": 5,
+			"mdef": 2,
+			"patk": 4,
+			"pdef": 2,
+			"speed": 4
+		},
+		"max_level": 50,
+		"skill_slots": 3,
+		"default_skills": ["skill_shadow_sneak", "skill_dark_pulse", "skill_nasty_plot"],
+		"evolution": {},
+		"visual": {
+			"shape": "sharp_triangle",
+			"color": "#6622AA",
+			"size": "large"
+		},
+		"obtain_source": "暗影狐進化"
+	},
+	{
+		"id": "familiar_seraphim",
+		"name": "熾天使",
+		"element": "light",
+		"type": "support",
+		"base_stats": {
+			"hp": 200,
+			"mp": 100,
+			"matk": 45,
+			"mdef": 40,
+			"patk": 20,
+			"pdef": 30,
+			"speed": 40
+		},
+		"growth_per_level": {
+			"hp": 12,
+			"mp": 7,
+			"matk": 4,
+			"mdef": 4,
+			"patk": 2,
+			"pdef": 3,
+			"speed": 3
+		},
+		"max_level": 50,
+		"skill_slots": 3,
+		"default_skills": ["skill_holy_light", "skill_purify", "skill_sanctuary"],
+		"evolution": {},
+		"visual": {
+			"shape": "diamond",
+			"color": "#FFDD44",
+			"size": "large"
+		},
+		"obtain_source": "聖光妖精進化"
 	}
 ]

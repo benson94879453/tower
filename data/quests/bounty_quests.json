@@ -92,12 +92,12 @@
 	},
 	{
 		"id": "bounty_kill_boss_10",
-		"name": "挑戰 10F Boss",
+		"name": "挑戰 9F Boss",
 		"type": "bounty",
-		"description": "擊敗 10F 的守關 Boss，向酒館證明你的實力。",
+		"description": "擊敗 9F 的守關 Boss，向酒館證明你的實力。",
 		"zone": 1,
 		"objectives": [
-			{ "type": "kill_boss", "floor": 10, "count": 1 }
+			{ "type": "kill_boss", "floor": 9, "count": 1 }
 		],
 		"rewards": {
 			"gold": 1000,
@@ -108,6 +108,166 @@
 		},
 		"min_floor": 1,
 		"max_floor": 10,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_scorched_golem_5",
+		"name": "消滅焦土魔像",
+		"type": "bounty",
+		"description": "在熔岩鍛爐消滅 5 隻焦土魔像。",
+		"zone": 2,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_scorched_golem", "count": 5 }
+		],
+		"rewards": {
+			"gold": 500,
+			"exp": 250,
+			"items": [
+				{ "id": "mat_fire_crystal", "count": 3 }
+			]
+		},
+		"min_floor": 11,
+		"max_floor": 20,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_frost_armor_guard_5",
+		"name": "消滅霜甲衛兵",
+		"type": "bounty",
+		"description": "在極寒冰域消滅 5 名霜甲衛兵。",
+		"zone": 3,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_frost_armor_guard", "count": 5 }
+		],
+		"rewards": {
+			"gold": 500,
+			"exp": 250,
+			"items": [
+				{ "id": "mat_ice_crystal", "count": 3 }
+			]
+		},
+		"min_floor": 21,
+		"max_floor": 30,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_gale_hawk_5",
+		"name": "消滅疾風鷹",
+		"type": "bounty",
+		"description": "在暴風迴廊消滅 5 隻疾風鷹。",
+		"zone": 4,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_gale_hawk", "count": 5 }
+		],
+		"rewards": {
+			"gold": 600,
+			"exp": 300,
+			"items": [
+				{ "id": "mat_wind_crystal", "count": 3 }
+			]
+		},
+		"min_floor": 31,
+		"max_floor": 40,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_rock_centipede_5",
+		"name": "消滅岩甲蜈蚣",
+		"type": "bounty",
+		"description": "在大地迷宮消滅 5 隻岩甲蜈蚣。",
+		"zone": 5,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_rock_centipede", "count": 5 }
+		],
+		"rewards": {
+			"gold": 600,
+			"exp": 300,
+			"items": [
+				{ "id": "mat_earth_crystal", "count": 3 }
+			]
+		},
+		"min_floor": 41,
+		"max_floor": 50,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_thunder_wolf_5",
+		"name": "消滅雷光狼",
+		"type": "bounty",
+		"description": "在雷鳴雲海消滅 5 隻雷光狼。",
+		"zone": 6,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_thunder_wolf", "count": 5 }
+		],
+		"rewards": {
+			"gold": 700,
+			"exp": 350,
+			"items": [
+				{ "id": "mat_thunder_crystal", "count": 3 }
+			]
+		},
+		"min_floor": 51,
+		"max_floor": 60,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_shadow_assassin_5",
+		"name": "消滅暗影刺客",
+		"type": "bounty",
+		"description": "在暗影深淵消滅 5 名暗影刺客。",
+		"zone": 7,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_shadow_assassin", "count": 5 }
+		],
+		"rewards": {
+			"gold": 700,
+			"exp": 350,
+			"items": [
+				{ "id": "mat_dark_crystal", "count": 3 }
+			]
+		},
+		"min_floor": 61,
+		"max_floor": 70,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_holy_knight_5",
+		"name": "消滅聖光騎士",
+		"type": "bounty",
+		"description": "在聖光殿堂消滅 5 名聖光騎士。",
+		"zone": 8,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_holy_knight", "count": 5 }
+		],
+		"rewards": {
+			"gold": 800,
+			"exp": 400,
+			"items": [
+				{ "id": "mat_light_crystal", "count": 3 }
+			]
+		},
+		"min_floor": 71,
+		"max_floor": 80,
+		"repeatable": true
+	},
+	{
+		"id": "bounty_kill_void_wanderer_5",
+		"name": "消滅虛空漫遊者",
+		"type": "bounty",
+		"description": "在虛空之境消滅 5 隻虛空漫遊者。",
+		"zone": 9,
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_void_wanderer", "count": 5 }
+		],
+		"rewards": {
+			"gold": 900,
+			"exp": 450,
+			"items": [
+				{ "id": "mat_void_essence", "count": 2 }
+			]
+		},
+		"min_floor": 81,
+		"max_floor": 90,
 		"repeatable": true
 	}
 ]

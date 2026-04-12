@@ -9,7 +9,7 @@
     "7": { "name": "暗影深淵", "element": "dark", "floors": [61, 69], "boss_floor": 69 },
     "8": { "name": "聖光殿堂", "element": "light", "floors": [71, 79], "boss_floor": 79 },
     "9": { "name": "虛空之境", "element": "none", "floors": [81, 89], "boss_floor": 89 },
-    "10": { "name": "混沌領域", "element": "none", "floors": [91, 99], "boss_floor": 99 }
+    "10": { "name": "混沌領域", "element": "none", "floors": [91, 100], "boss_floor": 99 }
   },
   "safe_floors": [1, 10, 20, 30, 40, 50, 60, 70, 80, 90],
   "node_weights": {

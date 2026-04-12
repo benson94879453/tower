@@ -48,5 +48,109 @@
 			{"id": "mat_magic_crystal", "count": 3}
 		],
 		"description": "使用魔力結晶鍛造基礎法袍"
+	},
+	{
+		"id": "recipe_weapon_ice_staff",
+		"type": "craft",
+		"result_id": "weapon_ice_staff",
+		"result_name": "冰霜法杖",
+		"available_from_floor": 3,
+		"gold_cost": 250,
+		"materials": [
+			{"id": "mat_iron_ore", "count": 5},
+			{"id": "mat_ice_crystal", "count": 3}
+		],
+		"description": "使用鐵礦石與冰霜結晶鍛造冰霜法杖"
+	},
+	{
+		"id": "recipe_weapon_wind_staff",
+		"type": "craft",
+		"result_id": "weapon_wind_staff",
+		"result_name": "暴風法杖",
+		"available_from_floor": 8,
+		"gold_cost": 350,
+		"materials": [
+			{"id": "mat_iron_ore", "count": 5},
+			{"id": "mat_wind_crystal", "count": 3}
+		],
+		"description": "使用鐵礦石與疾風結晶鍛造暴風法杖"
+	},
+	{
+		"id": "recipe_weapon_thunder_staff",
+		"type": "craft",
+		"result_id": "weapon_thunder_staff",
+		"result_name": "雷鳴法杖",
+		"available_from_floor": 12,
+		"gold_cost": 400,
+		"materials": [
+			{"id": "mat_iron_ore", "count": 8},
+			{"id": "mat_thunder_crystal", "count": 3}
+		],
+		"description": "使用鐵礦石與雷鳴結晶鍛造雷鳴法杖"
+	},
+	{
+		"id": "recipe_weapon_earth_staff",
+		"type": "craft",
+		"result_id": "weapon_earth_staff",
+		"result_name": "大地法杖",
+		"available_from_floor": 15,
+		"gold_cost": 380,
+		"materials": [
+			{"id": "mat_iron_ore", "count": 8},
+			{"id": "mat_earth_crystal", "count": 3}
+		],
+		"description": "使用鐵礦石與大地結晶鍛造大地法杖"
+	},
+	{
+		"id": "recipe_armor_ice_robe",
+		"type": "craft",
+		"result_id": "armor_ice_robe",
+		"result_name": "冰霜法袍",
+		"available_from_floor": 3,
+		"gold_cost": 300,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 5},
+			{"id": "mat_ice_crystal", "count": 2}
+		],
+		"description": "使用魔力結晶與冰霜結晶鍛造冰霜法袍"
+	},
+	{
+		"id": "recipe_armor_wind_mantle",
+		"type": "craft",
+		"result_id": "armor_wind_mantle",
+		"result_name": "疾風披風",
+		"available_from_floor": 8,
+		"gold_cost": 320,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 4},
+			{"id": "mat_wind_crystal", "count": 2}
+		],
+		"description": "使用魔力結晶與疾風結晶鍛造疾風披風"
+	},
+	{
+		"id": "recipe_armor_thunder_vest",
+		"type": "craft",
+		"result_id": "armor_thunder_vest",
+		"result_name": "雷鳴背心",
+		"available_from_floor": 12,
+		"gold_cost": 380,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 5},
+			{"id": "mat_thunder_crystal", "count": 2}
+		],
+		"description": "使用魔力結晶與雷鳴結晶鍛造雷鳴背心"
+	},
+	{
+		"id": "recipe_armor_earth_plate",
+		"type": "craft",
+		"result_id": "armor_earth_plate",
+		"result_name": "大地護甲",
+		"available_from_floor": 15,
+		"gold_cost": 420,
+		"materials": [
+			{"id": "mat_iron_ore", "count": 10},
+			{"id": "mat_earth_crystal", "count": 3}
+		],
+		"description": "使用鐵礦石與大地結晶鍛造大地護甲"
 	}
 ]

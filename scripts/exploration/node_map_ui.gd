@@ -18,6 +18,7 @@ var _node_positions: Dictionary = {}
 var _hovered_node_id: int = -1
 var _interaction_locked: bool = false
 var _breath_time: float = 0.0
+var _zone_id: String = ""
 
 
 func _ready() -> void:
@@ -42,6 +43,11 @@ func set_interaction_locked(locked: bool) -> void:
 	_interaction_locked = locked
 	if locked:
 		_hovered_node_id = -1
+	queue_redraw()
+
+
+func set_zone_id(zid: String) -> void:
+	_zone_id = zid
 	queue_redraw()
 
 
@@ -97,6 +103,9 @@ func _draw() -> void:
 
 func _draw_background_grid() -> void:
 	var grid_color := Color(1, 1, 1, 0.03)
+	if not _zone_id.is_empty() and ThemeConstantsClass.ZONE_AMBIENT.has(_zone_id):
+		var accent: Color = ThemeConstantsClass.ZONE_AMBIENT[_zone_id].get("accent", Color.GRAY)
+		grid_color = Color(accent.r, accent.g, accent.b, 0.05)
 	var spacing: float = 60.0
 	var x: float = 0.0
 	while x < size.x:
@@ -126,7 +135,10 @@ func _draw_connections(nodes: Array) -> void:
 			var line_width: float = 1.5
 			if from_id == _current_node_id and _reachable_ids.has(connection_id):
 				var breath_alpha: float = 0.6 + 0.4 * sin(_breath_time)
-				line_color = Color(1.0, 0.84, 0.0, breath_alpha)
+				var glow_color := Color(1.0, 0.84, 0.0)
+				if not _zone_id.is_empty() and ThemeConstantsClass.ZONE_AMBIENT.has(_zone_id):
+					glow_color = ThemeConstantsClass.ZONE_AMBIENT[_zone_id].get("accent", Color.GOLD)
+				line_color = Color(glow_color.r, glow_color.g, glow_color.b, breath_alpha)
 				line_width = 2.5
 			elif bool(node.get("visited", false)):
 				line_color = Color(1, 1, 1, 0.35)
@@ -163,8 +175,15 @@ func _draw_nodes(nodes: Array) -> void:
 		var is_hovered: bool = node_id == _hovered_node_id and is_reachable
 
 		if is_current:
-			border_color = Color.GOLD
-			draw_circle(node_pos, NODE_RADIUS + 6.0, Color(1, 0.84, 0, 0.25))
+			if not _zone_id.is_empty() and ThemeConstantsClass.ZONE_AMBIENT.has(_zone_id):
+				border_color = ThemeConstantsClass.ZONE_AMBIENT[_zone_id].get("accent", Color.GOLD)
+			else:
+				border_color = Color.GOLD
+			var current_glow := Color(1, 0.84, 0, 0.25)
+			if not _zone_id.is_empty() and ThemeConstantsClass.ZONE_AMBIENT.has(_zone_id):
+				var ac: Color = ThemeConstantsClass.ZONE_AMBIENT[_zone_id].get("accent", Color.GOLD)
+				current_glow = Color(ac.r, ac.g, ac.b, 0.25)
+			draw_circle(node_pos, NODE_RADIUS + 6.0, current_glow)
 		elif is_reachable:
 			var breath_alpha: float = 0.15 + 0.15 * sin(_breath_time)
 			border_color = Color.GREEN

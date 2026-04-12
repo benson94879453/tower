@@ -36,6 +36,24 @@
 		"available_from_floor": 10
 	},
 	{
+		"id": "item_hp_potion_l",
+		"name": "回復藥水（大）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 180,
+		"sell_price": 90,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "heal_hp", "value": 300}
+		],
+		"description": "回復 300 HP",
+		"available_from_floor": 20
+	},
+	{
 		"id": "item_mp_potion_s",
 		"name": "魔力藥水（小）",
 		"type": "consumable",
@@ -52,5 +70,131 @@
 		],
 		"description": "回復 30 MP",
 		"available_from_floor": 1
+	},
+	{
+		"id": "item_mp_potion_m",
+		"name": "魔力藥水（中）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 10,
+		"buy_price": 60,
+		"sell_price": 30,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "heal_mp", "value": 80}
+		],
+		"description": "回復 80 MP",
+		"available_from_floor": 10
+	},
+	{
+		"id": "item_mp_potion_l",
+		"name": "魔力藥水（大）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 150,
+		"sell_price": 75,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "heal_mp", "value": 200}
+		],
+		"description": "回復 200 MP",
+		"available_from_floor": 25
+	},
+	{
+		"id": "item_revive_feather",
+		"name": "復活羽毛",
+		"type": "consumable",
+		"subtype": "revival",
+		"rarity": "SR",
+		"stackable": true,
+		"max_stack": 3,
+		"buy_price": 300,
+		"sell_price": 150,
+		"usable_in_battle": true,
+		"usable_in_explore": false,
+		"effects": [
+			{"type": "revive", "hp_percent": 50}
+		],
+		"description": "戰鬥中復活並回復 50% HP",
+		"available_from_floor": 15
+	},
+	{
+		"id": "item_elixir_s",
+		"name": "萬能藥（小）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "N",
+		"stackable": true,
+		"max_stack": 10,
+		"buy_price": 50,
+		"sell_price": 25,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "cure_status"}
+		],
+		"description": "治療一個異常狀態",
+		"available_from_floor": 5
+	},
+	{
+		"id": "item_elixir_m",
+		"name": "萬能藥（大）",
+		"type": "consumable",
+		"subtype": "healing",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 120,
+		"sell_price": 60,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "cure_all_status"}
+		],
+		"description": "治療所有異常狀態",
+		"available_from_floor": 20
+	},
+	{
+		"id": "item_atk_potion",
+		"name": "魔攻強化藥",
+		"type": "consumable",
+		"subtype": "buff",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 100,
+		"sell_price": 50,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "buff_stat", "stat": "matk", "value": 15, "duration": 5}
+		],
+		"description": "5 回合內魔攻 +15",
+		"available_from_floor": 15
+	},
+	{
+		"id": "item_def_potion",
+		"name": "魔防強化藥",
+		"type": "consumable",
+		"subtype": "buff",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 100,
+		"sell_price": 50,
+		"usable_in_battle": true,
+		"usable_in_explore": true,
+		"effects": [
+			{"type": "buff_stat", "stat": "mdef", "value": 15, "duration": 5}
+		],
+		"description": "5 回合內魔防 +15",
+		"available_from_floor": 15
 	}
 ]

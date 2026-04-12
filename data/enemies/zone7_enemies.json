@@ -1,0 +1,128 @@
+[
+	{
+		"id": "enemy_shadow_assassin",
+		"name": "暗影刺客",
+		"element": "dark",
+		"level": 27,
+		"stats": {
+			"hp": 340,
+			"mp": 50,
+			"matk": 85,
+			"mdef": 30,
+			"patk": 28,
+			"pdef": 18,
+			"speed": 26
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_shadow_sneak", "skill_night_slash", "skill_hex"],
+		"drops": [
+			{"id": "mat_dark_crystal", "rate": 0.30},
+			{"id": "mat_herb", "rate": 0.15},
+			{"id": "item_hp_potion_m", "rate": 0.20}
+		],
+		"exp": 70,
+		"gold": 45,
+		"visual": {
+			"shape": "triangle",
+			"color": "#7733AA",
+			"size": "medium",
+			"effects": ["shadow_trail"]
+		},
+		"floor_range": [61, 68]
+	},
+	{
+		"id": "enemy_nightmare_banshee",
+		"name": "噩夢女妖",
+		"element": "dark",
+		"level": 28,
+		"stats": {
+			"hp": 380,
+			"mp": 55,
+			"matk": 75,
+			"mdef": 45,
+			"patk": 20,
+			"pdef": 25,
+			"speed": 18
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_dark_pulse", "skill_curse", "skill_disable"],
+		"drops": [
+			{"id": "mat_dark_crystal", "rate": 0.25},
+			{"id": "mat_magic_crystal", "rate": 0.15},
+			{"id": "item_mp_potion_m", "rate": 0.20}
+		],
+		"exp": 75,
+		"gold": 50,
+		"visual": {
+			"shape": "circle",
+			"color": "#9944CC",
+			"size": "medium",
+			"effects": ["shadow_trail"]
+		},
+		"floor_range": [61, 68]
+	},
+	{
+		"id": "enemy_abyss_guard",
+		"name": "深淵守衛",
+		"element": "dark",
+		"level": 29,
+		"stats": {
+			"hp": 480,
+			"mp": 40,
+			"matk": 70,
+			"mdef": 50,
+			"patk": 32,
+			"pdef": 35,
+			"speed": 14
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_shadow_ball", "skill_disable", "skill_barrier"],
+		"drops": [
+			{"id": "mat_dark_crystal", "rate": 0.30},
+			{"id": "mat_iron_ore", "rate": 0.20},
+			{"id": "core_shadow_fox", "rate": 0.01}
+		],
+		"exp": 80,
+		"gold": 55,
+		"visual": {
+			"shape": "square",
+			"color": "#552288",
+			"size": "large",
+			"effects": ["shadow_trail"]
+		},
+		"floor_range": [62, 68]
+	},
+	{
+		"id": "boss_dark_lord",
+		"name": "暗黑領主",
+		"element": "dark",
+		"level": 32,
+		"stats": {
+			"hp": 1300,
+			"mp": 120,
+			"matk": 110,
+			"mdef": 50,
+			"patk": 40,
+			"pdef": 35,
+			"speed": 20
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_dark_pulse", "skill_dark_void", "skill_nasty_plot", "skill_power_up"],
+		"drops": [
+			{"id": "mat_ancient_shard", "rate": 0.30},
+			{"id": "mat_dark_crystal", "rate": 0.50},
+			{"id": "weapon_shadow_staff", "rate": 0.10},
+			{"id": "acc_life_siphon", "rate": 0.08}
+		],
+		"exp": 350,
+		"gold": 200,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#440088",
+			"size": "large",
+			"effects": ["shadow_trail", "glow"]
+		},
+		"floor_range": [69, 69],
+		"is_boss": true
+	}
+]

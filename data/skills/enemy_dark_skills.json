@@ -1,0 +1,68 @@
+[
+    {
+        "id": "skill_shadow_bolt",
+        "name": "暗影箭",
+        "element": "dark",
+        "type": "attack_single",
+        "base_power": 50,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 95,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 50}
+        ],
+        "description": "發射暗影凝聚的箭矢"
+    },
+    {
+        "id": "skill_nightmare_gaze",
+        "name": "惡夢凝視",
+        "element": "dark",
+        "type": "attack_single",
+        "base_power": 0,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 80,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "status", "target": "single_enemy", "status": "sleep", "chance": 100, "duration": 2}
+        ],
+        "description": "以惡夢之力凝視目標使其陷入沉睡"
+    },
+    {
+        "id": "skill_dark_blast",
+        "name": "暗影爆發",
+        "element": "dark",
+        "type": "attack_all",
+        "base_power": 50,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 90,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "all_enemies", "power": 50},
+            {"type": "buff", "target": "all_enemies", "stat": "mdef", "value": -10, "duration": 2}
+        ],
+        "description": "釋放暗影能量爆發，削弱全體魔防"
+    },
+    {
+        "id": "skill_soul_drain",
+        "name": "靈魂吸取",
+        "element": "dark",
+        "type": "attack_single",
+        "base_power": 55,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 95,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 55},
+            {"type": "heal", "target": "self", "heal_type": "percent_max", "value": 15}
+        ],
+        "description": "吸取目標生命力治療自身"
+    }
+]

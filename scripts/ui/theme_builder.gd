@@ -116,6 +116,18 @@ static func build_theme() -> Theme:
 	theme.set_type_variation("EnemyPanel", "PanelContainer")
 	theme.set_stylebox("panel", "EnemyPanel", enemy_panel)
 
+	# Skill Card Variation — left accent stripe applied at runtime per element
+	var skill_card := _create_stylebox(
+		ThemeConstantsClass.BG_MID.darkened(0.1),
+		ThemeConstantsClass.TEXT_SECONDARY.darkened(0.3),
+		1,
+		6,
+		6,
+		4
+	)
+	theme.set_type_variation("SkillCard", "PanelContainer")
+	theme.set_stylebox("panel", "SkillCard", skill_card)
+
 	theme.set_color("font_color", "Button", ThemeConstantsClass.TEXT_PRIMARY)
 	theme.set_color("font_hover_color", "Button", Color.WHITE)
 	theme.set_color("font_pressed_color", "Button", Color.WHITE)

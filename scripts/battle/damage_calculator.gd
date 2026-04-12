@@ -4,24 +4,25 @@ extends RefCounted
 
 const ELEMENTS := ["fire", "water", "thunder", "wind", "earth", "light", "dark", "none"]
 const MULTIPLIER_TABLE := {
+	#                    fire   water  thunder wind   earth  light  dark   none
 	"fire": {
 		"fire": 0.5, "water": 0.5, "thunder": 1.0, "wind": 2.0,
 		"earth": 1.0, "light": 1.0, "dark": 1.0, "none": 1.0,
 	},
 	"water": {
 		"fire": 2.0, "water": 0.5, "thunder": 0.5, "wind": 1.0,
-		"earth": 1.0, "light": 1.0, "dark": 1.0, "none": 1.0,
+		"earth": 2.0, "light": 1.0, "dark": 1.0, "none": 1.0,
 	},
 	"thunder": {
 		"fire": 1.0, "water": 2.0, "thunder": 0.5, "wind": 0.5,
-		"earth": 1.0, "light": 1.0, "dark": 1.0, "none": 1.0,
+		"earth": 1.0, "light": 1.0, "dark": 2.0, "none": 1.0,
 	},
 	"wind": {
 		"fire": 0.5, "water": 1.0, "thunder": 2.0, "wind": 0.5,
-		"earth": 0.5, "light": 1.0, "dark": 1.0, "none": 1.0,
+		"earth": 1.0, "light": 1.0, "dark": 1.0, "none": 1.0,
 	},
 	"earth": {
-		"fire": 1.0, "water": 1.0, "thunder": 2.0, "wind": 2.0,
+		"fire": 2.0, "water": 0.5, "thunder": 0.5, "wind": 2.0,
 		"earth": 0.5, "light": 1.0, "dark": 1.0, "none": 1.0,
 	},
 	"light": {
@@ -29,7 +30,7 @@ const MULTIPLIER_TABLE := {
 		"earth": 1.0, "light": 0.5, "dark": 2.0, "none": 1.0,
 	},
 	"dark": {
-		"fire": 1.0, "water": 1.0, "thunder": 1.0, "wind": 1.0,
+		"fire": 1.0, "water": 1.0, "thunder": 0.5, "wind": 2.0,
 		"earth": 1.0, "light": 2.0, "dark": 0.5, "none": 1.0,
 	},
 	"none": {
@@ -169,7 +170,9 @@ static func calculate_damage(
 		def_stat = get_effective_stat(defender, "mdef")
 
 	def_stat = max(def_stat, 1.0)
-	var base_damage: float = power * atk_stat / def_stat
+	# K constant buffers DEF impact, preventing extreme ATK/DEF ratio swings
+	# K=30 means low-DEF targets take ~60% less damage than before, high-DEF ~30% less
+	var base_damage: float = power * atk_stat / (def_stat + 30.0)
 
 	var element_multi: float = 1.0
 	if damage_type != "physical":

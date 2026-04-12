@@ -105,5 +105,168 @@
 		"hatch_cost": {
 			"gold": 200
 		}
+	},
+	{
+		"id": "mat_wind_crystal",
+		"name": "疾風結晶",
+		"type": "material",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 15,
+		"description": "從風之精靈身上掉落的結晶",
+		"available_from_floor": 30
+	},
+	{
+		"id": "mat_thunder_crystal",
+		"name": "雷鳴結晶",
+		"type": "material",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 15,
+		"description": "從雷光精靈身上掉落的結晶",
+		"available_from_floor": 50
+	},
+	{
+		"id": "mat_earth_crystal",
+		"name": "大地結晶",
+		"type": "material",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 15,
+		"description": "從大地精靈身上掉落的結晶",
+		"available_from_floor": 40
+	},
+	{
+		"id": "mat_dark_crystal",
+		"name": "暗影結晶",
+		"type": "material",
+		"rarity": "SR",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 25,
+		"description": "從暗影生物身上掉落的結晶",
+		"available_from_floor": 60
+	},
+	{
+		"id": "mat_light_crystal",
+		"name": "聖光結晶",
+		"type": "material",
+		"rarity": "SR",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 25,
+		"description": "從聖光生物身上掉落的結晶",
+		"available_from_floor": 70
+	},
+	{
+		"id": "mat_ancient_shard",
+		"name": "古代碎片",
+		"type": "material",
+		"rarity": "SR",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 30,
+		"description": "古代魔法文明遺留的神秘碎片",
+		"available_from_floor": 35
+	},
+	{
+		"id": "mat_void_essence",
+		"name": "虛空精華",
+		"type": "material",
+		"rarity": "SSR",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 50,
+		"description": "蘊含虛空能量的高階素材",
+		"available_from_floor": 80
+	},
+	{
+		"id": "mat_chaos_ore",
+		"name": "混沌礦石",
+		"type": "material",
+		"rarity": "SSR",
+		"stackable": true,
+		"max_stack": 99,
+		"sell_price": 60,
+		"description": "混沌之力浸染的稀有礦石",
+		"available_from_floor": 90
+	},
+	{
+		"id": "core_thunder_spirit",
+		"name": "雷光精靈核心",
+		"type": "familiar_core",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 0,
+		"sell_price": 50,
+		"description": "蘊含雷光精靈靈魂的核心，可在使魔小屋孵化。",
+		"hatches_into": "familiar_thunder_spirit",
+		"hatch_cost": {
+			"gold": 500
+		}
+	},
+	{
+		"id": "core_shadow_fox",
+		"name": "暗影妖狐核心",
+		"type": "familiar_core",
+		"rarity": "SR",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 0,
+		"sell_price": 100,
+		"description": "蘊含暗影妖狐靈魂的核心，可在使魔小屋孵化。",
+		"hatches_into": "familiar_shadow_fox",
+		"hatch_cost": {
+			"gold": 600
+		}
+	},
+	{
+		"id": "core_holy_fairy",
+		"name": "聖光仙子核心",
+		"type": "familiar_core",
+		"rarity": "SR",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 0,
+		"sell_price": 100,
+		"description": "蘊含聖光仙子靈魂的核心，可在使魔小屋孵化。",
+		"hatches_into": "familiar_holy_fairy",
+		"hatch_cost": {
+			"gold": 600
+		}
+	},
+	{
+		"id": "core_wind_hawk",
+		"name": "疾風鷹核心",
+		"type": "familiar_core",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 0,
+		"sell_price": 50,
+		"description": "蘊含疾風鷹靈魂的核心，可在使魔小屋孵化。",
+		"hatches_into": "familiar_wind_hawk",
+		"hatch_cost": {
+			"gold": 500
+		}
+	},
+	{
+		"id": "core_rock_tortoise",
+		"name": "岩殼龜核心",
+		"type": "familiar_core",
+		"rarity": "R",
+		"stackable": true,
+		"max_stack": 5,
+		"buy_price": 0,
+		"sell_price": 50,
+		"description": "蘊含岩殼龜靈魂的核心，可在使魔小屋孵化。",
+		"hatches_into": "familiar_rock_tortoise",
+		"hatch_cost": {
+			"gold": 500
+		}
 	}
 ]

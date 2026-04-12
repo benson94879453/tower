@@ -304,6 +304,8 @@ func _get_current_entries() -> Array[Dictionary]:
 	match _current_tab:
 		Tab.BOARD:
 			var result: Array[Dictionary] = []
+			for quest_data in QuestManager.get_available_main_quests(_current_floor):
+				result.append(Dictionary(quest_data).duplicate(true))
 			for quest_data in QuestManager.get_bounty_board():
 				result.append(Dictionary(quest_data).duplicate(true))
 			for quest_data in QuestManager.get_available_side_quests(_current_floor):

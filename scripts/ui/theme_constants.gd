@@ -47,6 +47,54 @@ const MARGIN_SMALL := 8
 const MARGIN_NORMAL := 16
 const MARGIN_LARGE := 24
 
+const ELEMENT_BG_TINT := {
+	"fire": Color("#2A1515"),
+	"water": Color("#152035"),
+	"thunder": Color("#2A2A15"),
+	"wind": Color("#152A1A"),
+	"earth": Color("#2A2215"),
+	"light": Color("#252530"),
+	"dark": Color("#1A1528"),
+	"none": Color("#1A1A2E"),
+}
+
+const ZONE_AMBIENT := {
+	"zone1": {"bg": Color("#1A1A2E"), "accent": Color("#888888"), "name": "廢墟入口"},
+	"zone2": {"bg": Color("#2E1A1A"), "accent": Color("#FF4444"), "name": "熔岩鍛爐"},
+	"zone3": {"bg": Color("#1A2E2E"), "accent": Color("#4488FF"), "name": "極寒冰域"},
+	"zone4": {"bg": Color("#1A2E1A"), "accent": Color("#44CC44"), "name": "暴風迴廊"},
+	"zone5": {"bg": Color("#2E2A1A"), "accent": Color("#AA7744"), "name": "大地迷宮"},
+	"zone6": {"bg": Color("#2E2E1A"), "accent": Color("#FFDD00"), "name": "雷鳴雲海"},
+	"zone7": {"bg": Color("#1A1A2E"), "accent": Color("#8844CC"), "name": "暗影深淵"},
+	"zone8": {"bg": Color("#2A2A2A"), "accent": Color("#FFFFFF"), "name": "聖光殿堂"},
+	"zone9": {"bg": Color("#1E1A28"), "accent": Color("#AA66FF"), "name": "虛空之境"},
+	"zone10": {"bg": Color("#251A20"), "accent": Color("#FFD700"), "name": "混沌領域"},
+}
+
+const STATUS_COLORS := {
+	"burn": Color("#FF6633"),
+	"poison": Color("#AA44AA"),
+	"heavy_poison": Color("#880088"),
+	"freeze": Color("#66CCFF"),
+	"paralyze": Color("#FFDD00"),
+	"sleep": Color("#8888CC"),
+	"confuse": Color("#FF88FF"),
+	"charm": Color("#FF66AA"),
+	"seal": Color("#666666"),
+	"curse": Color("#660066"),
+	"atk_up": Color("#44CC44"),
+	"def_up": Color("#4488FF"),
+	"spd_up": Color("#44CCCC"),
+	"atk_down": Color("#CC4444"),
+	"def_down": Color("#CC6644"),
+	"spd_down": Color("#CC8844"),
+	"acc_down": Color("#AA6644"),
+	"regen": Color("#33FF66"),
+	"mp_regen": Color("#3388FF"),
+	"reflect": Color("#AAAAFF"),
+	"stealth": Color("#88AAAA"),
+}
+
 
 static func get_element_color(element: String, color_role: String = "main") -> Color:
 	var palette: Dictionary = ELEMENT_COLORS.get(element, ELEMENT_COLORS["none"])
@@ -125,3 +173,24 @@ static func create_list_item_bg(index: int) -> StyleBoxFlat:
 	style.content_margin_right = 8.0
 	style.content_margin_bottom = 4.0
 	return style
+
+
+static func apply_gradient_bar(bar: ProgressBar, color_primary: Color, color_dark: Color, bg_color: Color) -> void:
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = color_primary
+	fill.corner_radius_top_left = 4
+	fill.corner_radius_top_right = 4
+	fill.corner_radius_bottom_right = 4
+	fill.corner_radius_bottom_left = 4
+	fill.shadow_color = Color(color_dark, 0.35)
+	fill.shadow_size = 2
+	fill.shadow_offset = Vector2(0, 1)
+	bar.add_theme_stylebox_override("fill", fill)
+
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = bg_color
+	bg.corner_radius_top_left = 4
+	bg.corner_radius_top_right = 4
+	bg.corner_radius_bottom_right = 4
+	bg.corner_radius_bottom_left = 4
+	bar.add_theme_stylebox_override("background", bg)

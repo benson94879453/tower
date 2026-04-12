@@ -59,5 +59,139 @@
 			]
 		},
 		"repeatable": false
+	},
+	{
+		"id": "side_crystal_hunter",
+		"name": "結晶獵人",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 10,
+		"description": "酒館的魔法師需要 5 顆火焰結晶來研究熔岩鍛爐的能量特性，完成後他會給你一把附魔武器。",
+		"objectives": [
+			{ "type": "collect", "item_id": "mat_fire_crystal", "count": 5 }
+		],
+		"rewards": {
+			"gold": 600,
+			"exp": 300,
+			"items": [
+				{ "id": "weapon_fire_staff", "count": 1 }
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_wind_trial",
+		"name": "暴風試煉",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 30,
+		"description": "在暴風迴廊中擊敗 5 隻疾風鷹，證明你能征服風之力量。完成後可獲得風屬性武器。",
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_gale_hawk", "count": 5 }
+		],
+		"rewards": {
+			"gold": 800,
+			"exp": 450,
+			"items": [
+				{ "id": "weapon_wind_staff", "count": 1 }
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_thunder_oracle",
+		"name": "雷神諭示",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 50,
+		"description": "傳聞雷鳴雲海的深處住著一條雷龍王，只有擊敗它才能獲得暴風法杖的認可。",
+		"objectives": [
+			{ "type": "kill", "target_id": "boss_thunder_dragon", "count": 1 }
+		],
+		"rewards": {
+			"gold": 1500,
+			"exp": 800,
+			"items": [
+				{ "id": "weapon_storm_staff", "count": 1 }
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_dark_investigation",
+		"name": "暗影調查",
+		"type": "side",
+		"trigger": "reach_floor",
+		"trigger_floor": 60,
+		"description": "酒館收到消息，暗影深淵中出現了異常的暗能量聚集。前往 65F 調查並蒐集 3 顆暗黑結晶。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 65, "count": 1 },
+			{ "type": "collect", "item_id": "mat_dark_crystal", "count": 3 }
+		],
+		"rewards": {
+			"gold": 1200,
+			"exp": 650,
+			"items": [
+				{ "id": "acc_life_siphon", "count": 1 }
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_light_pilgrimage",
+		"name": "聖光朝聖",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 70,
+		"description": "聖光殿堂的守衛只認可實力。在殿堂中擊敗 5 名聖光騎士，才能獲得聖光法杖的祝福。",
+		"objectives": [
+			{ "type": "kill", "target_id": "enemy_holy_knight", "count": 5 }
+		],
+		"rewards": {
+			"gold": 1800,
+			"exp": 900,
+			"items": [
+				{ "id": "weapon_holy_staff", "count": 1 }
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_void_explorer",
+		"name": "虛空探索",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 80,
+		"description": "虛空之境中蘊含著稀有的虛空精華。蒐集 3 份虛空精華，酒館的鍊金術士可以為你打造虛空法杖。",
+		"objectives": [
+			{ "type": "collect", "item_id": "mat_void_essence", "count": 3 }
+		],
+		"rewards": {
+			"gold": 2500,
+			"exp": 1200,
+			"items": [
+				{ "id": "weapon_void_staff", "count": 1 }
+			]
+		},
+		"repeatable": false
+	},
+	{
+		"id": "side_chaos_challenger",
+		"name": "混沌挑戰",
+		"type": "side",
+		"trigger": "auto",
+		"available_from_floor": 90,
+		"description": "傳說混沌領域的頂端住著混沌之主，只有最強的冒險者才能挑戰並獲得混沌法杖。",
+		"objectives": [
+			{ "type": "kill", "target_id": "boss_chaos_lord", "count": 1 }
+		],
+		"rewards": {
+			"gold": 5000,
+			"exp": 2000,
+			"items": [
+				{ "id": "weapon_chaos_staff", "count": 1 }
+			]
+		},
+		"repeatable": false
 	}
 ]

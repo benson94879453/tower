@@ -1,0 +1,129 @@
+[
+	{
+		"id": "enemy_rock_centipede",
+		"name": "岩甲蜈蚣",
+		"element": "earth",
+		"level": 17,
+		"stats": {
+			"hp": 220,
+			"mp": 40,
+			"matk": 50,
+			"mdef": 15,
+			"patk": 15,
+			"pdef": 14,
+			"speed": 10
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_mud_slap", "skill_rock_blast", "skill_earth_power"],
+		"drops": [
+			{"id": "mat_earth_crystal", "rate": 0.30},
+			{"id": "mat_iron_ore", "rate": 0.20},
+			{"id": "item_hp_potion_m", "rate": 0.20}
+		],
+		"exp": 85,
+		"gold": 55,
+		"visual": {
+			"shape": "triangle",
+			"color": "#AA8844",
+			"size": "medium",
+			"effects": []
+		},
+		"floor_range": [41, 48]
+	},
+	{
+		"id": "enemy_desert_scorpion",
+		"name": "沙漠蠍王",
+		"element": "earth",
+		"level": 18,
+		"stats": {
+			"hp": 250,
+			"mp": 45,
+			"matk": 55,
+			"mdef": 12,
+			"patk": 14,
+			"pdef": 10,
+			"speed": 14
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_stone_edge", "skill_sandstorm", "skill_mud_slap"],
+		"drops": [
+			{"id": "mat_earth_crystal", "rate": 0.25},
+			{"id": "mat_enhance_stone", "rate": 0.15},
+			{"id": "item_mp_potion_s", "rate": 0.20}
+		],
+		"exp": 95,
+		"gold": 65,
+		"visual": {
+			"shape": "diamond",
+			"color": "#CC9944",
+			"size": "medium",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [41, 48]
+	},
+	{
+		"id": "enemy_crystal_golem",
+		"name": "晶岩巨像",
+		"element": "earth",
+		"level": 19,
+		"stats": {
+			"hp": 300,
+			"mp": 35,
+			"matk": 48,
+			"mdef": 22,
+			"patk": 18,
+			"pdef": 20,
+			"speed": 5
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_bulldoze", "skill_iron_defense", "skill_earthquake"],
+		"drops": [
+			{"id": "mat_earth_crystal", "rate": 0.30},
+			{"id": "mat_iron_ore", "rate": 0.25},
+			{"id": "item_hp_potion_m", "rate": 0.25}
+		],
+		"exp": 105,
+		"gold": 70,
+		"visual": {
+			"shape": "square",
+			"color": "#887755",
+			"size": "large",
+			"effects": ["glow"]
+		},
+		"floor_range": [42, 48]
+	},
+	{
+		"id": "boss_mother_earth",
+		"name": "大地之母",
+		"element": "earth",
+		"level": 21,
+		"stats": {
+			"hp": 900,
+			"mp": 150,
+			"matk": 65,
+			"mdef": 18,
+			"patk": 20,
+			"pdef": 18,
+			"speed": 8
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_earthquake", "skill_earth_power", "skill_sandstorm", "skill_iron_defense", "skill_power_up"],
+		"drops": [
+			{"id": "mat_ancient_shard", "rate": 0.30},
+			{"id": "mat_earth_crystal", "rate": 0.50},
+			{"id": "mat_enhance_stone", "rate": 0.40},
+			{"id": "weapon_earth_staff", "rate": 0.10},
+			{"id": "acc_guardian_angel", "rate": 0.05}
+		],
+		"exp": 350,
+		"gold": 250,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#776633",
+			"size": "large",
+			"effects": ["glow"]
+		},
+		"floor_range": [49, 49],
+		"is_boss": true
+	}
+]

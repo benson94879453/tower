@@ -8,7 +8,7 @@ extends Resource
 @export var gold: int = 0
 
 @export var base_hp: int = 100
-@export var base_mp: int = 60
+@export var base_mp: int = 80
 @export var base_matk: int = 15
 @export var base_mdef: int = 10
 @export var base_patk: int = 8
@@ -19,7 +19,7 @@ extends Resource
 @export var base_crit: float = 5.0
 
 @export var current_hp: int = 100
-@export var current_mp: int = 60
+@export var current_mp: int = 80
 
 @export var weapon_id: String = ""
 @export var armor_id: String = ""

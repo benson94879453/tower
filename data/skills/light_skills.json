@@ -1,0 +1,223 @@
+[
+  {
+    "id": "skill_holy_light",
+    "name": "聖光",
+    "element": "light",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 55,
+    "mp_cost": 10,
+    "pp_max": 12,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 55}
+    ],
+    "research_cost": {"gold": 120, "items": [], "prerequisite_skills": []},
+    "description": "凝聚神聖之光射向敵人，光屬性基礎攻擊。"
+  },
+  {
+    "id": "skill_purify",
+    "name": "淨化",
+    "element": "light",
+    "type": "heal_single",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 20,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 1,
+    "effects": [
+      {"type": "heal", "target": "self", "heal_type": "matk_scale", "value": 80},
+      {"type": "status", "target": "self", "status": "regen", "chance": 100, "duration": 3}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_light_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "以聖光淨化自身，回復HP並附加持續回復效果。"
+  },
+  {
+    "id": "skill_radiance",
+    "name": "光輝",
+    "element": "light",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 60,
+    "mp_cost": 22,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 60}
+    ],
+    "research_cost": {"gold": 480, "items": [{"id": "mat_light_crystal", "count": 2}], "prerequisite_skills": ["skill_holy_light"]},
+    "description": "釋放耀眼聖光照射全體敵人，穩定的光屬性範圍攻擊。"
+  },
+  {
+    "id": "skill_judgment",
+    "name": "審判",
+    "element": "light",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 105,
+    "mp_cost": 28,
+    "pp_max": 5,
+    "hit_rate": 90,
+    "priority": 0,
+    "cooldown": 1,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 105}
+    ],
+    "research_cost": {"gold": 1300, "items": [{"id": "mat_light_crystal", "count": 5}], "prerequisite_skills": ["skill_holy_light"]},
+    "description": "降下神聖審判之光，對邪惡存在造成毀滅性傷害。"
+  },
+  {
+    "id": "skill_flash",
+    "name": "閃光",
+    "element": "light",
+    "type": "debuff_single",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 8,
+    "pp_max": 10,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "buff", "target": "all_enemies", "stat": "hit", "value": -25, "duration": 3}
+    ],
+    "research_cost": {"gold": 150, "items": [], "prerequisite_skills": []},
+    "description": "釋放強烈閃光致盲敵方全體，大幅降低命中率。"
+  },
+  {
+    "id": "skill_blessing",
+    "name": "祝福",
+    "element": "light",
+    "type": "buff_all",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 22,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "buff", "target": "all_allies", "stat": "mdef", "value": 20, "duration": 4},
+      {"type": "buff", "target": "all_allies", "stat": "pdef", "value": 20, "duration": 4}
+    ],
+    "research_cost": {"gold": 550, "items": [{"id": "mat_light_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "為全體我方施加神聖祝福，提升雙防。"
+  },
+  {
+    "id": "skill_light_screen",
+    "name": "光牆",
+    "element": "light",
+    "type": "buff_all",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 20,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 2,
+    "cooldown": 3,
+    "effects": [
+      {"type": "buff", "target": "all_allies", "stat": "mdef", "value": 30, "duration": 3}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_light_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "張開光之結界，大幅提升全體我方魔防3回合。"
+  },
+  {
+    "id": "skill_dazzling_gleam",
+    "name": "魔幻閃耀",
+    "element": "light",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 70,
+    "mp_cost": 24,
+    "pp_max": 6,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 70},
+      {"type": "buff", "target": "all_enemies", "stat": "matk", "value": -15, "duration": 2}
+    ],
+    "research_cost": {"gold": 580, "items": [{"id": "mat_light_crystal", "count": 2}], "prerequisite_skills": ["skill_holy_light"]},
+    "description": "釋放迷人而危險的魔法光輝，傷害全體敵人並削弱攻擊力。"
+  },
+  {
+    "id": "skill_morning_sun",
+    "name": "晨曦",
+    "element": "light",
+    "type": "heal_single",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 18,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 1,
+    "effects": [
+      {"type": "heal", "target": "self", "heal_type": "percent_missing", "value": 50}
+    ],
+    "research_cost": {"gold": 450, "items": [{"id": "mat_light_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "沐浴晨光回復體力，HP越低回復量越大。"
+  },
+  {
+    "id": "skill_photon_beam",
+    "name": "光子射線",
+    "element": "light",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 120,
+    "mp_cost": 32,
+    "pp_max": 4,
+    "hit_rate": 85,
+    "priority": 0,
+    "cooldown": 1,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 120}
+    ],
+    "research_cost": {"gold": 1400, "items": [{"id": "mat_light_crystal", "count": 5}], "prerequisite_skills": ["skill_judgment"]},
+    "description": "將光子壓縮為射線貫穿目標，需蓄力但威力驚人。"
+  },
+  {
+    "id": "skill_sanctuary",
+    "name": "聖域",
+    "element": "light",
+    "type": "heal_all",
+    "rarity": "SSR",
+    "base_power": 0,
+    "mp_cost": 40,
+    "pp_max": 2,
+    "hit_rate": 100,
+    "priority": 2,
+    "cooldown": 3,
+    "effects": [
+      {"type": "heal", "target": "all_allies", "heal_type": "percent_max", "value": 40},
+      {"type": "buff", "target": "all_allies", "stat": "mdef", "value": 25, "duration": 3},
+      {"type": "status", "target": "all_allies", "status": "regen", "chance": 100, "duration": 3}
+    ],
+    "research_cost": {"gold": 2500, "items": [{"id": "mat_light_crystal", "count": 8}, {"id": "mat_ancient_shard", "count": 2}], "prerequisite_skills": ["skill_purify"]},
+    "description": "展開聖域結界，大幅回復全體HP、提升魔防並附加持續回復。"
+  },
+  {
+    "id": "skill_banishing_light",
+    "name": "破邪之光",
+    "element": "light",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 75,
+    "mp_cost": 18,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 75}
+    ],
+    "research_cost": {"gold": 520, "items": [{"id": "mat_light_crystal", "count": 2}], "prerequisite_skills": ["skill_holy_light"]},
+    "description": "以驅邪聖光攻擊，對暗屬性敵人傷害額外提升。"
+  }
+]

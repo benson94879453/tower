@@ -1,6 +1,6 @@
 [
 	{
-		"id": "skill_ice_shard",
+		"id": "skill_enemy_ice_shard",
 		"name": "冰晶碎片",
 		"element": "water",
 		"type": "attack_single",

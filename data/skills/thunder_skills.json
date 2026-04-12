@@ -1,0 +1,228 @@
+[
+  {
+    "id": "skill_thunder_shock",
+    "name": "電擊",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 40,
+    "mp_cost": 7,
+    "pp_max": 15,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 40},
+      {"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 10, "duration": 3}
+    ],
+    "research_cost": {"gold": 100, "items": [], "prerequisite_skills": []},
+    "description": "發射微弱電流攻擊敵人，有機率造成麻痺。"
+  },
+  {
+    "id": "skill_thunderbolt",
+    "name": "十萬伏特",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 75,
+    "mp_cost": 16,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 75},
+      {"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 15, "duration": 3}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_thunder_crystal", "count": 2}], "prerequisite_skills": ["skill_thunder_shock"]},
+    "description": "釋放強力雷電貫穿目標，穩定的雷屬性中階攻擊。"
+  },
+  {
+    "id": "skill_thunder_strike",
+    "name": "落雷",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 110,
+    "mp_cost": 28,
+    "pp_max": 4,
+    "hit_rate": 65,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 110},
+      {"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 25, "duration": 3}
+    ],
+    "research_cost": {"gold": 1200, "items": [{"id": "mat_thunder_crystal", "count": 5}], "prerequisite_skills": ["skill_thunderbolt"]},
+    "description": "從天際召喚一道落雷劈向目標，威力驚人但命中率不穩。"
+  },
+  {
+    "id": "skill_thunder_wave",
+    "name": "電磁波",
+    "element": "thunder",
+    "type": "status_single",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 10,
+    "pp_max": 10,
+    "hit_rate": 90,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 100, "duration": 3}
+    ],
+    "research_cost": {"gold": 200, "items": [], "prerequisite_skills": []},
+    "description": "釋放弱電磁波干擾目標神經，必定造成麻痺。"
+  },
+  {
+    "id": "skill_discharge",
+    "name": "放電",
+    "element": "thunder",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 60,
+    "mp_cost": 24,
+    "pp_max": 6,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 60},
+      {"type": "status", "target": "all_enemies", "status": "paralyze", "chance": 20, "duration": 3}
+    ],
+    "research_cost": {"gold": 550, "items": [{"id": "mat_thunder_crystal", "count": 2}], "prerequisite_skills": ["skill_thunder_shock"]},
+    "description": "向四面八方放出電流，麻痺全體敵人的範圍攻擊。"
+  },
+  {
+    "id": "skill_charge_beam",
+    "name": "充電光束",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 55,
+    "mp_cost": 12,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 55},
+      {"type": "buff", "target": "self", "stat": "matk", "value": 15, "duration": 3}
+    ],
+    "research_cost": {"gold": 400, "items": [{"id": "mat_thunder_crystal", "count": 1}], "prerequisite_skills": ["skill_thunder_shock"]},
+    "description": "發射集中的電流束，每次使用都會提升自身魔攻。"
+  },
+  {
+    "id": "skill_wild_charge",
+    "name": "瘋狂伏特",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 100,
+    "mp_cost": 22,
+    "pp_max": 6,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 100},
+      {"type": "damage", "target": "self", "power": 15}
+    ],
+    "research_cost": {"gold": 1100, "items": [{"id": "mat_thunder_crystal", "count": 4}], "prerequisite_skills": ["skill_thunderbolt"]},
+    "description": "全身纏繞雷電猛衝敵人，威力強大但會反噬自身。"
+  },
+  {
+    "id": "skill_thunder_punch",
+    "name": "雷電拳",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 70,
+    "mp_cost": 15,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 70},
+      {"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 10, "duration": 2}
+    ],
+    "research_cost": {"gold": 450, "items": [], "prerequisite_skills": []},
+    "description": "拳頭纏繞雷電轟擊目標，兼顧威力與附加效果。"
+  },
+  {
+    "id": "skill_electro_ball",
+    "name": "電氣球",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 80,
+    "mp_cost": 18,
+    "pp_max": 8,
+    "hit_rate": 90,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 80}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_thunder_crystal", "count": 2}], "prerequisite_skills": ["skill_thunder_shock"]},
+    "description": "凝聚電力形成球體投射，速度越快威力越大。"
+  },
+  {
+    "id": "skill_magnet_rise",
+    "name": "磁懸浮",
+    "element": "thunder",
+    "type": "buff_self",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 12,
+    "pp_max": 8,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "buff", "target": "self", "stat": "speed", "value": 20, "duration": 4},
+      {"type": "buff", "target": "self", "stat": "hit", "value": 15, "duration": 4}
+    ],
+    "research_cost": {"gold": 250, "items": [], "prerequisite_skills": []},
+    "description": "利用磁力懸浮身體，大幅提升速度與命中率。"
+  },
+  {
+    "id": "skill_plasma_fist",
+    "name": "等離子拳",
+    "element": "thunder",
+    "type": "attack_single",
+    "rarity": "SSR",
+    "base_power": 140,
+    "mp_cost": 35,
+    "pp_max": 3,
+    "hit_rate": 85,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 140},
+      {"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 30, "duration": 3}
+    ],
+    "research_cost": {"gold": 2200, "items": [{"id": "mat_thunder_crystal", "count": 8}, {"id": "mat_ancient_shard", "count": 1}], "prerequisite_skills": ["skill_thunderbolt"]},
+    "description": "將等離子能量凝聚於雙拳揮出毀滅一擊，附帶高機率麻痺。"
+  },
+  {
+    "id": "skill_charge",
+    "name": "蓄電",
+    "element": "thunder",
+    "type": "buff_self",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 8,
+    "pp_max": 10,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "buff", "target": "self", "stat": "matk", "value": 30, "duration": 3},
+      {"type": "buff", "target": "self", "stat": "mdef", "value": 10, "duration": 3}
+    ],
+    "research_cost": {"gold": 180, "items": [], "prerequisite_skills": []},
+    "description": "集中蓄積電力，大幅提升魔攻並小幅提升魔防。"
+  }
+]

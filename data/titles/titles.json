@@ -63,5 +63,55 @@
     "id": "完美主義者",
     "condition": { "type": "all_achievements" },
     "effects": { "all_stats_percent": 10 }
+  },
+  {
+    "id": "暴風使者",
+    "condition": { "type": "element_usage", "element": "wind", "count": 500 },
+    "effects": { "element_damage_bonus": { "wind": 10 } }
+  },
+  {
+    "id": "大地使者",
+    "condition": { "type": "element_usage", "element": "earth", "count": 500 },
+    "effects": { "element_damage_bonus": { "earth": 10 } }
+  },
+  {
+    "id": "暗影使者",
+    "condition": { "type": "element_usage", "element": "dark", "count": 500 },
+    "effects": { "element_damage_bonus": { "dark": 10 } }
+  },
+  {
+    "id": "聖光使者",
+    "condition": { "type": "element_usage", "element": "light", "count": 500 },
+    "effects": { "element_damage_bonus": { "light": 10 } }
+  },
+  {
+    "id": "全能術師",
+    "condition": { "type": "has_titles", "titles": ["火焰使者", "冰霜使者", "雷霆使者", "暴風使者", "大地使者", "暗影使者", "聖光使者"] },
+    "effects": { "element_damage_bonus": { "all": 8 } }
+  },
+  {
+    "id": "鍛造達人",
+    "condition": { "type": "craft_count", "count": 50 },
+    "effects": { "craft_discount_percent": 10 }
+  },
+  {
+    "id": "使魔訓練師",
+    "condition": { "type": "familiar_max_level", "level": 50 },
+    "effects": { "familiar_stat_bonus_percent": 5 }
+  },
+  {
+    "id": "速攻大師",
+    "condition": { "type": "first_turn_kills", "count": 100 },
+    "effects": { "speed_bonus": 3 }
+  },
+  {
+    "id": "塔頂征服者",
+    "condition": { "type": "highest_floor", "floor": 100 },
+    "effects": { "all_stats_percent": 5 }
+  },
+  {
+    "id": "傳說法師",
+    "condition": { "type": "all_achievements" },
+    "effects": { "all_stats_percent": 15 }
   }
 ]

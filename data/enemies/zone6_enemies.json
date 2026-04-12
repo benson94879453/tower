@@ -1,0 +1,128 @@
+[
+	{
+		"id": "enemy_thunder_wolf",
+		"name": "雷光狼",
+		"element": "thunder",
+		"level": 22,
+		"stats": {
+			"hp": 280,
+			"mp": 40,
+			"matk": 60,
+			"mdef": 28,
+			"patk": 22,
+			"pdef": 16,
+			"speed": 20
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_thunder_shock", "skill_thunderbolt"],
+		"drops": [
+			{"id": "mat_thunder_crystal", "rate": 0.30},
+			{"id": "mat_herb", "rate": 0.15},
+			{"id": "item_mp_potion_m", "rate": 0.20}
+		],
+		"exp": 55,
+		"gold": 30,
+		"visual": {
+			"shape": "triangle",
+			"color": "#FFD700",
+			"size": "medium",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [51, 58]
+	},
+	{
+		"id": "enemy_storm_bat",
+		"name": "磁暴蝠",
+		"element": "thunder",
+		"level": 23,
+		"stats": {
+			"hp": 250,
+			"mp": 45,
+			"matk": 65,
+			"mdef": 24,
+			"patk": 18,
+			"pdef": 14,
+			"speed": 24
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_discharge", "skill_thunder_wave"],
+		"drops": [
+			{"id": "mat_thunder_crystal", "rate": 0.25},
+			{"id": "mat_magic_crystal", "rate": 0.15},
+			{"id": "item_hp_potion_m", "rate": 0.20}
+		],
+		"exp": 60,
+		"gold": 35,
+		"visual": {
+			"shape": "diamond",
+			"color": "#AAFF00",
+			"size": "small",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [51, 58]
+	},
+	{
+		"id": "enemy_thunder_giant",
+		"name": "雷鳴巨人",
+		"element": "thunder",
+		"level": 24,
+		"stats": {
+			"hp": 380,
+			"mp": 35,
+			"matk": 55,
+			"mdef": 38,
+			"patk": 28,
+			"pdef": 28,
+			"speed": 12
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_thunderbolt", "skill_charge", "skill_barrier"],
+		"drops": [
+			{"id": "mat_thunder_crystal", "rate": 0.30},
+			{"id": "mat_iron_ore", "rate": 0.20},
+			{"id": "core_thunder_spirit", "rate": 0.01}
+		],
+		"exp": 65,
+		"gold": 40,
+		"visual": {
+			"shape": "square",
+			"color": "#FFFF00",
+			"size": "large",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [52, 58]
+	},
+	{
+		"id": "boss_thunder_dragon",
+		"name": "雷龍王",
+		"element": "thunder",
+		"level": 27,
+		"stats": {
+			"hp": 900,
+			"mp": 100,
+			"matk": 85,
+			"mdef": 40,
+			"patk": 35,
+			"pdef": 30,
+			"speed": 18
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_thunderbolt", "skill_discharge", "skill_charge_beam", "skill_power_up"],
+		"drops": [
+			{"id": "mat_ancient_shard", "rate": 0.30},
+			{"id": "mat_thunder_crystal", "rate": 0.50},
+			{"id": "weapon_storm_staff", "rate": 0.10},
+			{"id": "acc_echo_crystal", "rate": 0.08}
+		],
+		"exp": 250,
+		"gold": 150,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#FFFF44",
+			"size": "large",
+			"effects": ["spark_trail", "glow"]
+		},
+		"floor_range": [59, 59],
+		"is_boss": true
+	}
+]

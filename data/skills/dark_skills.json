@@ -1,0 +1,227 @@
+[
+  {
+    "id": "skill_shadow_ball",
+    "name": "暗影球",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 70,
+    "mp_cost": 15,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 70},
+      {"type": "buff", "target": "single_enemy", "stat": "mdef", "value": -15, "duration": 3}
+    ],
+    "research_cost": {"gold": 450, "items": [{"id": "mat_dark_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "擲出暗影凝聚的球體，有機率削弱目標魔防。暗屬性核心技能。"
+  },
+  {
+    "id": "skill_dark_pulse",
+    "name": "惡之波動",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 65,
+    "mp_cost": 15,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 65},
+      {"type": "buff", "target": "single_enemy", "stat": "speed", "value": -20, "duration": 2}
+    ],
+    "research_cost": {"gold": 420, "items": [{"id": "mat_dark_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "釋放黑暗波動衝擊目標心智，有機率使其畏懼减速。"
+  },
+  {
+    "id": "skill_night_slash",
+    "name": "暗夜斬擊",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 65,
+    "mp_cost": 14,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "crit_bonus": 25,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 65}
+    ],
+    "research_cost": {"gold": 430, "items": [{"id": "mat_dark_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "以暗影化為利刃斬擊，容易擊中要害。"
+  },
+  {
+    "id": "skill_shadow_sneak",
+    "name": "影襲",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 35,
+    "mp_cost": 8,
+    "pp_max": 15,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 35}
+    ],
+    "research_cost": {"gold": 150, "items": [], "prerequisite_skills": []},
+    "description": "從影子中偷襲目標，必定優先出手。"
+  },
+  {
+    "id": "skill_hex",
+    "name": "厄運咒擊",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 55,
+    "mp_cost": 12,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 55},
+      {"type": "status", "target": "single_enemy", "status": "curse", "chance": 30, "duration": 3}
+    ],
+    "research_cost": {"gold": 400, "items": [{"id": "mat_dark_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "以厄運詛咒攻擊目標，若目標已有異常狀態則威力翻倍。附帶詛咒效果。"
+  },
+  {
+    "id": "skill_curse",
+    "name": "詛咒",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 15,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "heal", "target": "self", "heal_type": "percent_max", "value": -25},
+      {"type": "status", "target": "single_enemy", "status": "curse", "chance": 100, "duration": 4}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_dark_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "犧牲自身 25% HP 對目標施加強力詛咒，使其回復反轉為傷害。"
+  },
+  {
+    "id": "skill_nasty_plot",
+    "name": "詭計",
+    "element": "dark",
+    "type": "buff_self",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 15,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 1,
+    "effects": [
+      {"type": "buff", "target": "self", "stat": "matk", "value": 35, "duration": 4}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_dark_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "暗中籌劃詭計，大幅提升自身魔攻。"
+  },
+  {
+    "id": "skill_soul_steal",
+    "name": "靈魂奪取",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 65,
+    "mp_cost": 18,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 65},
+      {"type": "heal", "target": "self", "heal_type": "percent_max", "value": 10}
+    ],
+    "research_cost": {"gold": 550, "items": [{"id": "mat_dark_crystal", "count": 2}], "prerequisite_skills": ["skill_shadow_ball"]},
+    "description": "奪取敵人生命力化為己用，造成傷害的同時回復自身HP。"
+  },
+  {
+    "id": "skill_disable",
+    "name": "封印",
+    "element": "dark",
+    "type": "debuff_single",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 12,
+    "pp_max": 5,
+    "hit_rate": 80,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "status", "target": "single_enemy", "status": "seal", "chance": 100, "duration": 2}
+    ],
+    "research_cost": {"gold": 450, "items": [{"id": "mat_dark_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "封印目標的隨機一個技能，使其 2 回合內無法使用。"
+  },
+  {
+    "id": "skill_phantom_force",
+    "name": "幽冥之力",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 95,
+    "mp_cost": 25,
+    "pp_max": 5,
+    "hit_rate": 95,
+    "priority": -1,
+    "cooldown": 1,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 95},
+      {"type": "buff", "target": "single_enemy", "stat": "mdef", "value": -20, "duration": 3}
+    ],
+    "research_cost": {"gold": 1200, "items": [{"id": "mat_dark_crystal", "count": 4}], "prerequisite_skills": ["skill_shadow_ball"]},
+    "description": "潛入幽冥空間後從異次元突襲，需蓄力但無法被閃避，並削弱魔防。"
+  },
+  {
+    "id": "skill_dark_void",
+    "name": "暗黑洞",
+    "element": "dark",
+    "type": "attack_all",
+    "rarity": "SSR",
+    "base_power": 0,
+    "mp_cost": 35,
+    "pp_max": 3,
+    "hit_rate": 65,
+    "priority": 0,
+    "cooldown": 3,
+    "effects": [
+      {"type": "status", "target": "all_enemies", "status": "sleep", "chance": 100, "duration": 3}
+    ],
+    "research_cost": {"gold": 2200, "items": [{"id": "mat_dark_crystal", "count": 8}, {"id": "mat_ancient_shard", "count": 1}], "prerequisite_skills": ["skill_disable"]},
+    "description": "製造黑暗黑洞吞噬全體敵人意識，使其陷入沉睡。命中率不穩但效果極強。"
+  },
+  {
+    "id": "skill_abyssal_gaze",
+    "name": "淵獄之眼",
+    "element": "dark",
+    "type": "attack_single",
+    "rarity": "SSR",
+    "base_power": 100,
+    "mp_cost": 30,
+    "pp_max": 3,
+    "hit_rate": 80,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 100},
+      {"type": "status", "target": "single_enemy", "status": "curse", "chance": 40, "duration": 3},
+      {"type": "buff", "target": "single_enemy", "stat": "mdef", "value": -25, "duration": 3}
+    ],
+    "research_cost": {"gold": 2500, "items": [{"id": "mat_dark_crystal", "count": 8}, {"id": "mat_ancient_shard", "count": 2}], "prerequisite_skills": ["skill_phantom_force"]},
+    "description": "以深淵之眼凝視目標靈魂，造成傷害並高機率施加詛咒與魔防削弱。"
+  }
+]

@@ -1,0 +1,66 @@
+[
+    {
+        "id": "skill_holy_bolt",
+        "name": "聖光箭",
+        "element": "light",
+        "type": "attack_single",
+        "base_power": 50,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 95,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 50}
+        ],
+        "description": "發射神聖光箭攻擊目標"
+    },
+    {
+        "id": "skill_divine_radiance",
+        "name": "神聖光輝",
+        "element": "light",
+        "type": "attack_all",
+        "base_power": 50,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 95,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "all_enemies", "power": 50}
+        ],
+        "description": "釋放神聖光輝照射全體敵人"
+    },
+    {
+        "id": "skill_holy_heal",
+        "name": "聖光治療",
+        "element": "light",
+        "type": "heal_single",
+        "base_power": 0,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 100,
+        "priority": 1,
+        "cooldown": 0,
+        "effects": [
+            {"type": "heal", "target": "self", "heal_type": "percent_max", "value": 25}
+        ],
+        "description": "以聖光治療自身 25% HP"
+    },
+    {
+        "id": "skill_blinding_light",
+        "name": "眩目光芒",
+        "element": "light",
+        "type": "debuff_all",
+        "base_power": 0,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 100,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "buff", "target": "all_enemies", "stat": "hit", "value": -20, "duration": 2}
+        ],
+        "description": "釋放強烈光芒降低全體命中率"
+    }
+]

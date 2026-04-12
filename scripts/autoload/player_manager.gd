@@ -84,7 +84,7 @@ func _ready() -> void:
 
 func _setup_initial_skills() -> void:
 	# Give player basic starting skills
-	var initial_skills = ["skill_fireball", "skill_spark", "skill_heal"]
+	var initial_skills = ["skill_water_gun", "skill_spark", "skill_heal"]
 	
 	for skill_id in initial_skills:
 		learn_skill(skill_id)

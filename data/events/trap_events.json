@@ -1,0 +1,399 @@
+[
+	{
+		"id": "event_trap_fire_vent",
+		"name": "熔岩噴口",
+		"type": "trap",
+		"floor_range": [11, 19],
+		"weight": 12,
+		"description": "地面突然裂開，一道熾熱的熔岩柱從裂縫中噴湧而出，空氣中瀰漫著硫磺的刺鼻氣味。",
+		"options": [
+			{
+				"text": "迅速閃避",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.5},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "嘗試拆除陷阱",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_fire_crystal", "count": 2, "chance": 0.7},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.3}
+				]
+			},
+			{
+				"text": "用水魔法壓制",
+				"condition": {"has_skill": "skill_ice_shard"},
+				"cost": {"mp": 20},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_fire_crystal", "count": 3, "chance": 0.9}
+				]
+			},
+			{
+				"text": "硬闖過去",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.6}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_ice_floor",
+		"name": "結冰地板",
+		"type": "trap",
+		"floor_range": [21, 29],
+		"weight": 12,
+		"description": "走廊的地板突然覆上一層厚重的冰霜，腳步開始不受控制地打滑，冰錐從牆壁刺出。",
+		"options": [
+			{
+				"text": "小心滑行通過",
+				"condition": null,
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.6},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.3}
+				]
+			},
+			{
+				"text": "用火焰融化冰面",
+				"condition": {"has_skill": "skill_flame_shot"},
+				"cost": {"mp": 15},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ice_crystal", "count": 2, "chance": 0.9}
+				]
+			},
+			{
+				"text": "嘗試拆除冰錐機關",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ice_crystal", "count": 3, "chance": 0.6},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4}
+				]
+			},
+			{
+				"text": "快速衝刺",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.7},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.4}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_wind_gust",
+		"name": "突然陣風",
+		"type": "trap",
+		"floor_range": [31, 39],
+		"weight": 12,
+		"description": "一股猛烈的狂風從牆壁的通風口灌入，捲走一切未固定之物，金幣和藥水在風中飛舞。",
+		"options": [
+			{
+				"text": "緊抓背包蹲下",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.2}
+				]
+			},
+			{
+				"text": "用風魔法對抗",
+				"condition": {"has_skill": "skill_gust"},
+				"cost": {"mp": 20},
+				"results": [
+					{"type": "gold_reward", "min": 50, "max": 150, "chance": 0.8}
+				]
+			},
+			{
+				"text": "拆除通風口機關",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_wind_crystal", "count": 2, "chance": 0.7},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.3}
+				]
+			},
+			{
+				"text": "硬扛過去",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.7},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.3},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.5}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_rockfall",
+		"name": "落石陷阱",
+		"type": "trap",
+		"floor_range": [41, 49],
+		"weight": 12,
+		"description": "天花板發出沉悶的斷裂聲，巨大的岩石塊開始從上方崩落，碎石四濺。",
+		"options": [
+			{
+				"text": "翻滾閃避",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.5},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "用防禦技能撐住",
+				"condition": {"has_skill": "skill_barrier"},
+				"cost": {"mp": 25},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_earth_crystal", "count": 2, "chance": 0.8}
+				]
+			},
+			{
+				"text": "偵測並拆除機關",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_iron_ore", "count": 3, "chance": 0.75},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.25}
+				]
+			},
+			{
+				"text": "全力奔跑",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.8},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.4}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_thunder_ward",
+		"name": "雷鳴結界",
+		"type": "trap",
+		"floor_range": [51, 59],
+		"weight": 12,
+		"description": "一道紫色閃電結界封鎖了去路，空氣中靜電嗡嗡作響，不時有電弧從結界彈出。",
+		"options": [
+			{
+				"text": "小心翼翼通過",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.6},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.4}
+				]
+			},
+			{
+				"text": "用接地魔法導流",
+				"condition": {"has_skill": "skill_thunder_shock"},
+				"cost": {"mp": 25},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_thunder_crystal", "count": 2, "chance": 0.85}
+				]
+			},
+			{
+				"text": "嘗試破壞結界核心",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_thunder_crystal", "count": 3, "chance": 0.5},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.5},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "強行突破",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.6}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_shadow_lure",
+		"name": "暗影誘惑",
+		"type": "trap",
+		"floor_range": [61, 69],
+		"weight": 12,
+		"description": "黑暗中傳來低語聲，牆上的影子開始扭曲成形，似乎在向你招手，心智逐漸模糊。",
+		"options": [
+			{
+				"text": "閉上眼默念咒文",
+				"condition": null,
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5},
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.3}
+				]
+			},
+			{
+				"text": "用聖光驅散暗影",
+				"condition": {"has_skill": "skill_holy_light"},
+				"cost": {"mp": 30},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_dark_crystal", "count": 2, "chance": 0.85}
+				]
+			},
+			{
+				"text": "嘗試淨化暗影源頭",
+				"condition": {"has_skill": "skill_purify"},
+				"cost": {"mp": 20},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_dark_crystal", "count": 3, "chance": 0.7},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "跟隨影子走",
+				"condition": null,
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.8},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.5},
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.4}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_holy_seal",
+		"name": "聖光封印",
+		"type": "trap",
+		"floor_range": [71, 79],
+		"weight": 12,
+		"description": "一道刺眼的白光從地面浮現，符文鎖鏈纏繞而上，不斷抽取魔力，企圖封印你的力量。",
+		"options": [
+			{
+				"text": "掙脫封印",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.6},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "用暗魔法中和",
+				"condition": {"has_skill": "skill_dark_pulse"},
+				"cost": {"mp": 30},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_light_crystal", "count": 2, "chance": 0.8}
+				]
+			},
+			{
+				"text": "解讀符文結構",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_light_crystal", "count": 3, "chance": 0.65},
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.35}
+				]
+			},
+			{
+				"text": "強行突破",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.8},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_void_rift",
+		"name": "虛空裂隙",
+		"type": "trap",
+		"floor_range": [81, 89],
+		"weight": 12,
+		"description": "空間突然扭曲，一道漆黑的裂隙出現在面前，強大的吸力拉扯著周圍的一切，不穩定的能量波動令身體不適。",
+		"options": [
+			{
+				"text": "穩住身形後退",
+				"condition": null,
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4}
+				]
+			},
+			{
+				"text": "用空間魔法封閉裂隙",
+				"condition": {"has_skill": "skill_swift"},
+				"cost": {"mp": 35},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_void_essence", "count": 2, "chance": 0.75}
+				]
+			},
+			{
+				"text": "嘗試穩定裂隙邊緣",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_void_essence", "count": 3, "chance": 0.5},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5}
+				]
+			},
+			{
+				"text": "冒險穿越裂隙",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.7},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.6},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.3}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_trap_chaos_maze",
+		"name": "混沌迷陣",
+		"type": "trap",
+		"floor_range": [91, 99],
+		"weight": 10,
+		"description": "空間瞬間變幻，四周化作無盡的迷宮，牆壁上閃爍著混沌的光芒，每一步都可能踏入陷阱。",
+		"options": [
+			{
+				"text": "冷靜觀察環境",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3},
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.3}
+				]
+			},
+			{
+				"text": "用鑑定術分析迷宮",
+				"condition": null,
+				"cost": {"mp": 40},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_chaos_ore", "count": 2, "chance": 0.7},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "強行破壞迷宮牆壁",
+				"condition": {"min_mp": 50},
+				"cost": {"mp": 50},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "count": 2, "chance": 0.5},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.5}
+				]
+			},
+			{
+				"text": "盲目亂闖",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.8},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.7},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4}
+				]
+			}
+		],
+		"conditional_options": []
+	}
+]

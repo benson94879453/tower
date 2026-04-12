@@ -217,5 +217,118 @@
     ],
     "description": "\u6230\u9b25\u7d50\u7b97\u6642\u63d0\u9ad8\u7a00\u6709\u6389\u843d\u7387 25%",
     "obtain_info": "\u4efb\u52d9"
+  },
+  {
+    "id": "acc_thunder_amulet",
+    "name": "\u96f7\u9e23\u8b77\u8eab\u7b26",
+    "type": "accessory",
+    "rarity": "SR",
+    "stats": {
+      "mdef": 4,
+      "speed": 2
+    },
+    "buy_price": 700,
+    "sell_price": 350,
+    "available_from_floor": 35,
+    "passive_effects": [
+      {
+        "trigger": "on_turn_start",
+        "effect": "mp_regen_percent",
+        "value": 5
+      }
+    ],
+    "description": "\u6bcf\u56de\u5408\u56de\u5fa9 5% MP\uff0c\u96f7\u5c6c\u8b77\u8eab\u7b26\u7684\u4fdd\u8b77",
+    "obtain_info": "\u5546\u5e97"
+  },
+  {
+    "id": "acc_dark_veil",
+    "name": "\u6697\u5f71\u62ab\u98a8",
+    "type": "accessory",
+    "rarity": "SR",
+    "stats": {
+      "matk": 6,
+      "speed": 2
+    },
+    "buy_price": 800,
+    "sell_price": 400,
+    "available_from_floor": 50,
+    "passive_effects": [
+      {
+        "trigger": "on_turn_start",
+        "effect": "mp_regen_percent",
+        "value": 3
+      }
+    ],
+    "description": "\u6bcf\u56de\u5408\u56de\u5fa9 3% MP\uff0c\u63d0\u5347\u9b54\u653b\u8207\u901f\u5ea6",
+    "obtain_info": "\u5bf6\u7bb1"
+  },
+  {
+    "id": "acc_holy_emblem",
+    "name": "\u8056\u5149\u5fbd\u8a18",
+    "type": "accessory",
+    "rarity": "SR",
+    "stats": {
+      "mdef": 8,
+      "hp": 30
+    },
+    "buy_price": 900,
+    "sell_price": 450,
+    "available_from_floor": 60,
+    "passive_effects": [
+      {
+        "trigger": "on_turn_start",
+        "effect": "heal_hp_percent",
+        "value": 2
+      }
+    ],
+    "description": "\u6bcf\u56de\u5408\u56de\u5fa9 2% HP\uff0c\u986f\u8457\u63d0\u5347\u9632\u79a6",
+    "obtain_info": "\u5546\u5e97"
+  },
+  {
+    "id": "acc_void_ring",
+    "name": "\u865b\u7a7a\u6307\u74b0",
+    "type": "accessory",
+    "rarity": "SSR",
+    "stats": {
+      "matk": 8,
+      "mdef": 5,
+      "speed": 3
+    },
+    "buy_price": 1500,
+    "sell_price": 750,
+    "available_from_floor": 75,
+    "passive_effects": [
+      {
+        "trigger": "on_deal_damage",
+        "effect": "echo_attack",
+        "chance": 15,
+        "damage_percent": 30
+      }
+    ],
+    "description": "\u6280\u80fd\u50b7\u5bb3 15% \u6a5f\u7387\u8ffd\u52a0 30% \u865b\u7a7a\u56de\u97ff\u50b7\u5bb3",
+    "obtain_info": "\u83c1\u82f1\u6389\u843d"
+  },
+  {
+    "id": "acc_chaos_core",
+    "name": "\u6df7\u6c8c\u6838\u5fc3",
+    "type": "accessory",
+    "rarity": "SSR",
+    "stats": {
+      "matk": 10,
+      "mdef": 6,
+      "hp": 40
+    },
+    "buy_price": 2500,
+    "sell_price": 1250,
+    "available_from_floor": 90,
+    "passive_effects": [
+      {
+        "trigger": "on_deal_damage",
+        "effect": "lifesteal_percent",
+        "value": 10
+      }
+    ],
+    "description": "\u50b7\u5bb3\u7684 10% \u8f49\u70ba HP \u56de\u5fa9\uff0c\u5f37\u529b\u7684\u7d42\u76e4\u98fe\u54c1",
+    "obtain_info": "Boss\u6389\u843d"
   }
 ]

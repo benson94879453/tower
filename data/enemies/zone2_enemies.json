@@ -1,0 +1,130 @@
+[
+	{
+		"id": "enemy_magma_lizard",
+		"name": "熔岩蜥蜴",
+		"element": "fire",
+		"level": 5,
+		"stats": {
+			"hp": 100,
+			"mp": 35,
+			"matk": 24,
+			"mdef": 5,
+			"patk": 8,
+			"pdef": 6,
+			"speed": 13
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_spark", "skill_flame_shot"],
+		"drops": [
+			{"id": "mat_fire_crystal", "rate": 0.30},
+			{"id": "mat_iron_ore", "rate": 0.20},
+			{"id": "item_hp_potion_s", "rate": 0.20}
+		],
+		"exp": 25,
+		"gold": 15,
+		"visual": {
+			"shape": "triangle",
+			"color": "#FF6600",
+			"size": "medium",
+			"effects": ["flame_top"]
+		},
+		"floor_range": [11, 18]
+	},
+	{
+		"id": "enemy_ash_bat",
+		"name": "灰燼蝙蝠",
+		"element": "fire",
+		"level": 6,
+		"stats": {
+			"hp": 85,
+			"mp": 40,
+			"matk": 27,
+			"mdef": 4,
+			"patk": 5,
+			"pdef": 4,
+			"speed": 17
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_flame_shot", "skill_swift"],
+		"drops": [
+			{"id": "mat_fire_crystal", "rate": 0.25},
+			{"id": "mat_magic_crystal", "rate": 0.15},
+			{"id": "item_mp_potion_s", "rate": 0.20}
+		],
+		"exp": 28,
+		"gold": 18,
+		"visual": {
+			"shape": "diamond",
+			"color": "#AA4400",
+			"size": "small",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [11, 18]
+	},
+	{
+		"id": "enemy_scorched_golem",
+		"name": "焦土魔像",
+		"element": "fire",
+		"level": 7,
+		"stats": {
+			"hp": 130,
+			"mp": 25,
+			"matk": 22,
+			"mdef": 10,
+			"patk": 10,
+			"pdef": 12,
+			"speed": 6
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_mud_slap", "skill_flame_shot", "skill_iron_defense"],
+		"drops": [
+			{"id": "mat_earth_crystal", "rate": 0.25},
+			{"id": "mat_fire_crystal", "rate": 0.20},
+			{"id": "item_hp_potion_s", "rate": 0.25},
+			{"id": "core_fire_imp", "rate": 0.01}
+		],
+		"exp": 32,
+		"gold": 22,
+		"visual": {
+			"shape": "square",
+			"color": "#CC5522",
+			"size": "large",
+			"effects": ["flame_top"]
+		},
+		"floor_range": [12, 18]
+	},
+	{
+		"id": "boss_flame_demon_lord",
+		"name": "烈焰魔神",
+		"element": "fire",
+		"level": 9,
+		"stats": {
+			"hp": 350,
+			"mp": 80,
+			"matk": 30,
+			"mdef": 8,
+			"patk": 12,
+			"pdef": 10,
+			"speed": 12
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_flame_shot", "skill_fire_storm", "skill_power_up", "skill_barrier"],
+		"drops": [
+			{"id": "mat_ancient_shard", "rate": 0.30},
+			{"id": "mat_burst_core", "rate": 0.40},
+			{"id": "item_hp_potion_m", "rate": 0.50},
+			{"id": "weapon_fire_staff", "rate": 0.10},
+			{"id": "acc_burn_ring", "rate": 0.08}
+		],
+		"exp": 120,
+		"gold": 80,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#FF2200",
+			"size": "large",
+			"effects": ["flame_top", "glow"]
+		},
+		"floor_range": [19, 19],
+		"is_boss": true
+	}
+]

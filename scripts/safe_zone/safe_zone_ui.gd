@@ -69,37 +69,8 @@ func _ready() -> void:
 
 
 func _style_hp_mp_bars() -> void:
-	var hp_fill := StyleBoxFlat.new()
-	hp_fill.bg_color = ThemeConstantsClass.HP_COLOR
-	hp_fill.corner_radius_top_left = 4
-	hp_fill.corner_radius_top_right = 4
-	hp_fill.corner_radius_bottom_right = 4
-	hp_fill.corner_radius_bottom_left = 4
-	hp_bar.add_theme_stylebox_override("fill", hp_fill)
-
-	var hp_bg := StyleBoxFlat.new()
-	hp_bg.bg_color = ThemeConstantsClass.HP_BG_COLOR
-	hp_bg.corner_radius_top_left = 4
-	hp_bg.corner_radius_top_right = 4
-	hp_bg.corner_radius_bottom_right = 4
-	hp_bg.corner_radius_bottom_left = 4
-	hp_bar.add_theme_stylebox_override("background", hp_bg)
-
-	var mp_fill := StyleBoxFlat.new()
-	mp_fill.bg_color = ThemeConstantsClass.MP_COLOR
-	mp_fill.corner_radius_top_left = 4
-	mp_fill.corner_radius_top_right = 4
-	mp_fill.corner_radius_bottom_right = 4
-	mp_fill.corner_radius_bottom_left = 4
-	mp_bar.add_theme_stylebox_override("fill", mp_fill)
-
-	var mp_bg := StyleBoxFlat.new()
-	mp_bg.bg_color = ThemeConstantsClass.MP_BG_COLOR
-	mp_bg.corner_radius_top_left = 4
-	mp_bg.corner_radius_top_right = 4
-	mp_bg.corner_radius_bottom_right = 4
-	mp_bg.corner_radius_bottom_left = 4
-	mp_bar.add_theme_stylebox_override("background", mp_bg)
+	ThemeConstantsClass.apply_gradient_bar(hp_bar, ThemeConstantsClass.HP_COLOR, ThemeConstantsClass.HP_COLOR.darkened(0.4), ThemeConstantsClass.HP_BG_COLOR)
+	ThemeConstantsClass.apply_gradient_bar(mp_bar, ThemeConstantsClass.MP_COLOR, ThemeConstantsClass.MP_COLOR.darkened(0.4), ThemeConstantsClass.MP_BG_COLOR)
 
 
 func _apply_theme_variations() -> void:
@@ -112,6 +83,29 @@ func setup(safe_floor: int) -> void:
 	highest_floor = PlayerManager.player_data.highest_floor if PlayerManager.player_data != null else 1
 
 	zone_label.text = "%dF - %s" % [safe_floor, _get_safe_zone_name(safe_floor)]
+
+	var zone_id := _get_zone_id_for_floor(safe_floor)
+	if ThemeConstantsClass.ZONE_AMBIENT.has(zone_id):
+		var accent: Color = ThemeConstantsClass.ZONE_AMBIENT[zone_id].get("accent", ThemeConstantsClass.ACCENT)
+		zone_label.add_theme_color_override("font_color", accent)
+
+		var panel_bg := StyleBoxFlat.new()
+		var tint: Color = ThemeConstantsClass.ZONE_AMBIENT[zone_id].get("bg", ThemeConstantsClass.PANEL_BG)
+		panel_bg.bg_color = tint
+		panel_bg.border_color = accent.darkened(0.5)
+		panel_bg.border_width_left = 1
+		panel_bg.border_width_top = 1
+		panel_bg.border_width_right = 1
+		panel_bg.border_width_bottom = 1
+		panel_bg.corner_radius_top_left = 8
+		panel_bg.corner_radius_top_right = 8
+		panel_bg.corner_radius_bottom_right = 8
+		panel_bg.corner_radius_bottom_left = 8
+		panel_bg.content_margin_left = 12.0
+		panel_bg.content_margin_top = 10.0
+		panel_bg.content_margin_right = 12.0
+		panel_bg.content_margin_bottom = 10.0
+		status_panel.add_theme_stylebox_override("panel", panel_bg)
 
 	var next_floor: int = _get_next_explore_floor(safe_floor)
 	if next_floor > 0 and next_floor <= 100:
@@ -128,6 +122,9 @@ func setup(safe_floor: int) -> void:
 	teleport_panel.visible = false
 
 	_update_status()
+
+	if QuestManager != null:
+		QuestManager.check_auto_main_quests(current_safe_floor)
 
 
 func _update_status() -> void:
@@ -359,6 +356,7 @@ func _on_teleport_pressed() -> void:
 func _request_rest() -> void:
 	if QuestManager != null:
 		QuestManager.refresh_bounty_board(current_safe_floor)
+		QuestManager.check_auto_main_quests(current_safe_floor)
 	if get_signal_connection_list("rest_requested").is_empty():
 		if PlayerManager.player_data != null:
 			PlayerManager.player_data.current_hp = PlayerManager.get_max_hp()
@@ -446,3 +444,26 @@ static func _get_safe_zone_name(floor_number: int) -> String:
 			return "最後營地"
 		_:
 			return "安全區"
+
+
+static func _get_zone_id_for_floor(floor_number: int) -> String:
+	if floor_number <= 10:
+		return "zone1"
+	elif floor_number <= 20:
+		return "zone2"
+	elif floor_number <= 30:
+		return "zone3"
+	elif floor_number <= 40:
+		return "zone4"
+	elif floor_number <= 50:
+		return "zone5"
+	elif floor_number <= 60:
+		return "zone6"
+	elif floor_number <= 70:
+		return "zone7"
+	elif floor_number <= 80:
+		return "zone8"
+	elif floor_number <= 90:
+		return "zone9"
+	else:
+		return "zone10"

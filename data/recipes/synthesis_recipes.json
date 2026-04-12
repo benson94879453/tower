@@ -24,5 +24,110 @@
 			{"id": "mat_ice_crystal", "count": 2}
 		],
 		"description": "融合魔力結晶與冰霜結晶，合成附帶再生效果的指環"
+	},
+	{
+		"id": "recipe_acc_mana_spring",
+		"type": "synthesis",
+		"result_id": "acc_mana_spring",
+		"result_name": "魔力湧泉",
+		"available_from_floor": 8,
+		"gold_cost": 200,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 5},
+			{"id": "mat_ice_crystal", "count": 3}
+		],
+		"description": "融合魔力結晶與冰霜結晶，合成附帶魔力回復效果的飾品"
+	},
+	{
+		"id": "recipe_acc_echo_crystal",
+		"type": "synthesis",
+		"result_id": "acc_echo_crystal",
+		"result_name": "迴響水晶",
+		"available_from_floor": 12,
+		"gold_cost": 350,
+		"materials": [
+			{"id": "mat_magic_crystal", "count": 8},
+			{"id": "mat_enhance_stone", "count": 2}
+		],
+		"description": "融合魔力結晶與強化石，合成附帶技能迴響效果的水晶"
+	},
+	{
+		"id": "recipe_acc_life_siphon",
+		"type": "synthesis",
+		"result_id": "acc_life_siphon",
+		"result_name": "生命虹吸",
+		"available_from_floor": 14,
+		"gold_cost": 400,
+		"materials": [
+			{"id": "mat_fire_crystal", "count": 5},
+			{"id": "mat_ice_crystal", "count": 5}
+		],
+		"description": "融合火焰結晶與冰霜結晶，合成附帶生命吸取效果的飾品"
+	},
+	{
+		"id": "recipe_acc_confusion_veil",
+		"type": "synthesis",
+		"result_id": "acc_confusion_veil",
+		"result_name": "混沌面紗",
+		"available_from_floor": 15,
+		"gold_cost": 380,
+		"materials": [
+			{"id": "mat_dark_crystal", "count": 5},
+			{"id": "mat_magic_crystal", "count": 5}
+		],
+		"description": "融合暗影結晶與魔力結晶，合成附帶混亂抗性的面紗"
+	},
+	{
+		"id": "recipe_acc_familiar_heal",
+		"type": "synthesis",
+		"result_id": "acc_familiar_heal",
+		"result_name": "使魔治癒鈴",
+		"available_from_floor": 9,
+		"gold_cost": 220,
+		"materials": [
+			{"id": "mat_herb", "count": 10},
+			{"id": "mat_magic_crystal", "count": 3}
+		],
+		"description": "融合草藥與魔力結晶，合成附帶使魔回復效果的鈴鐺"
+	},
+	{
+		"id": "recipe_acc_time_watch",
+		"type": "synthesis",
+		"result_id": "acc_time_watch",
+		"result_name": "時光懷錶",
+		"available_from_floor": 18,
+		"gold_cost": 450,
+		"materials": [
+			{"id": "mat_thunder_crystal", "count": 5},
+			{"id": "mat_enhance_stone", "count": 3}
+		],
+		"description": "融合雷鳴結晶與強化石，合成附帶行動加速效果的懷錶"
+	},
+	{
+		"id": "recipe_acc_guardian_angel",
+		"type": "synthesis",
+		"result_id": "acc_guardian_angel",
+		"result_name": "守護天使",
+		"available_from_floor": 20,
+		"gold_cost": 600,
+		"materials": [
+			{"id": "mat_light_crystal", "count": 5},
+			{"id": "mat_enhance_stone", "count": 5},
+			{"id": "mat_ancient_shard", "count": 2}
+		],
+		"description": "融合聖光結晶、強化石與古代碎片，合成附帶守護效果的天使之飾"
+	},
+	{
+		"id": "recipe_acc_collector_book",
+		"type": "synthesis",
+		"result_id": "acc_collector_book",
+		"result_name": "收藏家之書",
+		"available_from_floor": 16,
+		"gold_cost": 400,
+		"materials": [
+			{"id": "mat_ancient_shard", "count": 3},
+			{"id": "mat_magic_crystal", "count": 5}
+		],
+		"description": "融合古代碎片與魔力結晶，合成附帶掉落加成效果的魔法書"
 	}
 ]

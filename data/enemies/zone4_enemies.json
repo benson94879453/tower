@@ -1,0 +1,129 @@
+[
+	{
+		"id": "enemy_gale_hawk",
+		"name": "疾風鷹",
+		"element": "wind",
+		"level": 13,
+		"stats": {
+			"hp": 170,
+			"mp": 40,
+			"matk": 40,
+			"mdef": 10,
+			"patk": 12,
+			"pdef": 6,
+			"speed": 20
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_gust", "skill_aerial_ace", "skill_air_slash"],
+		"drops": [
+			{"id": "mat_wind_crystal", "rate": 0.30},
+			{"id": "mat_magic_crystal", "rate": 0.15},
+			{"id": "item_hp_potion_s", "rate": 0.20}
+		],
+		"exp": 60,
+		"gold": 40,
+		"visual": {
+			"shape": "triangle",
+			"color": "#88DDAA",
+			"size": "medium",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [31, 38]
+	},
+	{
+		"id": "enemy_whirlwind_spirit",
+		"name": "旋風精靈",
+		"element": "wind",
+		"level": 14,
+		"stats": {
+			"hp": 150,
+			"mp": 55,
+			"matk": 45,
+			"mdef": 12,
+			"patk": 6,
+			"pdef": 5,
+			"speed": 18
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_air_slash", "skill_whirlwind", "skill_tailwind"],
+		"drops": [
+			{"id": "mat_wind_crystal", "rate": 0.25},
+			{"id": "mat_enhance_stone", "rate": 0.10},
+			{"id": "item_mp_potion_s", "rate": 0.20}
+		],
+		"exp": 68,
+		"gold": 45,
+		"visual": {
+			"shape": "circle",
+			"color": "#66CC88",
+			"size": "medium",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [31, 38]
+	},
+	{
+		"id": "enemy_storm_giant",
+		"name": "風暴巨人",
+		"element": "wind",
+		"level": 15,
+		"stats": {
+			"hp": 230,
+			"mp": 45,
+			"matk": 38,
+			"mdef": 18,
+			"patk": 14,
+			"pdef": 16,
+			"speed": 10
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_gust", "skill_tornado", "skill_thunder_shock"],
+		"drops": [
+			{"id": "mat_wind_crystal", "rate": 0.25},
+			{"id": "mat_thunder_crystal", "rate": 0.15},
+			{"id": "item_hp_potion_m", "rate": 0.25}
+		],
+		"exp": 75,
+		"gold": 50,
+		"visual": {
+			"shape": "hexagon",
+			"color": "#448866",
+			"size": "large",
+			"effects": ["spark_trail"]
+		},
+		"floor_range": [32, 38]
+	},
+	{
+		"id": "boss_wind_dragon_king",
+		"name": "風龍王",
+		"element": "wind",
+		"level": 17,
+		"stats": {
+			"hp": 650,
+			"mp": 120,
+			"matk": 52,
+			"mdef": 14,
+			"patk": 16,
+			"pdef": 14,
+			"speed": 16
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_air_slash", "skill_tornado", "skill_hurricane", "skill_power_up"],
+		"drops": [
+			{"id": "mat_ancient_shard", "rate": 0.30},
+			{"id": "mat_wind_crystal", "rate": 0.50},
+			{"id": "item_hp_potion_m", "rate": 0.60},
+			{"id": "weapon_wind_staff", "rate": 0.10},
+			{"id": "acc_time_watch", "rate": 0.05}
+		],
+		"exp": 250,
+		"gold": 180,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#22AA66",
+			"size": "large",
+			"effects": ["spark_trail", "glow"]
+		},
+		"floor_range": [39, 39],
+		"is_boss": true
+	}
+]

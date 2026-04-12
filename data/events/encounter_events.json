@@ -1,0 +1,373 @@
+[
+	{
+		"id": "event_encounter_merchant",
+		"name": "旅行商人",
+		"type": "encounter",
+		"floor_range": [5, 80],
+		"weight": 8,
+		"description": "一個背著巨大行囊的商人出現在角落，他的攤位上擺著各種稀有物品。「冒險者，想不想看看我的珍藏？比城裡便宜三成喔。」",
+		"options": [
+			{
+				"text": "購買藥水套餐（150 金）",
+				"condition": {"min_gold": 150},
+				"cost": {"gold": 150},
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_m", "count": 3, "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_mp_potion_m", "count": 2, "chance": 1.0}
+				]
+			},
+			{
+				"text": "購買稀有材料（300 金）",
+				"condition": {"min_gold": 300},
+				"cost": {"gold": 300},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "count": 2, "chance": 1.0},
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "count": 1, "chance": 0.5}
+				]
+			},
+			{
+				"text": "購買神秘盒子（500 金）",
+				"condition": {"min_gold": 500},
+				"cost": {"gold": 500},
+				"results": [
+					{"type": "item_reward", "item_id": "core_wind_hawk", "chance": 0.3},
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "chance": 0.5},
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "count": 3, "chance": 0.2}
+				]
+			},
+			{
+				"text": "不買，繼續前進",
+				"condition": null,
+				"results": []
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_encounter_wounded_adventurer",
+		"name": "受傷冒險者",
+		"type": "encounter",
+		"floor_range": [10, 50],
+		"weight": 10,
+		"description": "一個渾身是傷的冒險者靠在牆邊，氣息微弱。他看見你，吃力地抬起手。「拜託……幫幫我……」",
+		"options": [
+			{
+				"text": "使用藥水治療他",
+				"condition": {"has_item": "item_hp_potion_m"},
+				"cost": {"gold": 100},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "chance": 0.4},
+					{"type": "gold_reward", "min": 100, "max": 300, "chance": 0.6},
+					{"type": "research_points", "value": 100, "chance": 1.0}
+				]
+			},
+			{
+				"text": "用治療魔法救治",
+				"condition": {"has_skill": "skill_heal"},
+				"cost": {"mp": 30},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "chance": 0.5},
+					{"type": "gold_reward", "min": 150, "max": 400, "chance": 0.7},
+					{"type": "research_points", "value": 150, "chance": 1.0}
+				]
+			},
+			{
+				"text": "給他一些金幣",
+				"condition": {"min_gold": 100},
+				"cost": {"gold": 100},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_magic_crystal", "count": 2, "chance": 0.6},
+					{"type": "research_points", "value": 50, "chance": 1.0}
+				]
+			},
+			{
+				"text": "無能為力，繼續前進",
+				"condition": null,
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_encounter_treasure_chest",
+		"name": "神秘寶箱",
+		"type": "encounter",
+		"floor_range": [1, 99],
+		"weight": 10,
+		"description": "走廊中央放著一個裝飾華麗的寶箱，上面的鎖看起來有些詭異。寶箱周圍散落著一些骨骸。",
+		"options": [
+			{
+				"text": "直接打開寶箱",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "chance": 0.4},
+					{"type": "gold_reward", "min": 100, "max": 500, "chance": 0.3},
+					{"type": "battle", "enemy_id": "enemy_magma_lizard", "chance": 0.2},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.1}
+				]
+			},
+			{
+				"text": "先檢查陷阱再打開",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "chance": 0.6},
+					{"type": "gold_reward", "min": 100, "max": 500, "chance": 0.5},
+					{"type": "item_reward", "item_id": "core_fire_imp", "chance": 0.1}
+				]
+			},
+			{
+				"text": "用魔法遠程開啟",
+				"condition": {"min_mp": 20},
+				"cost": {"mp": 20},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_magic_crystal", "chance": 0.5},
+					{"type": "gold_reward", "min": 50, "max": 300, "chance": 0.4},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.1}
+				]
+			},
+			{
+				"text": "不理會寶箱",
+				"condition": null,
+				"results": []
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_encounter_spirit_fountain",
+		"name": "靈泉",
+		"type": "encounter",
+		"floor_range": [20, 70],
+		"weight": 8,
+		"description": "一汪散發著淡藍色光芒的泉水從石縫中湧出，溫暖的氣息撲面而來。泉水似乎蘊含著強大的魔力。",
+		"options": [
+			{
+				"text": "飲用泉水（恢復 HP）",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_m", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "沐浴泉水（恢復 MP）",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_mp_potion_m", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			},
+			{
+				"text": "裝一瓶帶走",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_l", "count": 2, "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_mp_potion_l", "count": 1, "chance": 0.5}
+				]
+			},
+			{
+				"text": "用泉水強化裝備",
+				"condition": {"has_item": "mat_enhance_stone"},
+				"cost": {"gold": 100},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "count": 2, "chance": 0.7},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.3}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_encounter_dark_altar",
+		"name": "暗黑祭壇",
+		"type": "encounter",
+		"floor_range": [30, 80],
+		"weight": 7,
+		"description": "一座散發不祥紫光的祭壇矗立在房間中央，祭壇上的符文不斷脈動。似乎可以獻上什麼來換取力量。",
+		"options": [
+			{
+				"text": "獻上 HP 換取力量",
+				"condition": null,
+				"cost": {"mp": 50},
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 1.0},
+					{"type": "item_reward", "item_id": "mat_dark_crystal", "count": 2, "chance": 0.5}
+				]
+			},
+			{
+				"text": "獻上 MP 換取智慧",
+				"condition": null,
+				"cost": {"mp": 60},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "count": 2, "chance": 1.0},
+					{"type": "research_points", "value": 250, "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5}
+				]
+			},
+			{
+				"text": "獻上金幣換取物品",
+				"condition": {"min_gold": 300},
+				"cost": {"gold": 300},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "chance": 0.6},
+					{"type": "item_reward", "item_id": "core_wind_hawk", "chance": 0.2}
+				]
+			},
+			{
+				"text": "破壞祭壇",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "enemy_nightmare_banshee", "chance": 0.5},
+					{"type": "item_reward", "item_id": "mat_dark_crystal", "count": 3, "chance": 0.5}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_encounter_familiar_egg",
+		"name": "使魔之蛋",
+		"type": "encounter",
+		"floor_range": [15, 60],
+		"weight": 5,
+		"description": "角落裡有一顆散發微光的蛋，表面佈滿奇特的紋路。蛋殼偶爾顫動，似乎有什麼正在裡面蠢蠢欲動。",
+		"options": [
+			{
+				"text": "小心捧起蛋",
+				"condition": null,
+				"results": [
+					{"type": "familiar_reward", "familiar_id": "familiar_ice_guard", "chance": 0.2},
+					{"type": "familiar_reward", "familiar_id": "familiar_fire_imp", "chance": 0.2},
+					{"type": "item_reward", "item_id": "core_fire_imp", "chance": 0.3},
+					{"type": "battle", "enemy_id": "enemy_ash_bat", "chance": 0.3}
+				]
+			},
+			{
+				"text": "注入魔力孵化",
+				"condition": {"min_mp": 40},
+				"cost": {"mp": 40},
+				"results": [
+					{"type": "item_reward", "item_id": "core_ice_guard", "chance": 0.5},
+					{"type": "familiar_reward", "familiar_id": "familiar_fire_imp", "chance": 0.3},
+					{"type": "familiar_reward", "familiar_id": "familiar_ice_guard", "chance": 0.2}
+				]
+			},
+			{
+				"text": "用結晶能量催化",
+				"condition": {"has_item": "mat_magic_crystal"},
+				"cost": {"gold": 100},
+				"results": [
+					{"type": "item_reward", "item_id": "core_wind_hawk", "chance": 0.7},
+					{"type": "familiar_reward", "familiar_id": "familiar_fire_imp", "chance": 0.15},
+					{"type": "familiar_reward", "familiar_id": "familiar_ice_guard", "chance": 0.15}
+				]
+			},
+			{
+				"text": "不去理會",
+				"condition": null,
+				"results": []
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_encounter_scroll_teaching",
+		"name": "古卷教學",
+		"type": "encounter",
+		"floor_range": [10, 50],
+		"weight": 6,
+		"description": "牆上掛著一卷散發金色光芒的古卷，上面的文字不斷變幻，似乎在傳授某種知識。古卷上方刻著：「以魔力為代價，習得新的力量。」",
+		"options": [
+			{
+				"text": "注入魔力閱讀古卷（消耗 40 MP）",
+				"condition": {"min_mp": 40},
+				"cost": {"mp": 40},
+				"results": [
+					{"type": "research_points", "value": 30, "chance": 0.25},
+					{"type": "research_points", "value": 30, "chance": 0.25},
+					{"type": "research_points", "value": 30, "chance": 0.25},
+					{"type": "research_points", "value": 150, "chance": 0.25}
+				]
+			},
+			{
+				"text": "用結晶增幅閱讀效果",
+				"condition": {"has_item": "mat_magic_crystal"},
+				"cost": {"mp": 20},
+				"results": [
+					{"type": "research_points", "value": 30, "chance": 0.3},
+					{"type": "research_points", "value": 30, "chance": 0.3},
+					{"type": "research_points", "value": 30, "chance": 0.3},
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "count": 1, "chance": 0.1}
+				]
+			},
+			{
+				"text": "快速瀏覽",
+				"condition": null,
+				"results": [
+					{"type": "research_points", "value": 80, "chance": 1.0},
+					{"type": "research_points", "value": 5, "chance": 0.5}
+				]
+			},
+			{
+				"text": "撕下古卷帶走",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_magic_crystal", "count": 2, "chance": 0.5},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.3},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.2}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_encounter_challenger",
+		"name": "挑戰者",
+		"type": "encounter",
+		"floor_range": [30, 99],
+		"weight": 7,
+		"description": "一名披著斗篷的神秘人物擋住了去路。「在此等候多時了，冒險者。與我一戰，勝者可獲得我的珍藏。」",
+		"options": [
+			{
+				"text": "接受挑戰（普通難度）",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "enemy_gale_hawk", "chance": 0.3},
+					{"type": "battle", "enemy_id": "enemy_thunder_wolf", "chance": 0.3},
+					{"type": "battle", "enemy_id": "enemy_shadow_assassin", "chance": 0.2},
+					{"type": "battle", "enemy_id": "enemy_holy_knight", "chance": 0.2}
+				]
+			},
+			{
+				"text": "提出高難度挑戰",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "boss_flame_demon_lord", "chance": 0.3},
+					{"type": "battle", "enemy_id": "boss_frost_queen", "chance": 0.3},
+					{"type": "battle", "enemy_id": "boss_thunder_dragon", "chance": 0.2},
+					{"type": "battle", "enemy_id": "boss_dark_lord", "chance": 0.2}
+				]
+			},
+			{
+				"text": "提議用金幣代替",
+				"condition": {"min_gold": 500},
+				"cost": {"gold": 500},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "count": 2, "chance": 0.6},
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "chance": 0.3},
+					{"type": "item_reward", "item_id": "core_shadow_fox", "chance": 0.1}
+				]
+			},
+			{
+				"text": "婉拒挑戰",
+				"condition": null,
+				"results": []
+			}
+		],
+		"conditional_options": []
+	}
+]

@@ -1,1 +1,430 @@
-[]
+[
+	{
+		"id": "main_tower_entrance",
+		"name": "踏入魔導之塔",
+		"type": "main",
+		"trigger": "auto",
+		"available_from_floor": 1,
+		"description": "魔導之塔矗立在前方，傳說塔頂藏有無盡的魔力源泉。作為見習法師，你必須攀登這座塔，證明自己的實力。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 5, "count": 1 }
+		],
+		"rewards": {
+			"gold": 100,
+			"exp": 50,
+			"items": [
+				{ "id": "item_hp_potion_s", "count": 3 }
+			]
+		},
+		"next_quest": "main_zone1_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone1_boss",
+		"name": "廢墟的守護者",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_tower_entrance",
+		"available_from_floor": 5,
+		"description": "廢墟入口的深處潛伏著一隻強大的守護者。擊敗牠才能繼續向上攀登。",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 9, "count": 1 }
+		],
+		"rewards": {
+			"gold": 300,
+			"exp": 200,
+			"items": [
+				{ "id": "weapon_ice_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_lava_forge",
+		"repeatable": false
+	},
+	{
+		"id": "main_lava_forge",
+		"name": "熔岩鍛爐的考驗",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone1_boss",
+		"available_from_floor": 10,
+		"description": "塔內的溫度急遽上升，你來到了熔岩鍛爐區域。火焰生物在此肆虐，必須穿越才能繼續前進。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 15, "count": 1 },
+			{ "type": "kill", "target_id": "enemy_scorched_golem", "count": 3 }
+		],
+		"rewards": {
+			"gold": 500,
+			"exp": 350,
+			"items": [
+				{ "id": "mat_fire_crystal", "count": 3 }
+			]
+		},
+		"next_quest": "main_zone2_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone2_boss",
+		"name": "熔岩之王",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_lava_forge",
+		"available_from_floor": 15,
+		"description": "熔岩鍛爐的最深處，熔岩之王統治著這片火海。只有擊敗牠，才能開啟通往上層的通道。",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 19, "count": 1 }
+		],
+		"rewards": {
+			"gold": 800,
+			"exp": 500,
+			"items": [
+				{ "id": "weapon_fire_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_frozen_realm",
+		"repeatable": false
+	},
+	{
+		"id": "main_frozen_realm",
+		"name": "極寒冰域",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone2_boss",
+		"available_from_floor": 20,
+		"description": "穿過熔岩區域後，溫度驟降至冰點。極寒冰域的冰霜生物正在等待挑戰者。尋找冰域的守護者並擊敗牠。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 25, "count": 1 },
+			{ "type": "collect", "item_id": "mat_ice_crystal", "count": 5 }
+		],
+		"rewards": {
+			"gold": 600,
+			"exp": 450,
+			"items": [
+				{ "id": "armor_ice_robe", "count": 1 }
+			]
+		},
+		"next_quest": "main_zone3_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone3_boss",
+		"name": "冰霜女王的試煉",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_frozen_realm",
+		"available_from_floor": 25,
+		"description": "極寒冰域的統治者——冰霜女王，不會輕易讓任何人通過。證明你的實力！",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 29, "count": 1 }
+		],
+		"rewards": {
+			"gold": 1200,
+			"exp": 700,
+			"items": [
+				{ "id": "core_ice_guard", "count": 1 }
+			]
+		},
+		"next_quest": "main_storm_corridor",
+		"repeatable": false
+	},
+	{
+		"id": "main_storm_corridor",
+		"name": "暴風迴廊",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone3_boss",
+		"available_from_floor": 30,
+		"description": "狂風呼嘯的迴廊連接著冰域與更深處。風之精靈在此築巢，必須穿越這片風暴才能繼續攀登。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 35, "count": 1 },
+			{ "type": "kill", "target_id": "enemy_gale_hawk", "count": 5 }
+		],
+		"rewards": {
+			"gold": 800,
+			"exp": 600,
+			"items": [
+				{ "id": "weapon_wind_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_zone4_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone4_boss",
+		"name": "暴風龍的挑戰",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_storm_corridor",
+		"available_from_floor": 35,
+		"description": "暴風迴廊的盡頭，暴風龍等待著能夠征服風暴的勇者。",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 39, "count": 1 }
+		],
+		"rewards": {
+			"gold": 1500,
+			"exp": 900,
+			"items": [
+				{ "id": "acc_mana_spring", "count": 1 }
+			]
+		},
+		"next_quest": "main_earth_maze",
+		"repeatable": false
+	},
+	{
+		"id": "main_earth_maze",
+		"name": "大地迷宮",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone4_boss",
+		"available_from_floor": 40,
+		"description": "大地迷宮是塔中最複雜的區域，岩石與泥土構成的迷宮中潛伏著強大的大地生物。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 45, "count": 1 },
+			{ "type": "collect", "item_id": "mat_earth_crystal", "count": 5 }
+		],
+		"rewards": {
+			"gold": 1000,
+			"exp": 750,
+			"items": [
+				{ "id": "armor_earth_plate", "count": 1 }
+			]
+		},
+		"next_quest": "main_zone5_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone5_boss",
+		"name": "地脈守護者",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_earth_maze",
+		"available_from_floor": 45,
+		"description": "大地迷宮最深處，地脈守護者汲取著大地的力量。擊敗牠才能進入塔的上半部。",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 49, "count": 1 }
+		],
+		"rewards": {
+			"gold": 2000,
+			"exp": 1200,
+			"items": [
+				{ "id": "weapon_earth_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_thunder_sea",
+		"repeatable": false
+	},
+	{
+		"id": "main_thunder_sea",
+		"name": "雷鳴雲海",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone5_boss",
+		"available_from_floor": 50,
+		"description": "塔的上半部始於雷鳴雲海。閃電在雲層間穿梭，雷之精靈在此聚集。找到雷龍王並擊敗牠。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 55, "count": 1 },
+			{ "type": "kill", "target_id": "enemy_thunder_wolf", "count": 5 }
+		],
+		"rewards": {
+			"gold": 1500,
+			"exp": 1000,
+			"items": [
+				{ "id": "weapon_thunder_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_zone6_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone6_boss",
+		"name": "雷龍王",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_thunder_sea",
+		"available_from_floor": 55,
+		"description": "雷鳴雲海的王——雷龍王，掌控著閃電的力量。只有真正的強者才能通過牠的試煉。",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 59, "count": 1 }
+		],
+		"rewards": {
+			"gold": 2500,
+			"exp": 1500,
+			"items": [
+				{ "id": "weapon_storm_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_shadow_abyss",
+		"repeatable": false
+	},
+	{
+		"id": "main_shadow_abyss",
+		"name": "暗影深淵",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone6_boss",
+		"available_from_floor": 60,
+		"description": "黑暗籠罩的深淵區域，暗影生物在黑暗中窺視。蒐集暗影結晶，照亮前方的道路。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 65, "count": 1 },
+			{ "type": "collect", "item_id": "mat_dark_crystal", "count": 5 }
+		],
+		"rewards": {
+			"gold": 2000,
+			"exp": 1200,
+			"items": [
+				{ "id": "weapon_dark_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_zone7_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone7_boss",
+		"name": "暗黑領主",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_shadow_abyss",
+		"available_from_floor": 65,
+		"description": "暗影深淵的統治者——暗黑領主，以黑暗之力操縱一切。在黑暗中找到光明！",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 69, "count": 1 }
+		],
+		"rewards": {
+			"gold": 3000,
+			"exp": 1800,
+			"items": [
+				{ "id": "acc_life_siphon", "count": 1 }
+			]
+		},
+		"next_quest": "main_holy_hall",
+		"repeatable": false
+	},
+	{
+		"id": "main_holy_hall",
+		"name": "聖光殿堂",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone7_boss",
+		"available_from_floor": 70,
+		"description": "耀眼的光芒照耀著聖光殿堂。聖光生物並非全然友善，只有通過試煉才能繼續前進。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 75, "count": 1 },
+			{ "type": "kill", "target_id": "enemy_holy_knight", "count": 5 }
+		],
+		"rewards": {
+			"gold": 2500,
+			"exp": 1500,
+			"items": [
+				{ "id": "weapon_light_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_zone8_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone8_boss",
+		"name": "至高聖者",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_holy_hall",
+		"available_from_floor": 75,
+		"description": "聖光殿堂的最高存在——至高聖者，以絕對的光明力量守護著通往塔頂的通道。",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 79, "count": 1 }
+		],
+		"rewards": {
+			"gold": 3500,
+			"exp": 2200,
+			"items": [
+				{ "id": "weapon_holy_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_void_realm",
+		"repeatable": false
+	},
+	{
+		"id": "main_void_realm",
+		"name": "虛空之境",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone8_boss",
+		"available_from_floor": 80,
+		"description": "超越光與暗的境界，你來到了虛空之境。這裡是現實與虛無的交界，空間本身都在扭曲。",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 85, "count": 1 },
+			{ "type": "collect", "item_id": "mat_void_essence", "count": 3 }
+		],
+		"rewards": {
+			"gold": 3000,
+			"exp": 2000,
+			"items": [
+				{ "id": "weapon_void_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_zone9_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_zone9_boss",
+		"name": "虛空之王",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_void_realm",
+		"available_from_floor": 85,
+		"description": "虛空之境的支配者——虛空之王，掌握著扭曲空間的力量。這是你攀登塔頂的最後考驗之一。",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 89, "count": 1 }
+		],
+		"rewards": {
+			"gold": 5000,
+			"exp": 3000,
+			"items": [
+				{ "id": "acc_guardian_angel", "count": 1 }
+			]
+		},
+		"next_quest": "main_chaos_realm",
+		"repeatable": false
+	},
+	{
+		"id": "main_chaos_realm",
+		"name": "混沌領域",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_zone9_boss",
+		"available_from_floor": 90,
+		"description": "塔的最頂層——混沌領域。所有元素在此交融，混沌之力凝聚為最終的考驗。前往塔頂吧！",
+		"objectives": [
+			{ "type": "reach_floor", "floor": 95, "count": 1 },
+			{ "type": "collect", "item_id": "mat_chaos_ore", "count": 3 }
+		],
+		"rewards": {
+			"gold": 5000,
+			"exp": 3500,
+			"items": [
+				{ "id": "weapon_chaos_staff", "count": 1 }
+			]
+		},
+		"next_quest": "main_final_boss",
+		"repeatable": false
+	},
+	{
+		"id": "main_final_boss",
+		"name": "混沌之主",
+		"type": "main",
+		"trigger": "quest_complete",
+		"trigger_quest": "main_chaos_realm",
+		"available_from_floor": 95,
+		"description": "魔導之塔的頂端，混沌之主在此等候。擊敗牠，你將獲得傳說中的魔力源泉，成為真正的魔導大師！",
+		"objectives": [
+			{ "type": "kill_boss", "floor": 99, "count": 1 }
+		],
+		"rewards": {
+			"gold": 10000,
+			"exp": 5000,
+			"items": [
+				{ "id": "armor_chaos_armor", "count": 1 }
+			]
+		},
+		"next_quest": "",
+		"repeatable": false
+	}
+]

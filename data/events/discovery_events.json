@@ -9,9 +9,9 @@
 		"options": [
 			{
 				"text": "嘗試修復魔法陣",
-				"condition": {"has_skill": "skill_repair"},
+				"condition": null,
 				"results": [
-					{"type": "item_reward", "item_id": "core_random", "chance": 0.7},
+					{"type": "item_reward", "item_id": "core_fire_imp", "chance": 0.7},
 					{"type": "battle", "enemy_id": "enemy_golem", "chance": 0.3}
 				]
 			},
@@ -20,7 +20,7 @@
 				"condition": {"min_mp": 30},
 				"cost": {"mp": 30},
 				"results": [
-					{"type": "item_reward", "item_id": "random_rare_item", "chance": 0.5},
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "chance": 0.5},
 					{"type": "battle", "enemy_id": "enemy_random_elite", "chance": 0.5}
 				]
 			},
@@ -40,9 +40,9 @@
 		"conditional_options": [
 			{
 				"text": "使用鑑定術分析",
-				"condition": {"has_skill": "skill_identify"},
+				"condition": null,
 				"results": [
-					{"type": "reveal_all_options", "description": "看穿魔法陣類型"}
+					{"type": "research_points", "value": 15, "chance": 1.0}
 				]
 			}
 		]
@@ -60,7 +60,7 @@
 				"condition": null,
 				"results": [
 					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.4},
-					{"type": "item_reward", "item_id": "mat_random", "chance": 0.3},
+					{"type": "item_reward", "item_id": "mat_herb", "chance": 0.3},
 					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.6}
 				]
 			},
@@ -68,7 +68,7 @@
 				"text": "快速搜尋",
 				"condition": null,
 				"results": [
-					{"type": "item_reward", "item_id": "random_common_item", "chance": 0.3}
+					{"type": "item_reward", "item_id": "mat_herb", "chance": 0.3}
 				]
 			},
 			{

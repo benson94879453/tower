@@ -1,0 +1,128 @@
+[
+	{
+		"id": "enemy_chaos_dragon",
+		"name": "混沌龍",
+		"element": "fire",
+		"level": 42,
+		"stats": {
+			"hp": 800,
+			"mp": 80,
+			"matk": 150,
+			"mdef": 65,
+			"patk": 48,
+			"pdef": 40,
+			"speed": 24
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_meteor", "skill_fire_storm", "skill_power_up"],
+		"drops": [
+			{"id": "mat_chaos_ore", "rate": 0.30},
+			{"id": "mat_fire_crystal", "rate": 0.15},
+			{"id": "item_hp_potion_l", "rate": 0.20}
+		],
+		"exp": 130,
+		"gold": 90,
+		"visual": {
+			"shape": "triangle",
+			"color": "#FF4488",
+			"size": "large",
+			"effects": ["flame_top"]
+		},
+		"floor_range": [91, 98]
+	},
+	{
+		"id": "enemy_abyssal_knight",
+		"name": "終焉騎士",
+		"element": "dark",
+		"level": 44,
+		"stats": {
+			"hp": 700,
+			"mp": 75,
+			"matk": 160,
+			"mdef": 60,
+			"patk": 42,
+			"pdef": 35,
+			"speed": 30
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_abyssal_gaze", "skill_phantom_force", "skill_nasty_plot"],
+		"drops": [
+			{"id": "mat_chaos_ore", "rate": 0.25},
+			{"id": "mat_dark_crystal", "rate": 0.15},
+			{"id": "item_mp_potion_l", "rate": 0.15}
+		],
+		"exp": 140,
+		"gold": 95,
+		"visual": {
+			"shape": "diamond",
+			"color": "#CC2266",
+			"size": "medium",
+			"effects": ["shadow_trail"]
+		},
+		"floor_range": [91, 98]
+	},
+	{
+		"id": "enemy_worldtree_guardian",
+		"name": "世界樹守護者",
+		"element": "light",
+		"level": 46,
+		"stats": {
+			"hp": 950,
+			"mp": 65,
+			"matk": 120,
+			"mdef": 80,
+			"patk": 55,
+			"pdef": 55,
+			"speed": 14
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_judgment", "skill_sanctuary", "skill_iron_defense", "skill_light_screen"],
+		"drops": [
+			{"id": "mat_chaos_ore", "rate": 0.30},
+			{"id": "mat_light_crystal", "rate": 0.20},
+			{"id": "mat_ancient_shard", "rate": 0.20}
+		],
+		"exp": 150,
+		"gold": 100,
+		"visual": {
+			"shape": "hexagon",
+			"color": "#88FFAA",
+			"size": "large",
+			"effects": ["glow"]
+		},
+		"floor_range": [92, 98]
+	},
+	{
+		"id": "boss_chaos_lord",
+		"name": "混沌之主",
+		"element": "none",
+		"level": 50,
+		"stats": {
+			"hp": 3000,
+			"mp": 200,
+			"matk": 195,
+			"mdef": 85,
+			"patk": 60,
+			"pdef": 55,
+			"speed": 22
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_meteor", "skill_blizzard", "skill_hurricane", "skill_earthquake", "skill_dark_pulse", "skill_judgment"],
+		"drops": [
+			{"id": "mat_chaos_ore", "rate": 0.60},
+			{"id": "mat_ancient_shard", "rate": 0.50},
+			{"id": "weapon_chaos_staff", "rate": 0.12},
+			{"id": "acc_guardian_angel", "rate": 0.10}
+		],
+		"exp": 1000,
+		"gold": 500,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#FF88FF",
+			"size": "large",
+			"effects": ["flame_top", "glow", "shadow_trail"]
+		},
+		"floor_range": [99, 99],
+		"is_boss": true
+	}
+]

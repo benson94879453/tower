@@ -1,0 +1,302 @@
+[
+	{
+		"id": "event_puzzle_rune_gate",
+		"name": "符文之門",
+		"type": "puzzle",
+		"floor_range": [5, 30],
+		"weight": 8,
+		"description": "一道刻滿古代符文的石門擋住去路。門上有四個元素符文槽，牆上寫著謎語：「火生於木，水滅於土，風起於空，雷鳴於天。選擇正確的元素順序。」",
+		"options": [
+			{
+				"text": "火→水→風→雷",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5}
+				]
+			},
+			{
+				"text": "雷→風→水→火",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.4}
+				]
+			},
+			{
+				"text": "風→火→雷→水",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_magic_crystal", "count": 2, "chance": 1.0},
+					{"type": "gold_reward", "min": 50, "max": 150, "chance": 0.7},
+					{"type": "research_points", "value": 80, "chance": 1.0}
+				]
+			},
+			{
+				"text": "水→雷→火→風",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "enemy_stone_golem", "chance": 1.0}
+				]
+			}
+		],
+		"conditional_options": [
+			{
+				"text": "用鑑定術解讀符文",
+				"condition": null,
+				"results": [
+					{"type": "research_points", "value": 15}
+				]
+			}
+		]
+	},
+	{
+		"id": "event_puzzle_crystal_puzzle",
+		"name": "結晶拼圖",
+		"type": "puzzle",
+		"floor_range": [15, 50],
+		"weight": 8,
+		"description": "地板上嵌著一個六角形拼圖盤，盤上有六種顏色的結晶槽。牆壁上的提示：「紅對綠，藍對橙，紫對黃。將結晶配對即可開啟。」",
+		"options": [
+			{
+				"text": "紅綠、藍橙、紫黃配對",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "count": 2, "chance": 1.0},
+					{"type": "research_points", "value": 120, "chance": 1.0},
+					{"type": "gold_reward", "min": 80, "max": 200, "chance": 0.6}
+				]
+			},
+			{
+				"text": "紅藍、綠紫、橙黃配對",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.6}
+				]
+			},
+			{
+				"text": "紅紫、藍黃、綠橙配對",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "enemy_scorched_golem", "chance": 1.0}
+				]
+			},
+			{
+				"text": "不嘗試，繞路而行",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.5}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_puzzle_spirit_riddle",
+		"name": "精靈謎語",
+		"type": "puzzle",
+		"floor_range": [30, 70],
+		"weight": 7,
+		"description": "一個半透明的精靈飄浮在空中，用古老的語調說道：「我無影無形，卻能搬動山岳；我無口無舌，卻能講述萬語。我是什麼？」",
+		"options": [
+			{
+				"text": "風",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_wind_crystal", "count": 3, "chance": 1.0},
+					{"type": "research_points", "value": 150, "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_mp_potion_m", "chance": 0.5}
+				]
+			},
+			{
+				"text": "水",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "enemy_whirlwind_spirit", "chance": 1.0}
+				]
+			},
+			{
+				"text": "魔法",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.5}
+				]
+			},
+			{
+				"text": "沉默不答",
+				"condition": null,
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.7}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_puzzle_magic_lock",
+		"name": "魔法鎖",
+		"type": "puzzle",
+		"floor_range": [40, 80],
+		"weight": 7,
+		"description": "一個複雜的魔法鎖嵌在門上，鎖上有四個轉盤，每個轉盤有 0-9 的數字。門框上刻著線索：「第一個數是萬物之始，第二個數是日月的交替，第三個數是三角的邊數，第四個數是四季的輪轉。」",
+		"options": [
+			{
+				"text": "1-2-3-4",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "count": 1, "chance": 1.0},
+					{"type": "gold_reward", "min": 150, "max": 350, "chance": 0.8},
+					{"type": "research_points", "value": 200, "chance": 1.0}
+				]
+			},
+			{
+				"text": "0-1-3-4",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_mp_potion_s", "chance": 0.6}
+				]
+			},
+			{
+				"text": "9-7-3-1",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "enemy_crystal_golem", "chance": 1.0}
+				]
+			},
+			{
+				"text": "用力砸門",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5}
+				]
+			}
+		],
+		"conditional_options": [
+			{
+				"text": "用鑑定術分析鎖的結構",
+				"condition": null,
+				"results": [
+					{"type": "research_points", "value": 15}
+				]
+			}
+		]
+	},
+	{
+		"id": "event_puzzle_mirror_choice",
+		"name": "鏡中之問",
+		"type": "puzzle",
+		"floor_range": [50, 90],
+		"weight": 6,
+		"description": "走廊盡頭立著一面巨大的鏡子，鏡中映出一個與你相似的影像。影像開口道：「我問你三個問題，你只能選一個回答。力量、智慧、慈悲——你追求何者？」",
+		"options": [
+			{
+				"text": "追求力量",
+				"condition": null,
+				"results": [
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 1.0},
+					{"type": "item_reward", "item_id": "mat_enhance_stone", "count": 2, "chance": 0.7}
+				]
+			},
+			{
+				"text": "追求智慧",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "count": 2, "chance": 1.0},
+					{"type": "research_points", "value": 300, "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_mp_potion_m", "chance": 0.8}
+				]
+			},
+			{
+				"text": "追求慈悲",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_l", "count": 3, "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_mp_potion_l", "count": 2, "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5}
+				]
+			},
+			{
+				"text": "打破鏡子",
+				"condition": null,
+				"results": [
+					{"type": "battle", "enemy_id": "enemy_nightmare_banshee", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.5}
+				]
+			}
+		],
+		"conditional_options": []
+	},
+	{
+		"id": "event_puzzle_final_gate",
+		"name": "最終之門",
+		"type": "puzzle",
+		"floor_range": [90, 99],
+		"weight": 4,
+		"description": "塔頂前最後一道門，門上嵌著八個凹槽。門上的銘文寫道：「獻上八方的結晶，混沌之門方會為你開啟。」每個凹槽對應不同元素的結晶。",
+		"options": [
+			{
+				"text": "獻上全部八種結晶",
+				"condition": {
+					"has_items": [
+						{"item_id": "mat_fire_crystal", "count": 1},
+						{"item_id": "mat_ice_crystal", "count": 1},
+						{"item_id": "mat_wind_crystal", "count": 1},
+						{"item_id": "mat_earth_crystal", "count": 1},
+						{"item_id": "mat_thunder_crystal", "count": 1},
+						{"item_id": "mat_dark_crystal", "count": 1},
+						{"item_id": "mat_light_crystal", "count": 1},
+						{"item_id": "mat_void_essence", "count": 1}
+					]
+				},
+				"cost": {
+					"items": [
+						{"item_id": "mat_fire_crystal", "count": 1},
+						{"item_id": "mat_ice_crystal", "count": 1},
+						{"item_id": "mat_wind_crystal", "count": 1},
+						{"item_id": "mat_earth_crystal", "count": 1},
+						{"item_id": "mat_thunder_crystal", "count": 1},
+						{"item_id": "mat_dark_crystal", "count": 1},
+						{"item_id": "mat_light_crystal", "count": 1},
+						{"item_id": "mat_void_essence", "count": 1}
+					]
+				},
+				"results": [
+					{"type": "item_reward", "item_id": "weapon_chaos_staff", "chance": 0.3},
+					{"type": "item_reward", "item_id": "mat_chaos_ore", "count": 5, "chance": 1.0},
+					{"type": "research_points", "value": 500, "chance": 1.0},
+					{"type": "gold_reward", "min": 500, "max": 1000, "chance": 1.0}
+				]
+			},
+			{
+				"text": "嘗試用混沌礦石代替",
+				"condition": {"has_items": [{"item_id": "mat_chaos_ore", "count": 3}]},
+				"cost": {"items": [{"item_id": "mat_chaos_ore", "count": 3}]},
+				"results": [
+					{"type": "item_reward", "item_id": "mat_ancient_shard", "count": 3, "chance": 0.6},
+					{"type": "research_points", "value": 200, "chance": 1.0},
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 0.3}
+				]
+			},
+			{
+				"text": "強行破解門鎖",
+				"condition": null,
+				"results": [
+					{"type": "item_reward", "item_id": "item_hp_potion_s", "chance": 1.0},
+					{"type": "gold_reward", "min": 10, "max": 50, "chance": 0.7},
+					{"type": "battle", "enemy_id": "boss_chaos_lord", "chance": 0.3}
+				]
+			},
+			{
+				"text": "轉身離開",
+				"condition": null,
+				"results": []
+			}
+		],
+		"conditional_options": []
+	}
+]

@@ -1,0 +1,150 @@
+[
+  {
+    "id": "skill_swift",
+    "name": "迅星",
+    "element": "none",
+    "type": "attack_all",
+    "rarity": "N",
+    "base_power": 45,
+    "mp_cost": 10,
+    "pp_max": 12,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 45}
+    ],
+    "research_cost": {"gold": 150, "items": [], "prerequisite_skills": []},
+    "description": "發射星形魔力彈攻擊全體敵人，必定命中。"
+  },
+  {
+    "id": "skill_focus_energy",
+    "name": "集中精神",
+    "element": "none",
+    "type": "buff_self",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 8,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "buff", "target": "self", "stat": "matk", "value": 10, "duration": 3},
+      {"type": "buff", "target": "self", "stat": "hit", "value": 20, "duration": 3}
+    ],
+    "research_cost": {"gold": 180, "items": [], "prerequisite_skills": []},
+    "description": "集中精神力，提升魔攻與命中率。"
+  },
+  {
+    "id": "skill_barrier",
+    "name": "魔力屏障",
+    "element": "none",
+    "type": "buff_self",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 15,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 2,
+    "cooldown": 1,
+    "effects": [
+      {"type": "buff", "target": "self", "stat": "mdef", "value": 30, "duration": 3},
+      {"type": "buff", "target": "self", "stat": "pdef", "value": 30, "duration": 3}
+    ],
+    "research_cost": {"gold": 250, "items": [], "prerequisite_skills": []},
+    "description": "張開魔力屏障保護自己，大幅提升雙防3回合。"
+  },
+  {
+    "id": "skill_substitute",
+    "name": "替身",
+    "element": "none",
+    "type": "buff_self",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 20,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 2,
+    "cooldown": 2,
+    "effects": [
+      {"type": "shield", "target": "self", "value": 80}
+    ],
+    "research_cost": {"gold": 450, "items": [], "prerequisite_skills": []},
+    "description": "消耗魔力製造替身護盾，可吸收大量傷害。"
+  },
+  {
+    "id": "skill_protect",
+    "name": "守住",
+    "element": "none",
+    "type": "buff_self",
+    "rarity": "R",
+    "base_power": 0,
+    "mp_cost": 12,
+    "pp_max": 3,
+    "hit_rate": 100,
+    "priority": 3,
+    "cooldown": 3,
+    "effects": [
+      {"type": "shield", "target": "self", "value": 999}
+    ],
+    "research_cost": {"gold": 500, "items": [], "prerequisite_skills": []},
+    "description": "完全防禦一次攻擊，冷卻時間長，關鍵時刻的保命技能。"
+  },
+  {
+    "id": "skill_baton_pass",
+    "name": "接力棒",
+    "element": "none",
+    "type": "buff_self",
+    "rarity": "SR",
+    "base_power": 0,
+    "mp_cost": 15,
+    "pp_max": 3,
+    "hit_rate": 100,
+    "priority": 2,
+    "cooldown": 3,
+    "effects": [
+      {"type": "heal", "target": "self", "heal_type": "percent_max", "value": 20},
+      {"type": "buff", "target": "self", "stat": "speed", "value": 20, "duration": 3}
+    ],
+    "research_cost": {"gold": 1000, "items": [], "prerequisite_skills": []},
+    "description": "與使魔交換位置並保留增益效果，同時回復少量HP並提速。"
+  },
+  {
+    "id": "skill_endeavor",
+    "name": "捨身突擊",
+    "element": "none",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 80,
+    "mp_cost": 25,
+    "pp_max": 3,
+    "hit_rate": 80,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 80},
+      {"type": "heal", "target": "self", "heal_type": "percent_max", "value": -15}
+    ],
+    "research_cost": {"gold": 1100, "items": [], "prerequisite_skills": []},
+    "description": "全力突擊敵人，自身也會承受傷害。HP越低威力越大的拼命招式。"
+  },
+  {
+    "id": "skill_mimic",
+    "name": "模仿",
+    "element": "none",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 60,
+    "mp_cost": 15,
+    "pp_max": 3,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 2,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 60}
+    ],
+    "research_cost": {"gold": 400, "items": [], "prerequisite_skills": []},
+    "description": "模仿敵人上一個使用的技能進行反擊，無屬性但能適應各種戰況。"
+  }
+]

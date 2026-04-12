@@ -252,6 +252,22 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7lovo"]
+content_margin_left = 6.0
+content_margin_top = 4.0
+content_margin_right = 6.0
+content_margin_bottom = 4.0
+bg_color = Color(0.07764706, 0.11647059, 0.21882352, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.38156864, 0.38156864, 0.38156864, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [resource]
 Button/colors/font_color = Color(0.91764706, 0.91764706, 0.91764706, 1)
 Button/colors/font_disabled_color = Color(0.33333334, 0.33333334, 0.33333334, 1)
@@ -284,4 +300,6 @@ ProgressBarHP/base_type = &"ProgressBar"
 ProgressBarHP/styles/fill = SubResource("StyleBoxFlat_ww1me")
 ProgressBarMP/base_type = &"ProgressBar"
 ProgressBarMP/styles/fill = SubResource("StyleBoxFlat_6sfbi")
+SkillCard/base_type = &"PanelContainer"
+SkillCard/styles/panel = SubResource("StyleBoxFlat_7lovo")
 Window/font_sizes/title_font_size = 22

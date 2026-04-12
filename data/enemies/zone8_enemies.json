@@ -1,0 +1,128 @@
+[
+	{
+		"id": "enemy_holy_knight",
+		"name": "聖光騎士",
+		"element": "light",
+		"level": 32,
+		"stats": {
+			"hp": 500,
+			"mp": 55,
+			"matk": 95,
+			"mdef": 50,
+			"patk": 35,
+			"pdef": 30,
+			"speed": 18
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_holy_light", "skill_judgment", "skill_blessing"],
+		"drops": [
+			{"id": "mat_light_crystal", "rate": 0.30},
+			{"id": "mat_herb", "rate": 0.15},
+			{"id": "item_hp_potion_l", "rate": 0.15}
+		],
+		"exp": 85,
+		"gold": 55,
+		"visual": {
+			"shape": "triangle",
+			"color": "#FFFFFF",
+			"size": "medium",
+			"effects": ["glow"]
+		},
+		"floor_range": [71, 78]
+	},
+	{
+		"id": "enemy_radiant_angel",
+		"name": "光明天使",
+		"element": "light",
+		"level": 33,
+		"stats": {
+			"hp": 450,
+			"mp": 60,
+			"matk": 105,
+			"mdef": 45,
+			"patk": 28,
+			"pdef": 25,
+			"speed": 24
+		},
+		"ai_type": "cautious",
+		"skills": ["skill_radiance", "skill_purify", "skill_light_screen"],
+		"drops": [
+			{"id": "mat_light_crystal", "rate": 0.25},
+			{"id": "mat_magic_crystal", "rate": 0.15},
+			{"id": "item_mp_potion_l", "rate": 0.15}
+		],
+		"exp": 90,
+		"gold": 60,
+		"visual": {
+			"shape": "diamond",
+			"color": "#FFDDAA",
+			"size": "medium",
+			"effects": ["glow"]
+		},
+		"floor_range": [71, 78]
+	},
+	{
+		"id": "enemy_judgment_colossus",
+		"name": "審判巨像",
+		"element": "light",
+		"level": 34,
+		"stats": {
+			"hp": 600,
+			"mp": 45,
+			"matk": 85,
+			"mdef": 60,
+			"patk": 42,
+			"pdef": 42,
+			"speed": 10
+		},
+		"ai_type": "defensive",
+		"skills": ["skill_judgment", "skill_blessing", "skill_barrier"],
+		"drops": [
+			{"id": "mat_light_crystal", "rate": 0.30},
+			{"id": "mat_iron_ore", "rate": 0.20},
+			{"id": "core_holy_fairy", "rate": 0.01}
+		],
+		"exp": 95,
+		"gold": 65,
+		"visual": {
+			"shape": "square",
+			"color": "#FFFFCC",
+			"size": "large",
+			"effects": ["glow"]
+		},
+		"floor_range": [72, 78]
+	},
+	{
+		"id": "boss_supreme_saint",
+		"name": "至高聖者",
+		"element": "light",
+		"level": 37,
+		"stats": {
+			"hp": 1700,
+			"mp": 140,
+			"matk": 130,
+			"mdef": 60,
+			"patk": 45,
+			"pdef": 42,
+			"speed": 16
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_judgment", "skill_sanctuary", "skill_dazzling_gleam", "skill_blessing"],
+		"drops": [
+			{"id": "mat_ancient_shard", "rate": 0.30},
+			{"id": "mat_light_crystal", "rate": 0.50},
+			{"id": "weapon_holy_staff", "rate": 0.10},
+			{"id": "acc_guardian_angel", "rate": 0.08}
+		],
+		"exp": 450,
+		"gold": 280,
+		"visual": {
+			"shape": "pentagon",
+			"color": "#FFFF88",
+			"size": "large",
+			"effects": ["glow"]
+		},
+		"floor_range": [79, 79],
+		"is_boss": true
+	}
+]

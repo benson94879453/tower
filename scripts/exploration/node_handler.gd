@@ -5,10 +5,12 @@ extends RefCounted
 static func generate_battle_enemies(floor_number: int, is_elite: bool) -> Array:
 	var floor_enemies: Array = DataManager.get_enemies_by_floor(floor_number)
 	if floor_enemies.is_empty():
-		return ["enemy_fire_sprite"]
+		return ["enemy_ice_sprite"]
 
 	var enemy_ids: Array = []
-	var count: int = 1 if is_elite else randi_range(1, 3)
+	# Early floors (1-5) limit to 1 enemy to prevent overwhelming new players
+	var max_count: int = 1 if floor_number <= 5 else (2 if floor_number <= 15 else 3)
+	var count: int = 1 if is_elite else randi_range(1, max_count)
 	for _index in range(count):
 		var enemy_data: Dictionary = floor_enemies[randi() % floor_enemies.size()]
 		var enemy_id: String = _sanitize_enemy_id(String(enemy_data.get("id", "")))
@@ -16,7 +18,7 @@ static func generate_battle_enemies(floor_number: int, is_elite: bool) -> Array:
 			enemy_ids.append(enemy_id)
 
 	if enemy_ids.is_empty():
-		enemy_ids.append("enemy_fire_sprite")
+		enemy_ids.append("enemy_ice_sprite")
 
 	return enemy_ids
 
@@ -386,7 +388,7 @@ static func _get_chest_rarity(floor_number: int) -> String:
 
 static func _sanitize_enemy_id(enemy_id: String) -> String:
 	if enemy_id.is_empty():
-		return "enemy_fire_sprite"
+		return "enemy_ice_sprite"
 	if DataManager.get_enemy(enemy_id).is_empty():
-		return "enemy_fire_sprite"
+		return "enemy_ice_sprite"
 	return enemy_id

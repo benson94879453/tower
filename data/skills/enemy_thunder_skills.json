@@ -1,0 +1,68 @@
+[
+    {
+        "id": "skill_thunder_fang",
+        "name": "雷牙",
+        "element": "thunder",
+        "type": "attack_single",
+        "base_power": 50,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 95,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 50},
+            {"type": "status", "target": "single_enemy", "status": "paralyze", "chance": 10, "duration": 2}
+        ],
+        "description": "以雷電纏繞獠牙撕咬目標"
+    },
+    {
+        "id": "skill_lightning_spear",
+        "name": "雷槍",
+        "element": "thunder",
+        "type": "attack_single",
+        "base_power": 70,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 90,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 70}
+        ],
+        "description": "投擲雷電凝聚的長槍貫穿目標"
+    },
+    {
+        "id": "skill_thunder_storm",
+        "name": "雷暴",
+        "element": "thunder",
+        "type": "attack_all",
+        "base_power": 55,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 90,
+        "priority": 0,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "all_enemies", "power": 55},
+            {"type": "status", "target": "all_enemies", "status": "paralyze", "chance": 15, "duration": 2}
+        ],
+        "description": "引發雷暴席捲全體敵人"
+    },
+    {
+        "id": "skill_spark_burst",
+        "name": "電光迸發",
+        "element": "thunder",
+        "type": "attack_single",
+        "base_power": 35,
+        "mp_cost": 0,
+        "pp_max": 99,
+        "hit_rate": 100,
+        "priority": 1,
+        "cooldown": 0,
+        "effects": [
+            {"type": "damage", "target": "single_enemy", "power": 35}
+        ],
+        "description": "瞬間釋放電光攻擊，必定先手"
+    }
+]

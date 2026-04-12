@@ -8,6 +8,21 @@ signal item_action_performed(item_id: String, action: String)
 
 enum Mode { SAFE_ZONE, EXPLORATION }
 
+class _ItemElementIcon extends Control:
+	var _element: String = ""
+	var _icon_size: float = 14.0
+
+	func _init(element: String, icon_size: float = 14.0) -> void:
+		_element = element
+		_icon_size = icon_size
+		custom_minimum_size = Vector2(_icon_size + 4, _icon_size + 4)
+		size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+	func _draw() -> void:
+		var DrawShapeRef = preload("res://scripts/ui/draw_shape.gd")
+		var TC = preload("res://scripts/ui/theme_constants.gd")
+		DrawShapeRef.draw_element_icon(self, _element, Vector2((_icon_size + 4) / 2.0, (_icon_size + 4) / 2.0), _icon_size, TC.get_element_color(_element))
+
 var _mode: int = Mode.SAFE_ZONE
 var _selected_item_id: String = ""
 var _selected_equipment_index: int = -1
@@ -195,27 +210,50 @@ func _refresh_item_list() -> void:
 			continue
 
 		var item_name: String = String(item_data.get("name", item_id))
+		var item_element: String = String(item_data.get("element", ""))
 		var rarity: String = String(item_data.get("rarity", "N"))
-		var row := Button.new()
-		row.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		row.custom_minimum_size.y = 38.0
 
-		if category == "equipment":
-			var enhance: int = int(entry.get("enhance", 0))
-			row.text = "[%s] %s%s" % [rarity, item_name, _format_enhance(enhance)]
+		if not item_element.is_empty():
+			var row_wrapper := HBoxContainer.new()
+			row_wrapper.add_theme_constant_override("separation", 4)
+			var icon := _ItemElementIcon.new(item_element, 14.0)
+			row_wrapper.add_child(icon)
+
+			var row := Button.new()
+			row.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			row.custom_minimum_size.y = 38.0
+			row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			if category == "equipment":
+				var enhance: int = int(entry.get("enhance", 0))
+				row.text = "[%s] %s%s" % [rarity, item_name, _format_enhance(enhance)]
+			else:
+				row.text = "[%s] %s  x%d" % [rarity, item_name, item_count]
+			row.add_theme_color_override("font_color", ThemeConstantsClass.get_rarity_border(rarity))
+			if _is_equipped(item_id):
+				row.text += "  [E]"
+			var row_style: StyleBoxFlat = ThemeConstantsClass.create_list_item_bg(shown_count)
+			row.add_theme_stylebox_override("normal", row_style)
+			var bound_item_id: String = item_id
+			row.pressed.connect(_on_item_selected.bind(bound_item_id, equipment_index))
+			row_wrapper.add_child(row)
+			_item_list_container.add_child(row_wrapper)
 		else:
-			row.text = "[%s] %s  x%d" % [rarity, item_name, item_count]
-
-		row.add_theme_color_override("font_color", ThemeConstantsClass.get_rarity_border(rarity))
-		if _is_equipped(item_id):
-			row.text += "  [E]"
-
-		var row_style: StyleBoxFlat = ThemeConstantsClass.create_list_item_bg(shown_count)
-		row.add_theme_stylebox_override("normal", row_style)
-
-		var bound_item_id: String = item_id
-		row.pressed.connect(_on_item_selected.bind(bound_item_id, equipment_index))
-		_item_list_container.add_child(row)
+			var row := Button.new()
+			row.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			row.custom_minimum_size.y = 38.0
+			if category == "equipment":
+				var enhance: int = int(entry.get("enhance", 0))
+				row.text = "[%s] %s%s" % [rarity, item_name, _format_enhance(enhance)]
+			else:
+				row.text = "[%s] %s  x%d" % [rarity, item_name, item_count]
+			row.add_theme_color_override("font_color", ThemeConstantsClass.get_rarity_border(rarity))
+			if _is_equipped(item_id):
+				row.text += "  [E]"
+			var row_style: StyleBoxFlat = ThemeConstantsClass.create_list_item_bg(shown_count)
+			row.add_theme_stylebox_override("normal", row_style)
+			var bound_item_id: String = item_id
+			row.pressed.connect(_on_item_selected.bind(bound_item_id, equipment_index))
+			_item_list_container.add_child(row)
 		shown_count += 1
 
 	if shown_count == 0:

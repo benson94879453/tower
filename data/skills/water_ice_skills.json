@@ -1,0 +1,263 @@
+[
+  {
+    "id": "skill_water_gun",
+    "name": "水槍",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 45,
+    "mp_cost": 8,
+    "pp_max": 15,
+    "hit_rate": 98,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 45}
+    ],
+    "research_cost": {"gold": 100, "items": [], "prerequisite_skills": []},
+    "description": "向敵人發射高壓水柱，水屬性基礎攻擊。"
+  },
+  {
+    "id": "skill_bubble",
+    "name": "泡沫",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 35,
+    "mp_cost": 6,
+    "pp_max": 20,
+    "hit_rate": 100,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 35},
+      {"type": "buff", "target": "single_enemy", "stat": "speed", "value": -15, "duration": 3}
+    ],
+    "research_cost": {"gold": 120, "items": [], "prerequisite_skills": []},
+    "description": "向敵人噴灑黏稠泡沫，降低其速度。"
+  },
+  {
+    "id": "skill_surf",
+    "name": "衝浪",
+    "element": "water",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 75,
+    "mp_cost": 22,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 75}
+    ],
+    "research_cost": {"gold": 600, "items": [{"id": "mat_ice_crystal", "count": 2}], "prerequisite_skills": ["skill_water_gun"]},
+    "description": "掀起巨浪席捲全體敵人，經典的水屬性範圍攻擊。"
+  },
+  {
+    "id": "skill_hydro_pump",
+    "name": "水炮",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "SR",
+    "base_power": 120,
+    "mp_cost": 30,
+    "pp_max": 4,
+    "hit_rate": 75,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 120}
+    ],
+    "research_cost": {"gold": 1200, "items": [{"id": "mat_ice_crystal", "count": 5}], "prerequisite_skills": ["skill_water_gun"]},
+    "description": "以極高壓力射出水流，威力驚人但命中率不穩定。"
+  },
+  {
+    "id": "skill_ice_beam",
+    "name": "冰凍光線",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 70,
+    "mp_cost": 16,
+    "pp_max": 8,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 70},
+      {"type": "status", "target": "single_enemy", "status": "freeze", "chance": 15, "duration": 2}
+    ],
+    "research_cost": {"gold": 500, "items": [{"id": "mat_ice_crystal", "count": 2}], "prerequisite_skills": []},
+    "description": "發射一道極低溫射線，有機率將目標凍結。"
+  },
+  {
+    "id": "skill_blizzard",
+    "name": "暴風雪",
+    "element": "water",
+    "type": "attack_all",
+    "rarity": "SR",
+    "base_power": 85,
+    "mp_cost": 28,
+    "pp_max": 5,
+    "hit_rate": 80,
+    "priority": 0,
+    "cooldown": 1,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 85},
+      {"type": "status", "target": "all_enemies", "status": "freeze", "chance": 20, "duration": 2}
+    ],
+    "research_cost": {"gold": 1500, "items": [{"id": "mat_ice_crystal", "count": 5}], "prerequisite_skills": ["skill_ice_beam"]},
+    "description": "召喚猛烈暴風雪席捲全場，有機率凍結所有敵人。"
+  },
+  {
+    "id": "skill_frost_breath",
+    "name": "冰霜吐息",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 55,
+    "mp_cost": 14,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "crit_bonus": 100,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 55}
+    ],
+    "research_cost": {"gold": 450, "items": [{"id": "mat_ice_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "吐出極寒氣息，必定造成暴擊傷害。"
+  },
+  {
+    "id": "skill_aqua_jet",
+    "name": "水流噴射",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 45,
+    "mp_cost": 10,
+    "pp_max": 15,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 45}
+    ],
+    "research_cost": {"gold": 200, "items": [], "prerequisite_skills": []},
+    "description": "以水流推動瞬間接近敵人攻擊，必定優先出手。"
+  },
+  {
+    "id": "skill_scald",
+    "name": "熱水",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 65,
+    "mp_cost": 15,
+    "pp_max": 10,
+    "hit_rate": 95,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 65},
+      {"type": "status", "target": "single_enemy", "status": "burn", "chance": 25, "duration": 3}
+    ],
+    "research_cost": {"gold": 500, "items": [], "prerequisite_skills": ["skill_water_gun"]},
+    "description": "向目標潑灑沸水，雖是水屬性但能造成燙傷。"
+  },
+  {
+    "id": "skill_ice_shard",
+    "name": "冰礫",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "N",
+    "base_power": 35,
+    "mp_cost": 6,
+    "pp_max": 20,
+    "hit_rate": 100,
+    "priority": 1,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 35}
+    ],
+    "research_cost": {"gold": 150, "items": [], "prerequisite_skills": []},
+    "description": "凝聚冰晶碎片快速射出，必定優先出手。"
+  },
+  {
+    "id": "skill_crabhammer",
+    "name": "螃蟹鉗",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "R",
+    "base_power": 85,
+    "mp_cost": 18,
+    "pp_max": 8,
+    "hit_rate": 85,
+    "priority": 0,
+    "cooldown": 0,
+    "crit_bonus": 30,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 85}
+    ],
+    "research_cost": {"gold": 600, "items": [], "prerequisite_skills": ["skill_water_gun"]},
+    "description": "以魔力凝聚巨鉗夾擊，容易擊中要害。"
+  },
+  {
+    "id": "skill_muddy_water",
+    "name": "濁流水",
+    "element": "water",
+    "type": "attack_all",
+    "rarity": "R",
+    "base_power": 65,
+    "mp_cost": 22,
+    "pp_max": 8,
+    "hit_rate": 90,
+    "priority": 0,
+    "cooldown": 0,
+    "effects": [
+      {"type": "damage", "target": "all_enemies", "power": 65},
+      {"type": "buff", "target": "all_enemies", "stat": "hit", "value": -15, "duration": 3}
+    ],
+    "research_cost": {"gold": 550, "items": [], "prerequisite_skills": ["skill_water_gun"]},
+    "description": "以混濁泥水衝擊全體敵人，降低其命中率。"
+  },
+  {
+    "id": "skill_ice_barrier",
+    "name": "冰封結界",
+    "element": "water",
+    "type": "buff_self",
+    "rarity": "N",
+    "base_power": 0,
+    "mp_cost": 18,
+    "pp_max": 5,
+    "hit_rate": 100,
+    "priority": 2,
+    "cooldown": 1,
+    "effects": [
+      {"type": "shield", "target": "self", "value": 60},
+      {"type": "buff", "target": "self", "stat": "mdef", "value": 10, "duration": 3}
+    ],
+    "research_cost": {"gold": 250, "items": [{"id": "mat_ice_crystal", "count": 1}], "prerequisite_skills": []},
+    "description": "在自身周圍凝聚冰之結界，獲得護盾並提升魔防。"
+  },
+  {
+    "id": "skill_absolute_zero",
+    "name": "絕對零度",
+    "element": "water",
+    "type": "attack_single",
+    "rarity": "SSR",
+    "base_power": 250,
+    "mp_cost": 40,
+    "pp_max": 2,
+    "hit_rate": 25,
+    "priority": 0,
+    "cooldown": 3,
+    "effects": [
+      {"type": "damage", "target": "single_enemy", "power": 250},
+      {"type": "status", "target": "single_enemy", "status": "freeze", "chance": 50, "duration": 3}
+    ],
+    "research_cost": {"gold": 2500, "items": [{"id": "mat_ice_crystal", "count": 8}, {"id": "mat_ancient_shard", "count": 2}], "prerequisite_skills": ["skill_blizzard"]},
+    "description": "將目標周圍的溫度降至絕對零度。命中率極低，但一旦命中將造成毀滅性傷害。"
+  }
+]

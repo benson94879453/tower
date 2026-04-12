@@ -43,9 +43,18 @@ func change_scene(scene_path: String, transition: String = "fade") -> void:
 
 	_current_scene = packed_scene.instantiate()
 	_current_scene_path = scene_path
+	# Start invisible so _ready() default values aren't visible to player
+	if _current_scene is CanvasItem:
+		_current_scene.modulate.a = 0.0
+		_current_scene.visible = false
 	scene_container.add_child(_current_scene)
 
 	await _play_transition_in(transition_effect, transition)
+	# Fade in the scene content itself (setup should have been called by now)
+	if is_instance_valid(_current_scene) and _current_scene is CanvasItem:
+		_current_scene.visible = true
+		var scene_tween := create_tween()
+		scene_tween.tween_property(_current_scene, "modulate:a", 1.0, 0.15).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	scene_change_completed.emit(scene_path)
 	is_transitioning = false
 
