@@ -1,0 +1,1443 @@
+{
+	"equipment": {
+		"accessories": [
+			"acc_guardian_angel",
+			"acc_guardian_angel",
+			"acc_guardian_angel",
+			"acc_void_ring",
+			"acc_dark_veil",
+			"acc_thunder_amulet"
+		],
+		"armor": {
+
+		},
+		"weapon": {
+
+		}
+	},
+	"familiar_instances": {
+
+	},
+	"familiars": {
+		"party": 2,
+		"roster": [
+			{
+				"current_hp": 472,
+				"current_mp": 177,
+				"exp": 0,
+				"id": "familiar_fire_imp",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_fireball"
+				]
+			},
+			{
+				"current_hp": 610,
+				"current_mp": 123,
+				"exp": 0,
+				"id": "familiar_ice_guard",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_frost_armor"
+				]
+			},
+			{
+				"current_hp": 748,
+				"current_mp": 305,
+				"exp": 0,
+				"id": "familiar_inferno_demon",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_spark",
+					"skill_fireball",
+					"skill_fire_storm"
+				]
+			},
+			{
+				"current_hp": 906,
+				"current_mp": 187,
+				"exp": 0,
+				"id": "familiar_ice_golem",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_frost_armor",
+					"skill_ice_shard",
+					"skill_magic_shield"
+				]
+			},
+			{
+				"current_hp": 364,
+				"current_mp": 182,
+				"exp": 0,
+				"id": "familiar_wind_hawk",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_gust"
+				]
+			},
+			{
+				"current_hp": 408,
+				"current_mp": 236,
+				"exp": 0,
+				"id": "familiar_thunder_spirit",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_thunder_shock"
+				]
+			},
+			{
+				"current_hp": 728,
+				"current_mp": 118,
+				"exp": 0,
+				"id": "familiar_rock_tortoise",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_mud_slap"
+				]
+			},
+			{
+				"current_hp": 418,
+				"current_mp": 182,
+				"exp": 0,
+				"id": "familiar_shadow_fox",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_shadow_sneak"
+				]
+			},
+			{
+				"current_hp": 482,
+				"current_mp": 295,
+				"exp": 0,
+				"id": "familiar_holy_fairy",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_holy_light"
+				]
+			},
+			{
+				"current_hp": 640,
+				"current_mp": 315,
+				"exp": 0,
+				"id": "familiar_sky_eagle",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_gust",
+					"skill_air_slash",
+					"skill_hurricane"
+				]
+			},
+			{
+				"current_hp": 679,
+				"current_mp": 374,
+				"exp": 0,
+				"id": "familiar_storm_lord",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_thunder_shock",
+					"skill_thunderbolt",
+					"skill_discharge"
+				]
+			},
+			{
+				"current_hp": 985,
+				"current_mp": 187,
+				"exp": 0,
+				"id": "familiar_mountain_golem",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_mud_slap",
+					"skill_earthquake",
+					"skill_iron_defense"
+				]
+			},
+			{
+				"current_hp": 699,
+				"current_mp": 315,
+				"exp": 0,
+				"id": "familiar_nightmare_wolf",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_shadow_sneak",
+					"skill_dark_pulse",
+					"skill_nasty_plot"
+				]
+			},
+			{
+				"current_hp": 788,
+				"current_mp": 443,
+				"exp": 0,
+				"id": "familiar_seraphim",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_holy_light",
+					"skill_purify",
+					"skill_sanctuary"
+				]
+			}
+		]
+	},
+	"inventory": {
+		"consumables": [
+			{
+				"count": 99,
+				"id": "item_hp_potion_s"
+			},
+			{
+				"count": 99,
+				"id": "item_hp_potion_m"
+			},
+			{
+				"count": 99,
+				"id": "item_hp_potion_l"
+			},
+			{
+				"count": 99,
+				"id": "item_mp_potion_s"
+			},
+			{
+				"count": 99,
+				"id": "item_mp_potion_m"
+			},
+			{
+				"count": 99,
+				"id": "item_mp_potion_l"
+			},
+			{
+				"count": 99,
+				"id": "item_revive_feather"
+			},
+			{
+				"count": 99,
+				"id": "item_elixir_s"
+			},
+			{
+				"count": 99,
+				"id": "item_elixir_m"
+			},
+			{
+				"count": 98,
+				"id": "item_atk_potion"
+			},
+			{
+				"count": 99,
+				"id": "item_def_potion"
+			}
+		],
+		"equipment": [
+			{
+				"enhance": 0,
+				"id": "weapon_apprentice_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_ice_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_fire_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_wind_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_thunder_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_earth_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_arcane_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_dark_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_light_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_storm_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_shadow_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_holy_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_void_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_apprentice_robe"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_ice_robe"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_flame_robe"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_wind_mantle"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_thunder_vest"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_earth_plate"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_arcane_robe"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_void_cloak"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_storm_coat"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_holy_plate"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_burn_ring"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_regen_ring"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_echo_crystal"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_life_siphon"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_mana_spring"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_guardian_angel"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_confusion_veil"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_familiar_heal"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_time_watch"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_collector_book"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_holy_emblem"
+			},
+			{
+				"enhance": 0,
+				"id": "weapon_apprentice_staff"
+			},
+			{
+				"enhance": 0,
+				"id": "armor_apprentice_robe"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_collector_book"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_collector_book"
+			},
+			{
+				"enhance": 0,
+				"id": "acc_collector_book"
+			}
+		],
+		"key_items": [],
+		"magic_books": [],
+		"materials": [
+			{
+				"count": 84,
+				"id": "mat_iron_ore"
+			},
+			{
+				"count": 99,
+				"id": "mat_herb"
+			},
+			{
+				"count": 84,
+				"id": "mat_magic_crystal"
+			},
+			{
+				"count": 99,
+				"id": "mat_fire_crystal"
+			},
+			{
+				"count": 94,
+				"id": "mat_ice_crystal"
+			},
+			{
+				"count": 96,
+				"id": "mat_burst_core"
+			},
+			{
+				"count": 84,
+				"id": "mat_enhance_stone"
+			},
+			{
+				"count": 99,
+				"id": "core_fire_imp"
+			},
+			{
+				"count": 99,
+				"id": "core_ice_guard"
+			},
+			{
+				"count": 99,
+				"id": "mat_wind_crystal"
+			},
+			{
+				"count": 70,
+				"id": "mat_thunder_crystal"
+			},
+			{
+				"count": 93,
+				"id": "mat_earth_crystal"
+			},
+			{
+				"count": 82,
+				"id": "mat_dark_crystal"
+			},
+			{
+				"count": 79,
+				"id": "mat_light_crystal"
+			},
+			{
+				"count": 82,
+				"id": "mat_ancient_shard"
+			},
+			{
+				"count": 99,
+				"id": "mat_void_essence"
+			},
+			{
+				"count": 99,
+				"id": "mat_chaos_ore"
+			},
+			{
+				"count": 99,
+				"id": "core_thunder_spirit"
+			},
+			{
+				"count": 99,
+				"id": "core_shadow_fox"
+			},
+			{
+				"count": 99,
+				"id": "core_holy_fairy"
+			},
+			{
+				"count": 99,
+				"id": "core_wind_hawk"
+			},
+			{
+				"count": 99,
+				"id": "core_rock_tortoise"
+			}
+		]
+	},
+	"play_time_seconds": 0,
+	"player": {
+		"accessory_enhances": [
+			0,
+			0,
+			0,
+			0,
+			0,
+			0
+		],
+		"accessory_ids": [
+			"acc_guardian_angel",
+			"acc_guardian_angel",
+			"acc_guardian_angel",
+			"acc_void_ring",
+			"acc_dark_veil",
+			"acc_thunder_amulet"
+		],
+		"active_familiar_index": 2,
+		"active_quests": [
+			{
+				"id": "bounty_kill_void_wanderer_5",
+				"progress": [
+					0
+				]
+			}
+		],
+		"active_skill_ids": [
+			"skill_baton_pass",
+			"skill_spark",
+			"skill_heal",
+			"skill_wild_charge",
+			"skill_plasma_fist",
+			"skill_night_slash",
+			"skill_shadow_ball",
+			"skill_muddy_water"
+		],
+		"armor_enhance": 0,
+		"armor_id": "armor_chaos_armor",
+		"base_crit": 5.0,
+		"base_dodge": 5.0,
+		"base_hit": 100,
+		"base_hp": 1276,
+		"base_matk": 309,
+		"base_mdef": 206,
+		"base_mp": 864,
+		"base_patk": 106,
+		"base_pdef": 106,
+		"base_speed": 113,
+		"battle_victories": 1002,
+		"completed_quests": [
+			"main_tower_entrance",
+			"main_zone1_boss",
+			"main_lava_forge",
+			"main_zone2_boss",
+			"main_frozen_realm",
+			"main_zone3_boss",
+			"main_storm_corridor",
+			"main_zone4_boss",
+			"main_earth_maze",
+			"main_zone5_boss",
+			"main_thunder_sea",
+			"main_zone6_boss",
+			"main_shadow_abyss",
+			"main_zone7_boss",
+			"main_holy_hall",
+			"main_zone8_boss",
+			"main_void_realm",
+			"main_zone9_boss",
+			"main_chaos_realm",
+			"main_final_boss",
+			"side_herb_collection",
+			"side_smith_challenge",
+			"side_familiar_rescue",
+			"side_crystal_hunter",
+			"side_wind_trial",
+			"side_thunder_oracle",
+			"side_dark_investigation",
+			"side_light_pilgrimage",
+			"side_void_explorer",
+			"side_chaos_challenger",
+			"bounty_kill_fire_sprite_5",
+			"bounty_kill_ice_sprite_5",
+			"bounty_collect_fire_crystal_3",
+			"bounty_collect_ice_crystal_3",
+			"bounty_reach_floor_5",
+			"bounty_kill_boss_10",
+			"bounty_kill_scorched_golem_5",
+			"bounty_kill_frost_armor_guard_5",
+			"bounty_kill_gale_hawk_5",
+			"bounty_kill_rock_centipede_5",
+			"bounty_kill_thunder_wolf_5",
+			"bounty_kill_shadow_assassin_5",
+			"bounty_kill_holy_knight_5",
+			"bounty_kill_void_wanderer_5"
+		],
+		"current_hp": 1376,
+		"current_mp": 864,
+		"defeated_bosses": [],
+		"discovered_enemy_ids": [
+			"enemy_fire_sprite",
+			"enemy_ice_sprite",
+			"enemy_shadow_wisp",
+			"enemy_stone_golem",
+			"boss_tower_guardian",
+			"enemy_magma_lizard",
+			"enemy_ash_bat",
+			"enemy_scorched_golem",
+			"boss_flame_demon_lord",
+			"enemy_crystal_ice_wolf",
+			"enemy_frost_armor_guard",
+			"enemy_blizzard_spirit",
+			"boss_frost_queen",
+			"enemy_gale_hawk",
+			"enemy_whirlwind_spirit",
+			"enemy_storm_giant",
+			"boss_wind_dragon_king",
+			"enemy_rock_centipede",
+			"enemy_desert_scorpion",
+			"enemy_crystal_golem",
+			"boss_mother_earth",
+			"enemy_thunder_wolf",
+			"enemy_storm_bat",
+			"enemy_thunder_giant",
+			"boss_thunder_dragon",
+			"enemy_shadow_assassin",
+			"enemy_nightmare_banshee",
+			"enemy_abyss_guard",
+			"boss_dark_lord",
+			"enemy_holy_knight",
+			"enemy_radiant_angel",
+			"enemy_judgment_colossus",
+			"boss_supreme_saint",
+			"enemy_void_wanderer",
+			"enemy_chaos_phantom",
+			"enemy_dimensional_guard",
+			"boss_void_king",
+			"enemy_chaos_dragon",
+			"enemy_abyssal_knight",
+			"enemy_worldtree_guardian",
+			"boss_chaos_lord"
+		],
+		"discovered_familiar_ids": [
+			"familiar_fire_imp",
+			"familiar_ice_guard",
+			"familiar_inferno_demon",
+			"familiar_ice_golem",
+			"familiar_wind_hawk",
+			"familiar_thunder_spirit",
+			"familiar_rock_tortoise",
+			"familiar_shadow_fox",
+			"familiar_holy_fairy",
+			"familiar_sky_eagle",
+			"familiar_storm_lord",
+			"familiar_mountain_golem",
+			"familiar_nightmare_wolf",
+			"familiar_seraphim"
+		],
+		"discovered_item_ids": [
+			"weapon_apprentice_staff",
+			"weapon_ice_staff",
+			"weapon_fire_staff",
+			"weapon_wind_staff",
+			"weapon_thunder_staff",
+			"weapon_earth_staff",
+			"weapon_arcane_staff",
+			"weapon_dark_staff",
+			"weapon_light_staff",
+			"weapon_storm_staff",
+			"weapon_shadow_staff",
+			"weapon_holy_staff",
+			"weapon_void_staff",
+			"weapon_chaos_staff",
+			"mat_iron_ore",
+			"mat_herb",
+			"mat_magic_crystal",
+			"mat_fire_crystal",
+			"mat_ice_crystal",
+			"mat_burst_core",
+			"mat_enhance_stone",
+			"core_fire_imp",
+			"core_ice_guard",
+			"mat_wind_crystal",
+			"mat_thunder_crystal",
+			"mat_earth_crystal",
+			"mat_dark_crystal",
+			"mat_light_crystal",
+			"mat_ancient_shard",
+			"mat_void_essence",
+			"mat_chaos_ore",
+			"core_thunder_spirit",
+			"core_shadow_fox",
+			"core_holy_fairy",
+			"core_wind_hawk",
+			"core_rock_tortoise",
+			"item_hp_potion_s",
+			"item_hp_potion_m",
+			"item_hp_potion_l",
+			"item_mp_potion_s",
+			"item_mp_potion_m",
+			"item_mp_potion_l",
+			"item_revive_feather",
+			"item_elixir_s",
+			"item_elixir_m",
+			"item_atk_potion",
+			"item_def_potion",
+			"armor_apprentice_robe",
+			"armor_ice_robe",
+			"armor_flame_robe",
+			"armor_wind_mantle",
+			"armor_thunder_vest",
+			"armor_earth_plate",
+			"armor_arcane_robe",
+			"armor_void_cloak",
+			"armor_storm_coat",
+			"armor_holy_plate",
+			"armor_void_robe",
+			"armor_chaos_armor",
+			"acc_burn_ring",
+			"acc_regen_ring",
+			"acc_echo_crystal",
+			"acc_life_siphon",
+			"acc_mana_spring",
+			"acc_guardian_angel",
+			"acc_confusion_veil",
+			"acc_familiar_heal",
+			"acc_time_watch",
+			"acc_collector_book",
+			"acc_thunder_amulet",
+			"acc_dark_veil",
+			"acc_holy_emblem",
+			"acc_void_ring",
+			"acc_chaos_core"
+		],
+		"exp": 834,
+		"gold": 50706,
+		"highest_floor": 100,
+		"inventory": {
+			"consumables": [
+				{
+					"count": 99,
+					"id": "item_hp_potion_s"
+				},
+				{
+					"count": 99,
+					"id": "item_hp_potion_m"
+				},
+				{
+					"count": 99,
+					"id": "item_hp_potion_l"
+				},
+				{
+					"count": 99,
+					"id": "item_mp_potion_s"
+				},
+				{
+					"count": 99,
+					"id": "item_mp_potion_m"
+				},
+				{
+					"count": 99,
+					"id": "item_mp_potion_l"
+				},
+				{
+					"count": 99,
+					"id": "item_revive_feather"
+				},
+				{
+					"count": 99,
+					"id": "item_elixir_s"
+				},
+				{
+					"count": 99,
+					"id": "item_elixir_m"
+				},
+				{
+					"count": 98,
+					"id": "item_atk_potion"
+				},
+				{
+					"count": 99,
+					"id": "item_def_potion"
+				}
+			],
+			"equipment": [
+				{
+					"enhance": 0,
+					"id": "weapon_apprentice_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_ice_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_fire_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_wind_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_thunder_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_earth_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_arcane_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_dark_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_light_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_storm_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_shadow_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_holy_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_void_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_apprentice_robe"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_ice_robe"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_flame_robe"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_wind_mantle"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_thunder_vest"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_earth_plate"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_arcane_robe"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_void_cloak"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_storm_coat"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_holy_plate"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_burn_ring"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_regen_ring"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_echo_crystal"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_life_siphon"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_mana_spring"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_guardian_angel"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_confusion_veil"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_familiar_heal"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_time_watch"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_collector_book"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_holy_emblem"
+				},
+				{
+					"enhance": 0,
+					"id": "weapon_apprentice_staff"
+				},
+				{
+					"enhance": 0,
+					"id": "armor_apprentice_robe"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_collector_book"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_collector_book"
+				},
+				{
+					"enhance": 0,
+					"id": "acc_collector_book"
+				}
+			],
+			"key_items": [],
+			"magic_books": [],
+			"materials": [
+				{
+					"count": 84,
+					"id": "mat_iron_ore"
+				},
+				{
+					"count": 99,
+					"id": "mat_herb"
+				},
+				{
+					"count": 84,
+					"id": "mat_magic_crystal"
+				},
+				{
+					"count": 99,
+					"id": "mat_fire_crystal"
+				},
+				{
+					"count": 94,
+					"id": "mat_ice_crystal"
+				},
+				{
+					"count": 96,
+					"id": "mat_burst_core"
+				},
+				{
+					"count": 84,
+					"id": "mat_enhance_stone"
+				},
+				{
+					"count": 99,
+					"id": "core_fire_imp"
+				},
+				{
+					"count": 99,
+					"id": "core_ice_guard"
+				},
+				{
+					"count": 99,
+					"id": "mat_wind_crystal"
+				},
+				{
+					"count": 70,
+					"id": "mat_thunder_crystal"
+				},
+				{
+					"count": 93,
+					"id": "mat_earth_crystal"
+				},
+				{
+					"count": 82,
+					"id": "mat_dark_crystal"
+				},
+				{
+					"count": 79,
+					"id": "mat_light_crystal"
+				},
+				{
+					"count": 82,
+					"id": "mat_ancient_shard"
+				},
+				{
+					"count": 99,
+					"id": "mat_void_essence"
+				},
+				{
+					"count": 99,
+					"id": "mat_chaos_ore"
+				},
+				{
+					"count": 99,
+					"id": "core_thunder_spirit"
+				},
+				{
+					"count": 99,
+					"id": "core_shadow_fox"
+				},
+				{
+					"count": 99,
+					"id": "core_holy_fairy"
+				},
+				{
+					"count": 99,
+					"id": "core_wind_hawk"
+				},
+				{
+					"count": 99,
+					"id": "core_rock_tortoise"
+				}
+			]
+		},
+		"learned_skill_ids": [
+			"skill_water_gun",
+			"skill_spark",
+			"skill_heal",
+			"skill_baton_pass",
+			"skill_thunder_punch",
+			"skill_thunder_shock",
+			"skill_thunderbolt",
+			"skill_thunder_strike",
+			"skill_wild_charge",
+			"skill_shadow_ball",
+			"skill_shadow_sneak",
+			"skill_plasma_fist",
+			"skill_night_slash",
+			"skill_nasty_plot",
+			"skill_phantom_force",
+			"skill_muddy_water",
+			"skill_ice_shard",
+			"skill_holy_light",
+			"skill_judgment"
+		],
+		"level": 99,
+		"name": "艾倫",
+		"owned_familiars": [
+			{
+				"current_hp": 472,
+				"current_mp": 177,
+				"exp": 0,
+				"id": "familiar_fire_imp",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_fireball"
+				]
+			},
+			{
+				"current_hp": 610,
+				"current_mp": 123,
+				"exp": 0,
+				"id": "familiar_ice_guard",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_frost_armor"
+				]
+			},
+			{
+				"current_hp": 748,
+				"current_mp": 305,
+				"exp": 0,
+				"id": "familiar_inferno_demon",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_spark",
+					"skill_fireball",
+					"skill_fire_storm"
+				]
+			},
+			{
+				"current_hp": 906,
+				"current_mp": 187,
+				"exp": 0,
+				"id": "familiar_ice_golem",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_frost_armor",
+					"skill_ice_shard",
+					"skill_magic_shield"
+				]
+			},
+			{
+				"current_hp": 364,
+				"current_mp": 182,
+				"exp": 0,
+				"id": "familiar_wind_hawk",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_gust"
+				]
+			},
+			{
+				"current_hp": 408,
+				"current_mp": 236,
+				"exp": 0,
+				"id": "familiar_thunder_spirit",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_thunder_shock"
+				]
+			},
+			{
+				"current_hp": 728,
+				"current_mp": 118,
+				"exp": 0,
+				"id": "familiar_rock_tortoise",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_mud_slap"
+				]
+			},
+			{
+				"current_hp": 418,
+				"current_mp": 182,
+				"exp": 0,
+				"id": "familiar_shadow_fox",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_shadow_sneak"
+				]
+			},
+			{
+				"current_hp": 482,
+				"current_mp": 295,
+				"exp": 0,
+				"id": "familiar_holy_fairy",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_holy_light"
+				]
+			},
+			{
+				"current_hp": 640,
+				"current_mp": 315,
+				"exp": 0,
+				"id": "familiar_sky_eagle",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_gust",
+					"skill_air_slash",
+					"skill_hurricane"
+				]
+			},
+			{
+				"current_hp": 679,
+				"current_mp": 374,
+				"exp": 0,
+				"id": "familiar_storm_lord",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_thunder_shock",
+					"skill_thunderbolt",
+					"skill_discharge"
+				]
+			},
+			{
+				"current_hp": 985,
+				"current_mp": 187,
+				"exp": 0,
+				"id": "familiar_mountain_golem",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_mud_slap",
+					"skill_earthquake",
+					"skill_iron_defense"
+				]
+			},
+			{
+				"current_hp": 699,
+				"current_mp": 315,
+				"exp": 0,
+				"id": "familiar_nightmare_wolf",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_shadow_sneak",
+					"skill_dark_pulse",
+					"skill_nasty_plot"
+				]
+			},
+			{
+				"current_hp": 788,
+				"current_mp": 443,
+				"exp": 0,
+				"id": "familiar_seraphim",
+				"is_alive": true,
+				"level": 50,
+				"mode": "attack",
+				"nickname": "",
+				"obtained_at": "2026-04-12",
+				"skill_ids": [
+					"skill_holy_light",
+					"skill_purify",
+					"skill_sanctuary"
+				]
+			}
+		],
+		"passive_skill_ids": [],
+		"skill_element_usage": {
+			"thunder": 1,
+			"water": 2
+		},
+		"skill_proficiency": {
+			"skill_aerial_ace": 0,
+			"skill_baton_pass": 0,
+			"skill_exploding_fireball": 0,
+			"skill_fireball": 0,
+			"skill_heal": 0,
+			"skill_holy_light": 0,
+			"skill_hydro_pump": 8,
+			"skill_ice_shard": 0,
+			"skill_judgment": 0,
+			"skill_magnet_rise": 0,
+			"skill_muddy_water": 0,
+			"skill_nasty_plot": 0,
+			"skill_night_slash": 0,
+			"skill_phantom_force": 0,
+			"skill_plasma_fist": 4,
+			"skill_rock_blast": 0,
+			"skill_shadow_ball": 0,
+			"skill_shadow_sneak": 0,
+			"skill_spark": 0,
+			"skill_stone_edge": 0,
+			"skill_substitute": 0,
+			"skill_thunder_punch": 0,
+			"skill_thunder_shock": 0,
+			"skill_thunder_strike": 0,
+			"skill_thunderbolt": 0,
+			"skill_water_gun": 0,
+			"skill_wild_charge": 0
+		},
+		"title": "傳說法師",
+		"titles_unlocked": [
+			"見習法師",
+			"火焰使者",
+			"冰霜使者",
+			"雷霆使者",
+			"元素大師",
+			"百戰法師",
+			"千戰鬥神",
+			"收集家",
+			"探索者",
+			"使魔之友",
+			"登頂者",
+			"魔法宗師",
+			"完美主義者",
+			"暴風使者",
+			"大地使者",
+			"暗影使者",
+			"聖光使者",
+			"全能術師",
+			"鍛造達人",
+			"使魔訓練師",
+			"速攻大師",
+			"塔頂征服者",
+			"傳說法師"
+		],
+		"unlocked_teleports": [
+			1
+		],
+		"weapon_enhance": 5,
+		"weapon_id": "weapon_chaos_staff"
+	},
+	"progress": {
+		"achievements": {
+
+		},
+		"active_quests": [
+			{
+				"id": "bounty_kill_void_wanderer_5",
+				"progress": [
+					0
+				]
+			}
+		],
+		"cleared_floors": [],
+		"completed_quests": [
+			"main_tower_entrance",
+			"main_zone1_boss",
+			"main_lava_forge",
+			"main_zone2_boss",
+			"main_frozen_realm",
+			"main_zone3_boss",
+			"main_storm_corridor",
+			"main_zone4_boss",
+			"main_earth_maze",
+			"main_zone5_boss",
+			"main_thunder_sea",
+			"main_zone6_boss",
+			"main_shadow_abyss",
+			"main_zone7_boss",
+			"main_holy_hall",
+			"main_zone8_boss",
+			"main_void_realm",
+			"main_zone9_boss",
+			"main_chaos_realm",
+			"main_final_boss",
+			"side_herb_collection",
+			"side_smith_challenge",
+			"side_familiar_rescue",
+			"side_crystal_hunter",
+			"side_wind_trial",
+			"side_thunder_oracle",
+			"side_dark_investigation",
+			"side_light_pilgrimage",
+			"side_void_explorer",
+			"side_chaos_challenger",
+			"bounty_kill_fire_sprite_5",
+			"bounty_kill_ice_sprite_5",
+			"bounty_collect_fire_crystal_3",
+			"bounty_collect_ice_crystal_3",
+			"bounty_reach_floor_5",
+			"bounty_kill_boss_10",
+			"bounty_kill_scorched_golem_5",
+			"bounty_kill_frost_armor_guard_5",
+			"bounty_kill_gale_hawk_5",
+			"bounty_kill_rock_centipede_5",
+			"bounty_kill_thunder_wolf_5",
+			"bounty_kill_shadow_assassin_5",
+			"bounty_kill_holy_knight_5",
+			"bounty_kill_void_wanderer_5"
+		],
+		"defeated_bosses": [],
+		"highest_floor": 100,
+		"main_quest_chapter": 0,
+		"unlocked_teleports": [
+			1
+		]
+	},
+	"save_version": "1.0",
+	"settings": {
+		"bgm_volume": 0.8,
+		"sfx_volume": 1.0,
+		"text_speed": "normal"
+	},
+	"timestamp": "2026-04-12T19:38:29"
+}
