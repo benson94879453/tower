@@ -3,7 +3,7 @@ extends RefCounted
 
 const DOT_STATUSES := ["burn", "poison", "heavy_poison"]
 const CONTROL_STATUSES := ["freeze", "paralyze", "sleep", "confuse", "charm"]
-const DEBUFF_STATUSES := ["atk_down", "def_down", "speed_down", "hit_down", "seal", "curse"]
+const DEBUFF_STATUSES := ["atk_down", "def_down", "speed_down", "hit_down", "hit_down_heavy", "seal", "curse"]
 const BUFF_STATUSES := ["atk_up", "def_up", "speed_up", "regen", "mp_regen", "reflect", "stealth"]
 
 const DOT_RATES := {
@@ -16,10 +16,14 @@ const STAT_MOD_MAP := {
 	"atk_down": {"stats": ["matk", "patk"], "multiplier": -0.25},
 	"def_down": {"stats": ["mdef", "pdef"], "multiplier": -0.25},
 	"speed_down": {"stats": ["speed"], "multiplier": -0.25},
-	"hit_down": {"stats": ["hit"], "multiplier": -0.25},
 	"atk_up": {"stats": ["matk", "patk"], "multiplier": 0.25},
 	"def_up": {"stats": ["mdef", "pdef"], "multiplier": 0.25},
 	"speed_up": {"stats": ["speed"], "multiplier": 0.25},
+}
+
+const HIT_PENALTY_MAP := {
+	"hit_down": 50,
+	"hit_down_heavy": 100,
 }
 
 
@@ -203,6 +207,14 @@ static func check_stealth_dodge(target) -> Dictionary:
 	})
 	result["dodged"] = true
 	return result
+
+
+static func get_total_hit_penalty(combatant) -> float:
+	var total_penalty: float = 0.0
+	for status_id in HIT_PENALTY_MAP.keys():
+		if combatant.has_status(String(status_id)):
+			total_penalty += float(HIT_PENALTY_MAP[status_id])
+	return total_penalty
 
 
 static func get_status_stat_modifier(combatant, stat_name: String) -> float:

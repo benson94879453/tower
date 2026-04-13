@@ -90,9 +90,10 @@ static func calc_hit(attacker, defender, skill_data: Dictionary) -> bool:
 		return true
 
 	var skill_hit_rate: float = float(skill_data.get("hit_rate", 95)) / 100.0
-	var atk_hit: float = max(float(attacker.hit), 0.0)
-	var def_dodge: float = max(float(defender.dodge), 0.0)
-	var denominator: float = max(atk_hit + def_dodge, 1.0)
+	var atk_hit: float = get_effective_stat(attacker, "hit")
+	var def_dodge: float = get_effective_stat(defender, "dodge")
+	var hit_penalty: float = StatusProcessor.get_total_hit_penalty(attacker)
+	var denominator: float = max(atk_hit + def_dodge + hit_penalty, 1.0)
 	var final_rate: float = skill_hit_rate * (atk_hit / denominator)
 	final_rate = clampf(final_rate, HIT_RATE_MIN, HIT_RATE_MAX)
 	return randf() < final_rate
