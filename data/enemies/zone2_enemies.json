@@ -126,5 +126,38 @@
 		},
 		"floor_range": [19, 19],
 		"is_boss": true
+	},
+	{
+		"id": "enemy_fire_sprite_elite",
+		"name": "焰靈射手",
+		"element": "fire",
+		"level": 12,
+		"stats": {
+			"hp": 120,
+			"mp": 50,
+			"matk": 30,
+			"mdef": 15,
+			"patk": 10,
+			"pdef": 10,
+			"speed": 22
+		},
+		"ai_type": "aggressive",
+		"skills": ["skill_spark", "skill_flame_shot"],
+		"drops": [
+			{"id": "mat_fire_crystal", "rate": 0.30},
+			{"id": "mat_herb", "rate": 0.15},
+			{"id": "item_hp_potion_s", "rate": 0.20},
+			{"id": "scroll_spark", "rate": 0.05},
+			{"id": "core_fire_imp", "rate": 0.01}
+		],
+		"exp": 25,
+		"gold": 15,
+		"visual": {
+			"shape": "triangle",
+			"color": "#FF4444",
+			"size": "medium",
+			"effects": ["flame_top"]
+		},
+		"floor_range": [11, 19]
 	}
 ]

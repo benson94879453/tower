@@ -14,7 +14,7 @@
 			"speed": 14
 		},
 		"ai_type": "aggressive",
-		"skills": ["skill_ice_shard"],
+		"skills": ["skill_spark"],
 		"drops": [
 			{"id": "mat_fire_crystal", "rate": 0.30},
 			{"id": "mat_herb", "rate": 0.15},
@@ -26,16 +26,16 @@
 		"gold": 10,
 		"visual": {
 			"shape": "circle",
-			"color": "#AAEEFF",
+			"color": "#FF6644",
 			"size": "small",
-			"effects": ["frost_aura"]
+			"effects": ["flame_top"]
 		},
 		"floor_range": [2, 9]
 	},
 	{
 		"id": "enemy_frost_slime",
 		"name": "冰霜史萊姆",
-		"element": "ice",
+		"element": "water",
 		"level": 5,
 		"stats": {
 			"hp": 60,
@@ -65,7 +65,7 @@
 	{
 		"id": "enemy_ice_sprite",
 		"name": "冰霜精靈",
-		"element": "ice",
+		"element": "water",
 		"level": 2,
 		"stats": {
 			"hp": 70,
@@ -191,16 +191,16 @@
 	{
 		"id": "enemy_frost_wolf",
 		"name": "冰霜狼",
-		"element": "ice",
-		"level": 12,
+		"element": "water",
+		"level": 4,
 		"stats": {
-			"hp": 130,
-			"mp": 30,
-			"matk": 10,
-			"mdef": 10,
-			"patk": 25,
-			"pdef": 15,
-			"speed": 25
+			"hp": 85,
+			"mp": 15,
+			"matk": 8,
+			"mdef": 8,
+			"patk": 12,
+			"pdef": 7,
+			"speed": 15
 		},
 		"ai_type": "aggressive",
 		"skills": ["skill_bite", "skill_howl"],
@@ -209,122 +209,29 @@
 			{"id": "mat_ice_crystal", "rate": 0.20},
 			{"id": "item_hp_potion_s", "rate": 0.10}
 		],
-		"exp": 25,
-		"gold": 15,
+		"exp": 18,
+		"gold": 10,
 		"visual": {
 			"shape": "triangle",
 			"color": "#88CCFF",
 			"size": "medium",
 			"effects": ["frost_aura"]
 		},
-		"floor_range": [3, 9]
-	},
-	{
-		"id": "enemy_frost_wolf_leader",
-		"name": "冰霜狼首領",
-		"element": "ice",
-		"level": 15,
-		"stats": {
-			"hp": 220,
-			"mp": 50,
-			"matk": 15,
-			"mdef": 15,
-			"patk": 35,
-			"pdef": 22,
-			"speed": 22
-		},
-		"ai_type": "aggressive",
-		"skills": ["skill_bite", "skill_howl", "skill_ice_slash"],
-		"drops": [
-			{"id": "mat_wolf_fur", "rate": 0.50},
-			{"id": "mat_ice_crystal", "rate": 0.30},
-			{"id": "item_hp_potion_m", "rate": 0.10}
-		],
-		"exp": 40,
-		"gold": 30,
-		"visual": {
-			"shape": "triangle",
-			"color": "#66AAFF",
-			"size": "large",
-			"effects": ["frost_aura"]
-		},
-		"floor_range": [6, 9]
-	},
-	{
-		"id": "enemy_elite_ice_sprite",
-		"name": "菁英冰霜精靈",
-		"element": "ice",
-		"level": 18,
-		"stats": {
-			"hp": 180,
-			"mp": 100,
-			"matk": 45,
-			"mdef": 35,
-			"patk": 10,
-			"pdef": 18,
-			"speed": 20
-		},
-		"ai_type": "cautious",
-		"skills": ["skill_ice_shard", "skill_frost_armor", "skill_blizzard"],
-		"drops": [
-			{"id": "mat_ice_crystal", "rate": 0.50},
-			{"id": "item_mp_potion_m", "rate": 0.20},
-			{"id": "scroll_ice_shard", "rate": 0.10}
-		],
-		"exp": 60,
-		"gold": 45,
-		"visual": {
-			"shape": "hexagon",
-			"color": "#0088FF",
-			"size": "medium",
-			"effects": ["frost_aura", "magic_glow"]
-		},
-		"floor_range": [7, 9]
-	},
-	{
-		"id": "enemy_elite_frost_wolf",
-		"name": "菁英冰霜狼",
-		"element": "ice",
-		"level": 20,
-		"stats": {
-			"hp": 320,
-			"mp": 60,
-			"matk": 20,
-			"mdef": 20,
-			"patk": 50,
-			"pdef": 32,
-			"speed": 28
-		},
-		"ai_type": "aggressive",
-		"skills": ["skill_bite", "skill_howl", "skill_ice_slash"],
-		"drops": [
-			{"id": "mat_wolf_fur", "rate": 0.60},
-			{"id": "mat_ice_crystal", "rate": 0.30},
-			{"id": "item_hp_potion_m", "rate": 0.15}
-		],
-		"exp": 80,
-		"gold": 60,
-		"visual": {
-			"shape": "triangle",
-			"color": "#0066CC",
-			"size": "large",
-			"effects": ["frost_aura", "magic_glow"]
-		},
-		"floor_range": [8, 9]
+		"floor_range": [3, 7]
 	},
 	{
 		"id": "enemy_frost_guard",
 		"name": "寒冰守衛",
-		"element": "ice",
-		"level": 25,
+		"element": "water",
+		"level": 6,
 		"stats": {
-			"hp": 650,
-			"mp": 120,
-			"matk": 55,
-			"mdef": 45,
-			"patk": 55,
-			"pdef": 45,
-			"speed": 15
+			"hp": 160,
+			"mp": 55,
+			"matk": 24,
+			"mdef": 14,
+			"patk": 14,
+			"pdef": 14,
+			"speed": 8
 		},
 		"ai_type": "aggressive",
 		"skills": ["skill_frost_smash", "skill_ice_wall", "skill_frost_nova"],
@@ -334,47 +241,14 @@
 			{"id": "item_mp_potion_m", "rate": 0.30},
 			{"id": "core_ice_guard", "rate": 0.20}
 		],
-		"exp": 200,
-		"gold": 150,
+		"exp": 40,
+		"gold": 30,
 		"visual": {
 			"shape": "square",
 			"color": "#FFFFFF",
 			"size": "large",
 			"effects": ["frost_aura", "magic_glow", "shield_aura"]
 		},
-		"floor_range": [9, 9]
-	},
-	{
-		"id": "enemy_fire_sprite",
-		"name": "火焰精靈",
-		"element": "fire",
-		"level": 12,
-		"stats": {
-			"hp": 120,
-			"mp": 50,
-			"matk": 30,
-			"mdef": 15,
-			"patk": 10,
-			"pdef": 10,
-			"speed": 22
-		},
-		"ai_type": "aggressive",
-		"skills": ["skill_spark", "skill_flame_shot"],
-		"drops": [
-			{"id": "mat_fire_crystal", "rate": 0.30},
-			{"id": "mat_herb", "rate": 0.15},
-			{"id": "item_hp_potion_s", "rate": 0.20},
-			{"id": "scroll_spark", "rate": 0.05},
-			{"id": "core_fire_imp", "rate": 0.01}
-		],
-		"exp": 25,
-		"gold": 15,
-		"visual": {
-			"shape": "triangle",
-			"color": "#FF4444",
-			"size": "medium",
-			"effects": ["flame_top"]
-		},
-		"floor_range": [11, 19]
+		"floor_range": [8, 9]
 	}
 ]
