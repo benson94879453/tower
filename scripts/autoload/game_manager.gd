@@ -534,6 +534,25 @@ func _test_damage_calculator() -> void:
 		float(result_env.get("environment_mod", 1.0)),
 	])
 
+	var accuracy_enemy := CombatantDataClass.from_enemy("enemy_fire_sprite")
+	accuracy_enemy.dodge = 50.0
+	player_combatant.status_effects.clear()
+	seed(424242)
+	var baseline_hits := 0
+	for _index in range(5000):
+		if DamageCalculatorClass.calc_hit(player_combatant, accuracy_enemy, fireball_data):
+			baseline_hits += 1
+	player_combatant.status_effects.append({"id": "hit_down", "turns": 3})
+	seed(424242)
+	var debuffed_hits := 0
+	for _index in range(5000):
+		if DamageCalculatorClass.calc_hit(player_combatant, accuracy_enemy, fireball_data):
+			debuffed_hits += 1
+	print("Fireball hit rate vs dodge=50: baseline=%.3f hit_down=%.3f" % [
+		float(baseline_hits) / 5000.0,
+		float(debuffed_hits) / 5000.0,
+	])
+
 	print("Stat helper matk: ", DamageCalculatorClass.get_effective_stat(player_combatant, "matk"))
 
 	PlayerManager.init_new_game()

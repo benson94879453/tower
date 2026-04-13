@@ -67,26 +67,49 @@
     },
     "description": "\u70ba\u81ea\u8eab\u65bd\u52a0\u8b77\u76fe\uff0c\u5438\u6536 50 \u9ede\u50b7\u5bb3\u3002"
   },
-  {
-    "id": "skill_power_up",
-    "name": "\u9b54\u529b\u5f37\u5316",
-    "element": "none",
-    "type": "buff_self",
-    "rarity": "N",
-    "base_power": 0,
-    "mp_cost": 10,
-    "pp_max": 5,
-    "hit_rate": 100,
-    "priority": 0,
-    "cooldown": 0,
-    "effects": [
-      { "type": "buff", "target": "self", "stat": "matk", "value": 10, "duration": 3 }
-    ],
-    "research_cost": {
-      "gold": 200,
-      "items": [],
-      "prerequisite_skills": []
-    },
-    "description": "\u63d0\u5347\u81ea\u8eab\u9b54\u653b 3 \u56de\u5408\u3002"
-  }
+	{
+		"id": "skill_power_up",
+		"name": "\u9b54\u529b\u5f37\u5316",
+		"element": "none",
+		"type": "buff_self",
+		"rarity": "N",
+		"base_power": 0,
+		"mp_cost": 10,
+		"pp_max": 5,
+		"hit_rate": 100,
+		"priority": 0,
+		"cooldown": 0,
+		"effects": [
+			{ "type": "buff", "target": "self", "stat": "matk", "value": 10, "duration": 3 }
+		],
+		"research_cost": {
+			"gold": 200,
+			"items": [],
+			"prerequisite_skills": []
+		},
+		"description": "\u63d0\u5347\u81ea\u8eab\u9b54\u653b 3 \u56de\u5408\u3002"
+	},
+	{
+		"id": "skill_smoke_screen",
+		"name": "煙霧瀰漫",
+		"element": "none",
+		"type": "debuff_all",
+		"rarity": "R",
+		"base_power": 0,
+		"mp_cost": 20,
+		"pp_max": 5,
+		"hit_rate": 100,
+		"priority": 0,
+		"cooldown": 3,
+		"effects": [
+			{ "type": "status", "target": "all_enemies", "status": "hit_down_heavy", "chance": 100, "duration": 3 },
+			{ "type": "status", "target": "all_allies", "status": "hit_down_heavy", "chance": 100, "duration": 3 }
+		],
+		"research_cost": {
+			"gold": 500,
+			"items": [],
+			"prerequisite_skills": []
+		},
+		"description": "釋放濃煙，使場上所有單位的命中率大幅下降 3 回合。"
+	}
 ]
